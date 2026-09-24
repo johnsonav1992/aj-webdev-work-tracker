@@ -46,10 +46,10 @@ The initial signed-in landing page should summarize active work, unpaid amounts,
 - Remix's SQLite connector expects a synchronous SQLite client. Current Turso server-side clients are async, and Remix documents a custom async driver extension point. Keep domain queries and migrations in the Remix data-table layer, then select/implement the Turso driver once the cloud connection mode is confirmed.
 - The eventual cloud path should be checked against the selected Turso product/client and deployment runtime before launch.
 
-## Decisions to confirm before persistence or authentication work
+## Remaining decisions before authentication and full database integration
 
 - Hosting/deployment target and the Turso connection model / JavaScript client (remote database connection versus local-first sync).
-- Login method and whether access is strictly one user or may include collaborators later.
+- Login method (the first release is one owner; the data model should allow collaborators later).
 - Default currency, timezone, and preferred date/number formats.
 - Whether a project may override its client's agreed hourly rate. Historical time entries should preserve the rate used when logged so later rate changes do not rewrite past earnings.
 - What an invoice means in the first release: manually entered record, generated invoice, or both.
