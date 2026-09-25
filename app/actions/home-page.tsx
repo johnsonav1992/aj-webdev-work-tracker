@@ -27,7 +27,12 @@ import { TimeRow } from './home/time-row.tsx';
 import { Topbar } from './home/topbar.tsx';
 import { TimerWidget } from './public/timer-widget.tsx';
 
-export const HomePage = (handle: Handle<{ csrfToken: string }>) => {
+type HomePageProps = {
+  csrfToken: string;
+  data: Awaited<ReturnType<typeof import('../db/dashboard.ts').getDashboardData>>;
+};
+
+export const HomePage = (handle: Handle<HomePageProps>) => {
   return () => (
     <Document title='Overview · AJ Workbench'>
       <div mix={theme}>
@@ -72,7 +77,7 @@ export const HomePage = (handle: Handle<{ csrfToken: string }>) => {
                     letterSpacing: '-0.045em'
                   })}
                 >
-                  Good morning, Alex
+                  Welcome, {handle.props.data.displayName}
                 </h1>
                 <p
                   mix={css({
@@ -100,30 +105,30 @@ export const HomePage = (handle: Handle<{ csrfToken: string }>) => {
               })}
             >
               <Metric
-                label='Active projects'
-                value='4'
-                note='Across 3 clients'
+                label='Projects'
+                value={handle.props.data.metrics.projects}
+                note={handle.props.data.metrics.projectsNote}
                 icon={<ProjectsIcon />}
                 tone='green'
               />
               <Metric
                 label='Hours this week'
-                value='18.5'
-                note='A steady week so far'
+                value={handle.props.data.metrics.hoursThisWeek}
+                note='Logged since Monday'
                 icon={<ClockIcon />}
                 tone='blue'
               />
               <Metric
                 label='Work logged'
-                value='$6,240'
-                note='Value of tracked time'
+                value={handle.props.data.metrics.loggedValue}
+                note={handle.props.data.metrics.loggedValueNote}
                 icon={<CheckIcon />}
                 tone='green'
               />
               <Metric
                 label='Payments this month'
-                value='$3,850'
-                note='Manually recorded'
+                value={handle.props.data.metrics.paymentsThisMonth}
+                note={handle.props.data.metrics.paymentsNote}
                 icon={<PaymentsIcon />}
                 tone='amber'
               />
@@ -152,7 +157,7 @@ export const HomePage = (handle: Handle<{ csrfToken: string }>) => {
                     >
                       <div>
                         <p mix={[eyebrowStyle, css({ marginBottom: `${themeTokens.spacing[1]}` })]}>
-                          Focus session
+                          Timer preview
                         </p>
                         <h2
                           mix={css({ margin: 0, fontSize: `${themeTokens.typography.size.body}` })}
@@ -166,7 +171,7 @@ export const HomePage = (handle: Handle<{ csrfToken: string }>) => {
                           fontSize: `${themeTokens.typography.size.small}`
                         })}
                       >
-                        Today · 0h 45m tracked
+                        This timer does not save entries yet.
                       </span>
                     </div>
                     <div
@@ -183,11 +188,17 @@ export const HomePage = (handle: Handle<{ csrfToken: string }>) => {
                         <select
                           aria-label='Choose a project'
                           mix={fieldStyle}
-                          defaultValue='northstar'
+                          defaultValue={handle.props.data.projectOptions[0]?.id ?? ''}
                         >
-                          <option value='northstar'>Northstar Studio · Website refresh</option>
-                          <option value='cedar'>Cedar &amp; Finch · Booking flow</option>
-                          <option value='personal'>Unassigned work</option>
+                          {handle.props.data.projectOptions.length ? (
+                            handle.props.data.projectOptions.map((project) => (
+                              <option key={project.id} value={project.id}>
+                                {project.client} · {project.name}
+                              </option>
+                            ))
+                          ) : (
+                            <option value=''>No active projects</option>
+                          )}
                         </select>
                       </label>
                       <label mix={fieldLabelStyle}>
@@ -213,8 +224,8 @@ export const HomePage = (handle: Handle<{ csrfToken: string }>) => {
                 <Panel>
                   <div mix={cardPaddingStyle}>
                     <SectionHeading
-                      eyebrow='Keep moving'
-                      title='Active projects'
+                      eyebrow='Your work'
+                      title='Projects'
                       action={
                         <a href='#projects' mix={quietButtonStyle}>
                           All projects <ArrowIcon />
@@ -222,33 +233,13 @@ export const HomePage = (handle: Handle<{ csrfToken: string }>) => {
                       }
                     />
                     <div mix={css({ display: 'grid' })}>
-                      <ProjectRow
-                        initials='NS'
-                        name='Website refresh'
-                        client='Northstar Studio'
-                        progress={72}
-                        due='Due Oct 4'
-                        rate='$125 / hour'
-                        tone='green'
-                      />
-                      <ProjectRow
-                        initials='CF'
-                        name='Booking flow'
-                        client='Cedar & Finch'
-                        progress={46}
-                        due='Due Oct 11'
-                        rate='$110 / hour'
-                        tone='blue'
-                      />
-                      <ProjectRow
-                        initials='AP'
-                        name='Portfolio updates'
-                        client='Alder Peak Coffee'
-                        progress={88}
-                        due='In progress'
-                        rate='$95 / hour'
-                        tone='amber'
-                      />
+                      {handle.props.data.projects.length ? (
+                        handle.props.data.projects.map((project) => (
+                          <ProjectRow key={project.id} {...project} />
+                        ))
+                      ) : (
+                        <p mix={emptyStateStyle}>Projects you add will appear here.</p>
+                      )}
                     </div>
                   </div>
                 </Panel>
@@ -264,20 +255,13 @@ export const HomePage = (handle: Handle<{ csrfToken: string }>) => {
                         </a>
                       }
                     />
-                    <TimeRow
-                      title='Homepage component build'
-                      client='Northstar Studio · Website refresh'
-                      date='Today, 9:10 AM'
-                      duration='1h 35m'
-                      tint='green'
-                    />
-                    <TimeRow
-                      title='Mobile booking QA'
-                      client='Cedar & Finch · Booking flow'
-                      date='Yesterday, 2:20 PM'
-                      duration='0h 50m'
-                      tint='blue'
-                    />
+                    {handle.props.data.timeEntries.length ? (
+                      handle.props.data.timeEntries.map((entry) => (
+                        <TimeRow key={entry.id} {...entry} />
+                      ))
+                    ) : (
+                      <p mix={emptyStateStyle}>Logged time will appear here.</p>
+                    )}
                   </div>
                 </Panel>
               </div>
@@ -294,27 +278,15 @@ export const HomePage = (handle: Handle<{ csrfToken: string }>) => {
                         </a>
                       }
                     />
-                    <PaymentRow
-                      client='Northstar Studio'
-                      project='Website refresh'
-                      amount='$1,200'
-                      date='Sep 22'
-                      method='Bank transfer'
-                    />
-                    <PaymentRow
-                      client='Cedar & Finch'
-                      project='Booking flow'
-                      amount='$850'
-                      date='Sep 18'
-                      method='Card'
-                    />
-                    <PaymentRow
-                      client='Alder Peak Coffee'
-                      project='Portfolio updates'
-                      amount='$450'
-                      date='Sep 12'
-                      method='Check'
-                    />
+                    {handle.props.data.payments.length ? (
+                      handle.props.data.payments.map((payment) => (
+                        <PaymentRow key={payment.id} {...payment} />
+                      ))
+                    ) : (
+                      <p mix={emptyStateStyle}>
+                        Payment records will appear after Stripe is connected.
+                      </p>
+                    )}
                     <a href='#payments/new' mix={addPaymentStyle}>
                       <PlusIcon /> Record a payment
                     </a>
@@ -332,27 +304,13 @@ export const HomePage = (handle: Handle<{ csrfToken: string }>) => {
                         </a>
                       }
                     />
-                    <ClientRow
-                      initials='NS'
-                      name='Northstar Studio'
-                      summary='2 active projects'
-                      tint='green'
-                      rate='$125 / hr'
-                    />
-                    <ClientRow
-                      initials='CF'
-                      name='Cedar & Finch'
-                      summary='1 active project'
-                      tint='blue'
-                      rate='$110 / hr'
-                    />
-                    <ClientRow
-                      initials='AP'
-                      name='Alder Peak Coffee'
-                      summary='1 active project'
-                      tint='amber'
-                      rate='$95 / hr'
-                    />
+                    {handle.props.data.clients.length ? (
+                      handle.props.data.clients.map((client) => (
+                        <ClientRow key={client.id} {...client} />
+                      ))
+                    ) : (
+                      <p mix={emptyStateStyle}>Clients you add will appear here.</p>
+                    )}
                   </div>
                 </Panel>
 
@@ -400,7 +358,8 @@ export const HomePage = (handle: Handle<{ csrfToken: string }>) => {
                         lineHeight: 1.55
                       })}
                     >
-                      Log time as you go. Your client rates stay attached to the work you complete.
+                      The project totals above use recorded time and the client rates saved with
+                      each entry.
                     </p>
                   </div>
                 </div>
@@ -424,6 +383,12 @@ export const HomePage = (handle: Handle<{ csrfToken: string }>) => {
 };
 
 const cardPaddingStyle = css({ padding: `${themeTokens.spacing[5]}` });
+const emptyStateStyle = css({
+  margin: 0,
+  padding: `${themeTokens.spacing[4]} 0`,
+  color: `${themeTokens.palette.text.muted}`,
+  fontSize: `${themeTokens.typography.size.small}`
+});
 const fieldLabelStyle = css({
   display: 'grid',
   gap: `${themeTokens.spacing[1]}`,

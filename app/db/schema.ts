@@ -107,6 +107,8 @@ export const projects = table({
     description: c.text().nullable(),
     notes: c.text().nullable(),
     status: c.enum(['planned', 'active', 'completed', 'archived']).notNull(),
+    hour_cap_minutes: c.integer().nullable(),
+    invoice_cap_minor: c.integer().nullable(),
     started_on: c.date().nullable(),
     completed_on: c.date().nullable(),
     created_at: c.integer().notNull(),

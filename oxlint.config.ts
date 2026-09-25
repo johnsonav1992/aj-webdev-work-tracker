@@ -1,7 +1,7 @@
 import { defineConfig } from 'oxlint';
 
 export default defineConfig({
-  jsPlugins: ['./scripts/oxlint-plugin.ts'],
+  jsPlugins: ['./lint-plugins/oxlint-plugin.ts'],
   overrides: [
     {
       files: ['app/**/*.{js,jsx,ts,tsx}', 'server.ts'],
