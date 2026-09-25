@@ -69,7 +69,7 @@ export const TimerWidget = clientEntry(`${import.meta.url}#TimerWidget`, (handle
               display: 'inline-flex',
               alignItems: 'center',
               gap: `${themeTokens.spacing[2]}`,
-              color: `${themeTokens.palette.success.dark}`,
+              color: `${themeTokens.palette.success.main}`,
               fontSize: `${themeTokens.typography.size.small}`,
               fontWeight: `${themeTokens.typography.weight.semibold}`
             })}
@@ -83,7 +83,7 @@ export const TimerWidget = clientEntry(`${import.meta.url}#TimerWidget`, (handle
                 background: `${themeTokens.palette.success.main}`
               })}
             />
-            Tracking now
+            Running
           </span>
         ) : null}
       </div>

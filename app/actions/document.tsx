@@ -14,7 +14,7 @@ const readAppDisplayName = (value: string): string => {
   return value.startsWith('%%') ? 'Remix App' : decodeURIComponent(value);
 };
 
-const DEFAULT_TITLE = readAppDisplayName('Aj%20Webdev%20Work%20Tracker');
+const DEFAULT_TITLE = readAppDisplayName('AJ%20Webdev%20Work%20Tracker');
 
 export const Document = (handle: Handle<DocumentProps>) => {
   return () => {

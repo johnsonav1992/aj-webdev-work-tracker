@@ -1,197 +1,104 @@
 import { css } from 'remix/ui';
 
-/** Shared, semantic design tokens. Components should choose roles, not own colors. */
-export const tokens = {
+export type AccentTone = 'green' | 'blue' | 'amber';
+
+/** The single source of truth for the app's visual design. */
+export const themeTokens = {
   palette: {
-    primary: { main: '#24785a', dark: '#19583f', light: '#e8f3ec', contrastText: '#ffffff' },
-    success: { main: '#24785a', dark: '#19583f', light: '#e8f3ec' },
-    warning: { main: '#b87328', dark: '#8f551b', light: '#fbf0df' },
-    info: { main: '#4c7187', dark: '#36586d', light: '#eaf1f5' },
-    error: { main: '#a64d46', dark: '#843a34', light: '#f8eae8' },
-    text: { primary: '#18231f', secondary: '#52615a', muted: '#78847d' },
-    background: { default: '#f5f7f4', paper: '#ffffff', subtle: '#f7f9f7', hover: '#eef2ee' },
-    divider: '#e5e9e5',
-    dividerStrong: '#cbd4cd',
-    focus: '#9ac7ad'
+    primary: { main: '#4ea7ff', dark: '#7cc4ff', active: '#348be0', contrastText: '#071018' },
+    success: {
+      main: '#83f7b0',
+      light: 'rgb(131 247 176 / 12%)'
+    },
+    warning: {
+      main: '#ffd166',
+      light: 'rgb(255 209 102 / 12%)'
+    },
+    info: {
+      main: '#7cc4ff',
+      dark: '#4ea7ff',
+      light: 'rgb(78 167 255 / 14%)'
+    },
+    error: {
+      main: '#ff7777',
+      dark: '#ffb4b4',
+      light: 'rgb(255 119 119 / 14%)'
+    },
+    text: { primary: '#f6f7fb', secondary: '#b7bbc9', muted: '#777d91' },
+    background: {
+      default: '#111217',
+      paper: '#191b23',
+      subtle: 'rgb(255 255 255 / 4%)',
+      hover: 'rgb(255 255 255 / 7%)'
+    },
+    divider: 'rgb(255 255 255 / 11%)',
+    dividerStrong: 'rgb(255 255 255 / 20%)',
+    focus: '#9ed8ff'
   },
   spacing: { 1: '4px', 2: '8px', 3: '12px', 4: '16px', 5: '24px', 6: '32px', 8: '48px' },
-  shape: { small: '9px', medium: '12px', large: '14px', pill: '999px' },
+  shape: { large: '8px', pill: '9999px' },
   typography: {
     fontFamily:
-      "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+      "Ubuntu, Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
     size: {
-      caption: '11px',
-      small: '13px',
-      body: '14px',
-      section: '17px',
+      caption: '10px',
+      small: '14px',
+      body: '16px',
+      section: '18px',
       metric: '29px',
       metricSmall: '23px',
       timer: '36px'
     },
-    weight: { medium: 550, semibold: 600, bold: 700 }
+    weight: { medium: 500, semibold: 600, bold: 700 }
   },
-  elevation: { low: '0 2px 7px rgb(24 35 31 / 3%)' }
-} as const;
-
-export type ThemeTokens = typeof tokens;
-
-/** Typed references for component styles; invalid token paths fail at compile time. */
-export const themeTokens = {
-  palette: {
-    primary: {
-      main: 'var(--palette-primary-main)',
-      dark: 'var(--palette-primary-dark)',
-      light: 'var(--palette-primary-light)',
-      contrastText: 'var(--palette-primary-contrast-text)'
-    },
-    success: {
-      main: 'var(--palette-success-main)',
-      dark: 'var(--palette-success-dark)',
-      light: 'var(--palette-success-light)'
-    },
-    warning: {
-      main: 'var(--palette-warning-main)',
-      dark: 'var(--palette-warning-dark)',
-      light: 'var(--palette-warning-light)'
-    },
-    info: {
-      main: 'var(--palette-info-main)',
-      dark: 'var(--palette-info-dark)',
-      light: 'var(--palette-info-light)'
-    },
-    error: {
-      main: 'var(--palette-error-main)',
-      dark: 'var(--palette-error-dark)',
-      light: 'var(--palette-error-light)'
-    },
-    text: {
-      primary: 'var(--palette-text-primary)',
-      secondary: 'var(--palette-text-secondary)',
-      muted: 'var(--palette-text-muted)'
-    },
-    background: {
-      default: 'var(--palette-background-default)',
-      paper: 'var(--palette-background-paper)',
-      subtle: 'var(--palette-background-subtle)',
-      hover: 'var(--palette-background-hover)'
-    },
-    divider: 'var(--palette-divider)',
-    dividerStrong: 'var(--palette-divider-strong)',
-    focus: 'var(--palette-focus)'
-  },
-  spacing: {
-    1: 'var(--spacing-1)',
-    2: 'var(--spacing-2)',
-    3: 'var(--spacing-3)',
-    4: 'var(--spacing-4)',
-    5: 'var(--spacing-5)',
-    6: 'var(--spacing-6)',
-    8: 'var(--spacing-8)'
-  },
-  shape: {
-    small: 'var(--shape-small)',
-    medium: 'var(--shape-medium)',
-    large: 'var(--shape-large)',
-    pill: 'var(--shape-pill)'
-  },
-  typography: {
-    size: {
-      caption: 'var(--typography-size-caption)',
-      small: 'var(--typography-size-small)',
-      body: 'var(--typography-size-body)',
-      section: 'var(--typography-size-section)',
-      metric: 'var(--typography-size-metric)',
-      metricSmall: 'var(--typography-size-metric-small)',
-      timer: 'var(--typography-size-timer)'
-    },
-    weight: {
-      medium: 'var(--typography-weight-medium)',
-      semibold: 'var(--typography-weight-semibold)',
-      bold: 'var(--typography-weight-bold)'
-    }
-  },
-  elevation: { low: 'var(--elevation-low)' }
+  elevation: {
+    low: '0 12px 30px rgb(0 0 0 / 28%)',
+    primaryAction: '0 16px 34px rgb(78 167 255 / 24%)'
+  }
 } as const;
 
 export const theme = css({
-  '--palette-primary-main': tokens.palette.primary.main,
-  '--palette-primary-dark': tokens.palette.primary.dark,
-  '--palette-primary-light': tokens.palette.primary.light,
-  '--palette-primary-contrast-text': tokens.palette.primary.contrastText,
-  '--palette-success-main': tokens.palette.success.main,
-  '--palette-success-dark': tokens.palette.success.dark,
-  '--palette-success-light': tokens.palette.success.light,
-  '--palette-warning-main': tokens.palette.warning.main,
-  '--palette-warning-dark': tokens.palette.warning.dark,
-  '--palette-warning-light': tokens.palette.warning.light,
-  '--palette-info-main': tokens.palette.info.main,
-  '--palette-info-dark': tokens.palette.info.dark,
-  '--palette-info-light': tokens.palette.info.light,
-  '--palette-error-main': tokens.palette.error.main,
-  '--palette-error-dark': tokens.palette.error.dark,
-  '--palette-error-light': tokens.palette.error.light,
-  '--palette-text-primary': tokens.palette.text.primary,
-  '--palette-text-secondary': tokens.palette.text.secondary,
-  '--palette-text-muted': tokens.palette.text.muted,
-  '--palette-background-default': tokens.palette.background.default,
-  '--palette-background-paper': tokens.palette.background.paper,
-  '--palette-background-subtle': tokens.palette.background.subtle,
-  '--palette-background-hover': tokens.palette.background.hover,
-  '--palette-divider': tokens.palette.divider,
-  '--palette-divider-strong': tokens.palette.dividerStrong,
-  '--palette-focus': tokens.palette.focus,
-  '--spacing-1': tokens.spacing[1],
-  '--spacing-2': tokens.spacing[2],
-  '--spacing-3': tokens.spacing[3],
-  '--spacing-4': tokens.spacing[4],
-  '--spacing-5': tokens.spacing[5],
-  '--spacing-6': tokens.spacing[6],
-  '--spacing-8': tokens.spacing[8],
-  '--shape-small': tokens.shape.small,
-  '--shape-medium': tokens.shape.medium,
-  '--shape-large': tokens.shape.large,
-  '--shape-pill': tokens.shape.pill,
-  '--typography-font-family': tokens.typography.fontFamily,
-  '--typography-size-caption': tokens.typography.size.caption,
-  '--typography-size-small': tokens.typography.size.small,
-  '--typography-size-body': tokens.typography.size.body,
-  '--typography-size-section': tokens.typography.size.section,
-  '--typography-size-metric': tokens.typography.size.metric,
-  '--typography-size-metric-small': tokens.typography.size.metricSmall,
-  '--typography-size-timer': tokens.typography.size.timer,
-  '--typography-weight-medium': tokens.typography.weight.medium,
-  '--typography-weight-semibold': tokens.typography.weight.semibold,
-  '--typography-weight-bold': tokens.typography.weight.bold,
-  '--elevation-low': tokens.elevation.low,
   '& *, & *::before, & *::after': { boxSizing: 'border-box' },
-  margin: 0,
+  position: 'relative',
   minHeight: '100vh',
-  background: 'var(--palette-background-default)',
-  color: 'var(--palette-text-primary)',
-  fontFamily: 'var(--typography-font-family)',
-  fontSize: 'var(--typography-size-body)',
+  colorScheme: 'dark',
+  background: `linear-gradient(135deg, ${themeTokens.palette.background.default} 0%, ${themeTokens.palette.background.paper} 48%, ${themeTokens.palette.background.default} 100%)`,
+  color: themeTokens.palette.text.primary,
+  fontFamily: themeTokens.typography.fontFamily,
+  fontSize: themeTokens.typography.size.body,
   lineHeight: 1.5,
   WebkitFontSmoothing: 'antialiased',
+  MozOsxFontSmoothing: 'grayscale',
+  '&::before': {
+    content: '""',
+    position: 'fixed',
+    inset: 0,
+    zIndex: 0,
+    pointerEvents: 'none',
+    background: `linear-gradient(90deg, rgb(78 167 255 / 9%), transparent 34%, ${themeTokens.palette.success.main}14 72%, transparent)`,
+    maskImage: 'linear-gradient(to bottom, black, transparent 76%)'
+  },
+  '& > *': { position: 'relative', zIndex: 1 },
   '& button, & input': { font: 'inherit' },
   '& button:focus-visible, & a:focus-visible, & input:focus-visible': {
-    outline: '3px solid var(--palette-focus)',
-    outlineOffset: '2px'
+    outline: `2px solid ${themeTokens.palette.focus}`,
+    outlineOffset: themeTokens.spacing[1]
   }
 });
 
 export const panelStyle = css({
-  background: 'var(--palette-background-paper)',
-  border: '1px solid var(--palette-divider)',
-  borderRadius: 'var(--shape-large)',
-  boxShadow: 'var(--elevation-low)'
+  background: themeTokens.palette.background.paper,
+  border: `1px solid ${themeTokens.palette.divider}`,
+  borderRadius: themeTokens.shape.large,
+  boxShadow: themeTokens.elevation.low
 });
 
 export const eyebrowStyle = css({
   margin: 0,
-  color: 'var(--palette-text-muted)',
-  fontSize: 'var(--typography-size-caption)',
-  fontWeight: tokens.typography.weight.bold,
-  letterSpacing: '0.09em',
+  color: themeTokens.palette.text.muted,
+  fontSize: themeTokens.typography.size.caption,
+  fontWeight: themeTokens.typography.weight.bold,
+  letterSpacing: '0.08em',
   lineHeight: 1.3,
   textTransform: 'uppercase'
 });

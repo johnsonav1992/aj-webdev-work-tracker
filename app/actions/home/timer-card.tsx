@@ -25,11 +25,9 @@ export const TimerCard = (handle: Handle<TimerCardProps>) => {
         >
           <div>
             <p mix={[eyebrowStyle, css({ marginBottom: `${themeTokens.spacing[1]}` })]}>
-              Timer preview
+              Time tracking
             </p>
-            <h2 mix={css({ margin: 0, fontSize: `${themeTokens.typography.size.body}` })}>
-              What are you working on?
-            </h2>
+            <h2 mix={css({ margin: 0, fontSize: `${themeTokens.typography.size.body}` })}>Timer</h2>
           </div>
           <span
             mix={css({
@@ -37,7 +35,7 @@ export const TimerCard = (handle: Handle<TimerCardProps>) => {
               fontSize: `${themeTokens.typography.size.small}`
             })}
           >
-            This timer does not save entries yet.
+            Timer values are not saved to time entries yet.
           </span>
         </div>
         <div
@@ -106,7 +104,7 @@ const fieldStyle = css({
   minWidth: 0,
   padding: `0 ${themeTokens.spacing[3]}`,
   border: `1px solid ${themeTokens.palette.divider}`,
-  borderRadius: `${themeTokens.shape.small}`,
+  borderRadius: `${themeTokens.shape.large}`,
   background: `${themeTokens.palette.background.paper}`,
   color: `${themeTokens.palette.text.primary}`,
   fontSize: `${themeTokens.typography.size.small}`

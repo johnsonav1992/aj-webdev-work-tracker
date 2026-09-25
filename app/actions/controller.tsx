@@ -4,10 +4,20 @@ import { createController } from 'remix/router';
 
 import { assets } from '../assets.ts';
 import { getDashboardData } from '../db/dashboard.ts';
+import { getProjectsData, type ProjectStatusFilter } from '../db/projects.ts';
 import { routes } from '../routes.ts';
 import { HomePage } from './home-page.tsx';
+import { ProjectsPage } from './projects-page.tsx';
 
-export const rootRoutes = { assets: routes.assets, home: routes.home };
+export const rootRoutes = { assets: routes.assets, home: routes.home, projects: routes.projects };
+
+const projectStatuses: ProjectStatusFilter[] = [
+  'all',
+  'planned',
+  'active',
+  'completed',
+  'archived'
+];
 
 const redirectTo = (context: { url: URL }, path: string) =>
   Response.redirect(new URL(path, context.url), 303);
@@ -22,10 +32,29 @@ export default createController(rootRoutes, {
 
       if (!auth.ok) return redirectTo(context, '/login');
 
-      const data = await getDashboardData(auth.identity.accountId, auth.identity.displayName);
+      const data = await getDashboardData(auth.identity.accountId);
 
       return context.render(
         <HomePage
+          csrfToken={getCsrfToken(context)}
+          data={data}
+        />
+      );
+    },
+    projects: async (context) => {
+      const auth = context.get(Auth);
+
+      if (!auth.ok) return redirectTo(context, '/login');
+
+      const requestedStatus = context.url.searchParams.get('status') ?? 'all';
+      const status = projectStatuses.includes(requestedStatus as ProjectStatusFilter)
+        ? (requestedStatus as ProjectStatusFilter)
+        : 'all';
+      const search = context.url.searchParams.get('search') ?? '';
+      const data = await getProjectsData(auth.identity.accountId, { status, search });
+
+      return context.render(
+        <ProjectsPage
           csrfToken={getCsrfToken(context)}
           data={data}
         />

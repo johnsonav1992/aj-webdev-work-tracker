@@ -1,6 +1,6 @@
 import { database } from './database.ts';
 import { accountSettings, clients, payments, projects, timeEntries } from './schema.ts';
-import type { AccentTone } from '../theme/accent-tone.ts';
+import type { AccentTone } from '../theme/tokens.ts';
 
 const formatDate = (value: string) =>
   new Intl.DateTimeFormat('en-US', {
@@ -38,7 +38,7 @@ const initials = (name: string) =>
 
 const tones: AccentTone[] = ['green', 'blue', 'amber'];
 
-export const getDashboardData = async (accountId: string, displayName: string | null) => {
+export const getDashboardData = async (accountId: string) => {
   const [clientRows, projectRows, entryRows, paymentRows, currencySetting] = await Promise.all([
     database.findMany(clients, {
       where: { account_id: accountId },
@@ -119,7 +119,6 @@ export const getDashboardData = async (accountId: string, displayName: string | 
     : `Across ${clientRows.length} ${clientRows.length === 1 ? 'client' : 'clients'}`;
 
   return {
-    displayName: displayName?.trim().split(/\s+/)[0] || 'there',
     currency,
     metrics: {
       projects: String(projectRows.length),
@@ -128,7 +127,7 @@ export const getDashboardData = async (accountId: string, displayName: string | 
       loggedValue: formatMoney(Math.round(loggedValueMinor), currency),
       loggedValueNote: `${formatDuration(entryRows.reduce((sum, entry) => sum + (entry.duration_seconds ?? 0), 0))} tracked`,
       paymentsThisMonth: formatMoney(paymentsThisMonth, currency),
-      paymentsNote: 'Stripe payment history will be connected later'
+      paymentsNote: 'Stripe sync is not connected'
     },
     projectOptions: projectRows
       .filter((project) => project.status === 'active')

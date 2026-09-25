@@ -2,7 +2,7 @@ import type { Handle } from 'remix/ui';
 import { css } from 'remix/ui';
 
 import { themeTokens } from '../../theme/tokens.ts';
-import type { AccentTone } from '../../theme/accent-tone.ts';
+import type { AccentTone } from '../../theme/tokens.ts';
 import { Avatar } from '../../ui/avatar.tsx';
 
 export interface ClientRowProps {

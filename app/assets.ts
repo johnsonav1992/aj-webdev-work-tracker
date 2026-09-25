@@ -9,13 +9,7 @@ const isHmr = Boolean(isDevelopment && process.env.REMIX_NODE_HMR);
 export const assets = createAssetServer({
   basePath: '/assets',
   rootDir,
-
-  allowFiles: [
-    'app/routes.ts',
-    'app/theme/tokens.ts',
-    'app/ui/**',
-    'app/**/public/**'
-  ],
+  allowFiles: ['app/routes.ts', 'app/theme/**', 'app/ui/**', 'app/**/public/**'],
   allowPackages: ['remix'],
   denyFiles: ['app/**/*.test.*'],
   sourceMaps: isDevelopment ? 'external' : undefined,

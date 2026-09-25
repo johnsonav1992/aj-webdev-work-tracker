@@ -25,17 +25,14 @@ const errorMessage = (error: LoginPageProps['error']) => {
 
 export const LoginPage = (handle: Handle<LoginPageProps>) => {
   return () => (
-    <AuthLayout
-      title='Welcome back'
-      description='Sign in to your private work tracker.'
-    >
+    <AuthLayout title='Sign in'>
       {errorMessage(handle.props.error) ? (
         <p
           role='alert'
           mix={css({
             margin: `0 0 ${themeTokens.spacing[4]}`,
             padding: `${themeTokens.spacing[2]} ${themeTokens.spacing[3]}`,
-            borderRadius: `${themeTokens.shape.small}`,
+            borderRadius: `${themeTokens.shape.large}`,
             background: `${themeTokens.palette.error.light}`,
             color: `${themeTokens.palette.error.dark}`
           })}
@@ -97,7 +94,7 @@ export const LoginPage = (handle: Handle<LoginPageProps>) => {
           textAlign: 'center'
         })}
       >
-        New to the tracker? <a href='/signup'>Create your account</a>
+        Need an account? <a href='/signup'>Create one</a>
       </p>
     </AuthLayout>
   );

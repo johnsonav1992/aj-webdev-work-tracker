@@ -29,7 +29,7 @@ export const TextField = (handle: Handle<TextFieldProps>) => {
       minHeight: '42px',
       padding: `${themeTokens.spacing[2]} ${themeTokens.spacing[3]}`,
       border: `1px solid ${themeTokens.palette.dividerStrong}`,
-      borderRadius: `${themeTokens.shape.small}`,
+      borderRadius: `${themeTokens.shape.large}`,
       background: `${themeTokens.palette.background.paper}`,
       color: `${themeTokens.palette.text.primary}`
     })

@@ -2,7 +2,7 @@ import type { Handle } from 'remix/ui';
 import { css } from 'remix/ui';
 
 import { themeTokens } from '../theme/tokens.ts';
-import type { AccentTone } from '../theme/accent-tone.ts';
+import type { AccentTone } from '../theme/tokens.ts';
 
 export interface AvatarProps {
   initials: string;
@@ -18,9 +18,9 @@ export const Avatar = (handle: Handle<AvatarProps>) => {
       amber: `${themeTokens.palette.warning.light}`
     }[tint];
     const color = {
-      green: `${themeTokens.palette.success.dark}`,
+      green: `${themeTokens.palette.success.main}`,
       blue: `${themeTokens.palette.info.dark}`,
-      amber: `${themeTokens.palette.warning.dark}`
+      amber: `${themeTokens.palette.warning.main}`
     }[tint];
 
     return (
@@ -32,7 +32,7 @@ export const Avatar = (handle: Handle<AvatarProps>) => {
           flex: '0 0 36px',
           display: 'grid',
           placeItems: 'center',
-          borderRadius: `${themeTokens.shape.medium}`,
+          borderRadius: `${themeTokens.shape.large}`,
           background,
           color,
           fontSize: `${themeTokens.typography.size.small}`,

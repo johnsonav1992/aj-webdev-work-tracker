@@ -2,7 +2,7 @@ import type { Handle, RemixNode } from 'remix/ui';
 import { css } from 'remix/ui';
 
 import { panelStyle, themeTokens } from '../../theme/tokens.ts';
-import type { AccentTone } from '../../theme/accent-tone.ts';
+import type { AccentTone } from '../../theme/tokens.ts';
 
 export interface MetricProps {
   label: string;
@@ -15,7 +15,7 @@ export interface MetricProps {
 export const Metric = (handle: Handle<MetricProps>) => {
   return () => {
     const iconColor = {
-      green: `${themeTokens.palette.success.dark}`,
+      green: `${themeTokens.palette.success.main}`,
       blue: `${themeTokens.palette.info.main}`,
       amber: `${themeTokens.palette.warning.main}`
     }[handle.props.tone];
@@ -62,7 +62,7 @@ export const Metric = (handle: Handle<MetricProps>) => {
               flex: '0 0 28px',
               display: 'grid',
               placeItems: 'center',
-              borderRadius: `${themeTokens.shape.small}`,
+              borderRadius: `${themeTokens.shape.large}`,
               background: iconBackground,
               color: iconColor,
               '@media (max-width: 480px)': { display: 'none' }

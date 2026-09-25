@@ -14,11 +14,11 @@ export const StatusBadge = (handle: Handle<StatusBadgeProps>) => {
   return () => {
     const colors = {
       green: {
-        color: `${themeTokens.palette.success.dark}`,
+        color: `${themeTokens.palette.success.main}`,
         background: `${themeTokens.palette.success.light}`
       },
       amber: {
-        color: `${themeTokens.palette.warning.dark}`,
+        color: `${themeTokens.palette.warning.main}`,
         background: `${themeTokens.palette.warning.light}`
       },
       blue: {

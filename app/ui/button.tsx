@@ -21,18 +21,18 @@ const variants = {
     alignItems: 'center',
     justifyContent: 'center',
     gap: `${themeTokens.spacing[2]}`,
-    minHeight: '38px',
-    padding: `${themeTokens.spacing[2]} ${themeTokens.spacing[3]}`,
-    border: `1px solid ${themeTokens.palette.divider}`,
-    borderRadius: `${themeTokens.shape.small}`,
-    background: `${themeTokens.palette.background.paper}`,
+    minHeight: '36px',
+    padding: `0 ${themeTokens.spacing[4]}`,
+    border: `1px solid ${themeTokens.palette.dividerStrong}`,
+    borderRadius: `${themeTokens.shape.large}`,
+    background: `${themeTokens.palette.background.subtle}`,
     color: `${themeTokens.palette.text.primary}`,
     fontWeight: `${themeTokens.typography.weight.semibold}`,
     textDecoration: 'none',
     cursor: 'pointer',
     transition: 'background 140ms ease, border-color 140ms ease',
     '&:hover': {
-      background: `${themeTokens.palette.background.subtle}`,
+      background: `${themeTokens.palette.background.hover}`,
       borderColor: `${themeTokens.palette.dividerStrong}`
     }
   }),
@@ -42,21 +42,26 @@ const variants = {
     alignItems: 'center',
     justifyContent: 'center',
     gap: `${themeTokens.spacing[2]}`,
-    minHeight: '40px',
-    padding: '9px 14px',
+    minHeight: '36px',
+    padding: `0 ${themeTokens.spacing[5]}`,
     border: `1px solid ${themeTokens.palette.primary.main}`,
-    borderRadius: `${themeTokens.shape.small}`,
+    borderRadius: `${themeTokens.shape.large}`,
     background: `${themeTokens.palette.primary.main}`,
     color: `${themeTokens.palette.primary.contrastText}`,
-    fontWeight: `${themeTokens.typography.weight.semibold}`,
+    fontWeight: `${themeTokens.typography.weight.bold}`,
     textDecoration: 'none',
+    boxShadow: themeTokens.elevation.primaryAction,
     cursor: 'pointer',
     transition: 'background 140ms ease, border-color 140ms ease, transform 140ms ease',
     '&:hover': {
       background: `${themeTokens.palette.primary.dark}`,
       borderColor: `${themeTokens.palette.primary.dark}`
     },
-    '&:active': { transform: 'translateY(1px)' }
+    '&:active': {
+      background: `${themeTokens.palette.primary.active}`,
+      borderColor: `${themeTokens.palette.primary.active}`,
+      transform: 'translateY(1px)'
+    }
   })
 };
 

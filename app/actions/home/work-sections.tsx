@@ -6,6 +6,7 @@ import { ArrowIcon } from '../../ui/icons/arrow-icon.tsx';
 import { Panel } from '../../ui/panel.tsx';
 import { Button } from '../../ui/button.tsx';
 import { SectionHeading } from '../../ui/section-heading.tsx';
+import { routes } from '../../routes.ts';
 import type { HomeDashboardData } from './dashboard-types.ts';
 import { ProjectRow } from './project-row.tsx';
 import { TimeRow } from './time-row.tsx';
@@ -18,11 +19,11 @@ export const WorkSections = (handle: Handle<WorkSectionsProps>) => {
       <Panel>
         <div mix={cardPaddingStyle}>
           <SectionHeading
-            eyebrow='Your work'
+            eyebrow='Workspace'
             title='Projects'
             action={
               <Button
-                href='#projects'
+                href={routes.projects.href()}
                 variant='quiet'
               >
                 All projects <ArrowIcon />
@@ -38,7 +39,7 @@ export const WorkSections = (handle: Handle<WorkSectionsProps>) => {
                 />
               ))
             ) : (
-              <p mix={emptyStateStyle}>Projects you add will appear here.</p>
+              <p mix={emptyStateStyle}>No projects yet.</p>
             )}
           </div>
         </div>
@@ -47,8 +48,8 @@ export const WorkSections = (handle: Handle<WorkSectionsProps>) => {
       <Panel>
         <div mix={cardPaddingStyle}>
           <SectionHeading
-            eyebrow='Latest entries'
-            title='Recent time'
+            eyebrow='Time tracking'
+            title='Recent entries'
             action={
               <Button
                 href='#time-tracking'
@@ -66,7 +67,7 @@ export const WorkSections = (handle: Handle<WorkSectionsProps>) => {
               />
             ))
           ) : (
-            <p mix={emptyStateStyle}>Logged time will appear here.</p>
+            <p mix={emptyStateStyle}>No time entries yet.</p>
           )}
         </div>
       </Panel>

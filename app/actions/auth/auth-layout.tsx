@@ -3,16 +3,16 @@ import { css } from 'remix/ui';
 
 import { theme, themeTokens, panelStyle } from '../../theme/tokens.ts';
 import { Document } from '../document.tsx';
+import { BrandMark } from '../brand-mark.tsx';
 
 export interface AuthLayoutProps {
   title: string;
-  description: string;
   children: RemixNode;
 }
 
 export const AuthLayout = (handle: Handle<AuthLayoutProps>) => {
   return () => (
-    <Document title={`${handle.props.title} · AJ Workbench`}>
+    <Document title={`${handle.props.title} · AJ Webdev Work Tracker`}>
       <div mix={theme}>
         <main
           mix={css({
@@ -26,7 +26,9 @@ export const AuthLayout = (handle: Handle<AuthLayoutProps>) => {
             <a
               href='/'
               mix={css({
-                display: 'inline-flex',
+                display: 'flex',
+                alignItems: 'center',
+                gap: `${themeTokens.spacing[3]}`,
                 marginBottom: `${themeTokens.spacing[4]}`,
                 color: `${themeTokens.palette.text.secondary}`,
                 fontSize: `${themeTokens.typography.size.small}`,
@@ -34,7 +36,8 @@ export const AuthLayout = (handle: Handle<AuthLayoutProps>) => {
                 textDecoration: 'none'
               })}
             >
-              AJ Workbench
+              <BrandMark size='medium' />
+              <span>AJ Webdev Work Tracker</span>
             </a>
             <section
               mix={[
@@ -55,14 +58,6 @@ export const AuthLayout = (handle: Handle<AuthLayoutProps>) => {
               >
                 {handle.props.title}
               </h1>
-              <p
-                mix={css({
-                  margin: `0 0 ${themeTokens.spacing[5]}`,
-                  color: `${themeTokens.palette.text.secondary}`
-                })}
-              >
-                {handle.props.description}
-              </p>
               {handle.props.children}
             </section>
           </div>

@@ -2,7 +2,7 @@ import type { Handle } from 'remix/ui';
 import { css } from 'remix/ui';
 
 import { themeTokens } from '../../theme/tokens.ts';
-import type { AccentTone } from '../../theme/accent-tone.ts';
+import type { AccentTone } from '../../theme/tokens.ts';
 import { ClockIcon } from '../../ui/icons/clock-icon.tsx';
 
 export interface TimeRowProps {
@@ -21,7 +21,7 @@ export const TimeRow = (handle: Handle<TimeRowProps>) => {
       amber: `${themeTokens.palette.warning.light}`
     }[handle.props.tint];
     const color = {
-      green: `${themeTokens.palette.success.dark}`,
+      green: `${themeTokens.palette.success.main}`,
       blue: `${themeTokens.palette.info.main}`,
       amber: `${themeTokens.palette.warning.main}`
     }[handle.props.tint];
@@ -43,7 +43,7 @@ export const TimeRow = (handle: Handle<TimeRowProps>) => {
             width: '32px',
             height: '32px',
             flex: '0 0 32px',
-            borderRadius: `${themeTokens.shape.medium}`,
+            borderRadius: `${themeTokens.shape.large}`,
             background,
             color
           })}

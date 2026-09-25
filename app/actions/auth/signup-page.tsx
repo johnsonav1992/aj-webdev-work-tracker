@@ -12,10 +12,7 @@ export interface SignupPageProps {
 
 export const SignupPage = (handle: Handle<SignupPageProps>) => {
   return () => (
-    <AuthLayout
-      title='Create your account'
-      description='Start your private work tracker.'
-    >
+    <AuthLayout title='Create your account'>
       <Button
         href='/auth/google?returnTo=%2Fsignup'
         data-rmx-document
@@ -38,7 +35,7 @@ export const SignupPage = (handle: Handle<SignupPageProps>) => {
           textAlign: 'center'
         })}
       >
-        Already have an account? <a href='/login'>Sign in</a>
+        Have an account? <a href='/login'>Sign in</a>
       </p>
     </AuthLayout>
   );
