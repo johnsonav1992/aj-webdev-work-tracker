@@ -1,3 +1,4 @@
+import type { Handle } from 'remix/ui';
 import { css } from 'remix/ui';
 import {
   eyebrowStyle,
@@ -26,7 +27,7 @@ import { TimeRow } from './home/time-row.tsx';
 import { Topbar } from './home/topbar.tsx';
 import { TimerWidget } from './public/timer-widget.tsx';
 
-export const HomePage = () => {
+export const HomePage = (handle: Handle<{ csrfToken: string }>) => {
   return () => (
     <Document title='Overview · AJ Workbench'>
       <div mix={theme}>
@@ -48,7 +49,7 @@ export const HomePage = () => {
               margin: '0 auto'
             })}
           >
-            <Topbar />
+            <Topbar csrfToken={handle.props.csrfToken} />
             <div
               mix={css({
                 display: 'flex',
