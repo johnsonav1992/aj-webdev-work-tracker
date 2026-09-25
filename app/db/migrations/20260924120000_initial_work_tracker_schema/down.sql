@@ -1,0 +1,9 @@
+drop table if exists payments;
+drop table if exists time_entries;
+drop table if exists projects;
+drop table if exists clients;
+drop table if exists account_settings;
+drop table if exists auth_identities;
+drop table if exists account_members;
+drop table if exists users;
+drop table if exists accounts;

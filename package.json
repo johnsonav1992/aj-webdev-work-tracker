@@ -11,7 +11,10 @@
     "format": "oxfmt",
     "format:check": "oxfmt --check",
     "check": "npm run format:check && npm run lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "db:status": "remix db status",
+    "db:migrate": "remix db migrate",
+    "db:rollback": "remix db rollback"
   },
   "dependencies": {
     "remix": "^3.0.0-rc.3"

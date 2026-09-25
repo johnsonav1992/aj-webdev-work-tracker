@@ -10,7 +10,9 @@ A private, dependable workspace for running a freelance web development business
 - One owner account initially, with account ownership structured to support additional users later.
 - Client records and projects, including active work and projects completed before the app existed.
 - An agreed hourly rate per client. Time entries are associated with a project and preserve the rate used when recorded, so later rate changes do not rewrite historical totals.
+- Client rates are the source of truth for their projects; projects do not override a client rate in the initial model.
 - A real-time timer and manual time entry. Past work must be enterable manually with its original date; no automatic import is required.
+- Manual historical time is entered as a duration; timer entries may additionally retain their exact start and end instants.
 - Manual payment records associated with a client and optionally a project, including amount, date, and payment method.
 - A shared theme and internal component library.
 - Local SQLite storage for development and the initial app. Turso is a future hosting direction, documented below.
@@ -41,6 +43,7 @@ The signed-in landing page should summarize active work, recently tracked time, 
 - Projects linked to clients, including status, notes, and start/completion dates.
 - Time entries linked to projects, with start/end or manually entered duration, notes, original work date, and an hourly-rate snapshot.
 - Payments linked to clients and optionally projects, with amount, date, method, and notes. Currency must be explicit before real financial records are entered.
+- Currency is stored explicitly on money records, with USD as the initial account/client default.
 
 ## Database and Turso path
 
@@ -52,10 +55,8 @@ The signed-in landing page should summarize active work, recently tracked time, 
 
 ## Still to decide
 
-- Default currency, timezone, and date/number formats.
-- Whether a project may override its client's agreed hourly rate.
+- Timezone and date/number display formats.
 - Timer autosave, editing, rounding, and interruption behavior.
-- Whether past time should be entered as daily durations, exact start/end times, or either.
 - Hosting and Turso connection details when the app is ready to deploy.
 
 ## Current implementation boundary
