@@ -2,11 +2,11 @@ import type { Handle } from 'remix/ui';
 import { css } from 'remix/ui';
 
 import { themeTokens } from '../../theme/tokens.ts';
+import type { AccentTone } from '../../theme/accent-tone.ts';
 import { Avatar } from '../../ui/avatar.tsx';
 import { StatusBadge } from '../../ui/status-badge.tsx';
 import { Progress } from './progress.tsx';
 
-type Tone = 'green' | 'blue' | 'amber';
 type ProjectStatus = 'planned' | 'active' | 'completed' | 'archived';
 
 const statusTone: Record<ProjectStatus, 'green' | 'amber' | 'blue' | 'gray'> = {
@@ -16,18 +16,18 @@ const statusTone: Record<ProjectStatus, 'green' | 'amber' | 'blue' | 'gray'> = {
   archived: 'gray'
 };
 
-export const ProjectRow = (
-  handle: Handle<{
-    initials: string;
-    name: string;
-    client: string;
-    progress: number | null;
-    timeSummary: string;
-    status: ProjectStatus;
-    rate: string;
-    tone: Tone;
-  }>
-) => {
+export interface ProjectRowProps {
+  initials: string;
+  name: string;
+  client: string;
+  progress: number | null;
+  timeSummary: string;
+  status: ProjectStatus;
+  rate: string;
+  tone: AccentTone;
+}
+
+export const ProjectRow = (handle: Handle<ProjectRowProps>) => {
   return () => {
     const hasProgress = handle.props.progress !== null;
 
@@ -49,7 +49,10 @@ export const ProjectRow = (
           }
         })}
       >
-        <Avatar initials={handle.props.initials} tint={handle.props.tone} />
+        <Avatar
+          initials={handle.props.initials}
+          tint={handle.props.tone}
+        />
         <div mix={css({ minWidth: 0 })}>
           <div
             mix={css({

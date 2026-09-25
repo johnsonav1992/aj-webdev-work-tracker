@@ -2,12 +2,17 @@ import type { Handle, RemixNode } from 'remix/ui';
 import { css } from 'remix/ui';
 
 import { panelStyle, themeTokens } from '../../theme/tokens.ts';
+import type { AccentTone } from '../../theme/accent-tone.ts';
 
-type Tone = 'green' | 'blue' | 'amber';
+export interface MetricProps {
+  label: string;
+  value: string;
+  note: string;
+  icon: RemixNode;
+  tone: AccentTone;
+}
 
-export const Metric = (
-  handle: Handle<{ label: string; value: string; note: string; icon: RemixNode; tone: Tone }>
-) => {
+export const Metric = (handle: Handle<MetricProps>) => {
   return () => {
     const iconColor = {
       green: `${themeTokens.palette.success.dark}`,

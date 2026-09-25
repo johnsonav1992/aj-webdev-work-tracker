@@ -19,10 +19,17 @@ export default createController(rootRoutes, {
     },
     home: async (context) => {
       const auth = context.get(Auth);
+
       if (!auth.ok) return redirectTo(context, '/login');
 
       const data = await getDashboardData(auth.identity.accountId, auth.identity.displayName);
-      return context.render(<HomePage csrfToken={getCsrfToken(context)} data={data} />);
+
+      return context.render(
+        <HomePage
+          csrfToken={getCsrfToken(context)}
+          data={data}
+        />
+      );
     }
   }
 });

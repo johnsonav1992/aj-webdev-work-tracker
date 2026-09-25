@@ -1,10 +1,15 @@
 import type { Handle } from 'remix/ui';
 import { css } from 'remix/ui';
 
-import { quietButtonStyle, themeTokens } from '../../theme/tokens.ts';
+import { themeTokens } from '../../theme/tokens.ts';
 import { BellIcon } from '../../ui/icons/bell-icon.tsx';
+import { Button } from '../../ui/button.tsx';
 
-export const Topbar = (handle: Handle<{ csrfToken: string }>) => {
+export interface TopbarProps {
+  csrfToken: string;
+}
+
+export const Topbar = (handle: Handle<TopbarProps>) => {
   return () => (
     <header
       mix={css({
@@ -63,11 +68,22 @@ export const Topbar = (handle: Handle<{ csrfToken: string }>) => {
         >
           <BellIcon />
         </button>
-        <form method='post' action='/logout' data-rmx-document>
-          <input type='hidden' name='_csrf' value={handle.props.csrfToken} />
-          <button type='submit' mix={quietButtonStyle}>
+        <form
+          method='post'
+          action='/logout'
+          data-rmx-document
+        >
+          <input
+            type='hidden'
+            name='_csrf'
+            value={handle.props.csrfToken}
+          />
+          <Button
+            type='submit'
+            variant='quiet'
+          >
             Sign out
-          </button>
+          </Button>
         </form>
       </div>
     </header>

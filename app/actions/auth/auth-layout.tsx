@@ -1,8 +1,8 @@
 import type { Handle, RemixNode } from 'remix/ui';
 import { css } from 'remix/ui';
 
-import { theme, themeTokens, panelStyle } from '../theme/tokens.ts';
-import { Document } from '../actions/document.tsx';
+import { theme, themeTokens, panelStyle } from '../../theme/tokens.ts';
+import { Document } from '../document.tsx';
 
 export interface AuthLayoutProps {
   title: string;

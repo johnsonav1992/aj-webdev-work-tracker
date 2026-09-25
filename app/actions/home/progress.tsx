@@ -3,7 +3,11 @@ import { css } from 'remix/ui';
 
 import { themeTokens } from '../../theme/tokens.ts';
 
-export const Progress = (handle: Handle<{ value: number }>) => {
+export interface ProgressProps {
+  value: number;
+}
+
+export const Progress = (handle: Handle<ProgressProps>) => {
   return () => (
     <div
       role='progressbar'

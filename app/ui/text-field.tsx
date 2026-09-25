@@ -47,11 +47,20 @@ export const TextField = (handle: Handle<TextFieldProps>) => {
     >
       <span>{handle.props.label}</span>
       {handle.props.type === 'email' ? (
-        <input type='email' {...sharedInputProps} />
+        <input
+          type='email'
+          {...sharedInputProps}
+        />
       ) : handle.props.type === 'password' ? (
-        <input type='password' {...sharedInputProps} />
+        <input
+          type='password'
+          {...sharedInputProps}
+        />
       ) : (
-        <input type='text' {...sharedInputProps} />
+        <input
+          type='text'
+          {...sharedInputProps}
+        />
       )}
     </label>
   );

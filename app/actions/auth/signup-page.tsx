@@ -1,8 +1,9 @@
 import type { Handle } from 'remix/ui';
 import { css } from 'remix/ui';
 
-import { quietButtonStyle, themeTokens } from '../../theme/tokens.ts';
-import { AuthLayout } from '../../ui/auth-layout.tsx';
+import { themeTokens } from '../../theme/tokens.ts';
+import { AuthLayout } from './auth-layout.tsx';
+import { Button } from '../../ui/button.tsx';
 import { GoogleIcon } from '../../ui/icons/google-icon.tsx';
 
 export interface SignupPageProps {
@@ -11,15 +12,19 @@ export interface SignupPageProps {
 
 export const SignupPage = (handle: Handle<SignupPageProps>) => {
   return () => (
-    <AuthLayout title='Create your account' description='Start your private work tracker.'>
-      <a
+    <AuthLayout
+      title='Create your account'
+      description='Start your private work tracker.'
+    >
+      <Button
         href='/auth/google?returnTo=%2Fsignup'
         data-rmx-document
-        mix={[quietButtonStyle, css({ width: '100%', justifyContent: 'center' })]}
+        variant='quiet'
+        mix={css({ width: '100%' })}
       >
         <GoogleIcon />
         Sign up with Google
-      </a>
+      </Button>
       {!handle.props.googleEnabled ? (
         <p mix={css({ margin: 0, color: `${themeTokens.palette.text.secondary}` })}>
           Google sign-up is not configured yet. Set the Google OAuth credentials and try again.

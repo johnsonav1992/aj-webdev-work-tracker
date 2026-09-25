@@ -12,9 +12,21 @@ export const MoreIcon = () => {
       stroke-linejoin='round'
       mix={iconStyle}
     >
-      <circle cx='5' cy='12' r='1' />
-      <circle cx='12' cy='12' r='1' />
-      <circle cx='19' cy='12' r='1' />
+      <circle
+        cx='5'
+        cy='12'
+        r='1'
+      />
+      <circle
+        cx='12'
+        cy='12'
+        r='1'
+      />
+      <circle
+        cx='19'
+        cy='12'
+        r='1'
+      />
     </svg>
   );
 };

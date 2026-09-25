@@ -38,6 +38,7 @@ export const loginController = createController(routes.auth.login, {
   actions: {
     index: (context) => {
       if (context.get(Auth).ok) return redirectTo(context, '/');
+
       return context.render(
         <LoginPage
           csrfToken={getCsrfToken(context)}
@@ -48,9 +49,11 @@ export const loginController = createController(routes.auth.login, {
     },
     action: async (context) => {
       const user = await verifyCredentials(passwordAuthProvider, context);
+
       if (!user) return redirectTo(context, '/login?error=invalid-credentials');
 
       completeSession(context, user);
+
       return redirectTo(context, '/');
     }
   }
@@ -60,6 +63,7 @@ export const signupController = createController(routes.auth.signup, {
   actions: {
     index: (context) => {
       if (context.get(Auth).ok) return redirectTo(context, '/');
+
       return context.render(<SignupPage googleEnabled={googleAuthProvider !== null} />);
     },
     action: (context) => redirectTo(context, '/signup')
@@ -70,6 +74,7 @@ export const logoutAction = (context: AppContext) => {
   const session = context.get(Session);
   session.unset('auth');
   session.regenerateId(true);
+
   return redirectTo(context, '/login');
 };
 
@@ -77,6 +82,7 @@ export const googleController = createController(routes.auth.google, {
   actions: {
     start: (context) => {
       if (!googleAuthProvider) return redirectTo(context, '/login?error=google-unavailable');
+
       return startExternalAuth(googleAuthProvider, context, {
         returnTo: context.url.searchParams.get('returnTo') ?? '/'
       });
@@ -112,6 +118,7 @@ export const googleController = createController(routes.auth.google, {
           target?.origin === appOrigin.origin && target.pathname !== '/signup'
             ? target.pathname
             : '/';
+
         return redirectTo(context, safeReturnTo);
       } catch (error) {
         const details =
@@ -125,6 +132,7 @@ export const googleController = createController(routes.auth.google, {
                 .slice(0, 200)
             : 'unknown error';
         console.error(`[google-auth] Callback failed at ${stage}: ${details}`);
+
         return redirectTo(context, '/login?error=google-failed');
       }
     }

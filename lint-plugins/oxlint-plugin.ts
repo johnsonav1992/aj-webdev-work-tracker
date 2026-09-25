@@ -25,6 +25,8 @@ type PropertyNode = Extract<
   Parameters<NonNullable<RuleVisitor['Property']>>[0],
   { type: 'Property' }
 >;
+type ReturnStatementNode = Parameters<NonNullable<RuleVisitor['ReturnStatement']>>[0];
+type IfStatementNode = Parameters<NonNullable<RuleVisitor['IfStatement']>>[0];
 
 const blockStatements = new Set([
   'IfStatement',
@@ -58,7 +60,7 @@ function hasBlockBody(node: ControlFlowNode): boolean {
   }
 }
 
-function getStatementSiblings(node: ControlFlowNode) {
+function getStatementSiblings(node: AnyNode) {
   const parent = node.parent;
   if (!parent) return null;
 
@@ -123,6 +125,53 @@ const paddingAroundMultilineBlocks = {
     }
 
     return Object.fromEntries([...blockStatements].map((type) => [type, checkPadding]));
+  }
+};
+
+const blankLineBeforeReturn = {
+  meta: {
+    type: 'layout',
+    fixable: 'whitespace',
+    docs: {
+      description: 'Require a blank line before return statements and early returns'
+    },
+    schema: [],
+    messages: {
+      blankLine: 'Add a blank line before this return statement.'
+    }
+  },
+  create(context: RuleContext): RuleVisitor {
+    const { sourceCode } = context;
+    const lines = sourceCode.lines;
+    const newline = sourceCode.text.includes('\r\n') ? '\r\n' : '\n';
+
+    function checkBefore(node: AnyNode) {
+      const siblings = getStatementSiblings(node);
+      if (!siblings) return;
+
+      const previous = siblings.statements[siblings.index - 1];
+      if (!previous || hasBlankLineBetween(lines, previous.loc.end.line, node.loc.start.line))
+        return;
+
+      const lineStart = node.range[0] - node.loc.start.column;
+      context.report({
+        node,
+        messageId: 'blankLine',
+        fix: (fixer) => fixer.insertTextBeforeRange([lineStart, lineStart], newline)
+      });
+    }
+
+    return {
+      ReturnStatement(node: ReturnStatementNode) {
+        const parent = node.parent;
+        if (parent?.type === 'IfStatement') {
+          checkBefore(parent as IfStatementNode);
+          return;
+        }
+
+        checkBefore(node);
+      }
+    };
   }
 };
 
@@ -242,8 +291,9 @@ export default {
   meta: { name: 'aj-webdev-work-tracker' },
   rules: {
     'padding-around-multiline-blocks': paddingAroundMultilineBlocks,
-    'only-arrow-functions': onlyArrowFunctions
+    'only-arrow-functions': onlyArrowFunctions,
+    'blank-line-before-return': blankLineBeforeReturn
   }
 };
 
-export { onlyArrowFunctions, paddingAroundMultilineBlocks };
+export { blankLineBeforeReturn, onlyArrowFunctions, paddingAroundMultilineBlocks };

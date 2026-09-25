@@ -1,29 +1,7 @@
 import { clientEntry, css, type Handle, on } from 'remix/ui';
 
 import { themeTokens } from '../../theme/tokens.ts';
-
-const timerButtonStyle = css({
-  appearance: 'none',
-  display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  gap: `${themeTokens.spacing[2]}`,
-  minHeight: '40px',
-  padding: '9px 14px',
-  border: `1px solid ${themeTokens.palette.primary.main}`,
-  borderRadius: `${themeTokens.shape.small}`,
-  background: `${themeTokens.palette.primary.main}`,
-  color: `${themeTokens.palette.primary.contrastText}`,
-  fontWeight: `${themeTokens.typography.weight.semibold}`,
-  textDecoration: 'none',
-  cursor: 'pointer',
-  transition: 'background 140ms ease, border-color 140ms ease, transform 140ms ease',
-  '&:hover': {
-    background: `${themeTokens.palette.primary.dark}`,
-    borderColor: `${themeTokens.palette.primary.dark}`
-  },
-  '&:active': { transform: 'translateY(1px)' }
-});
+import { Button } from '../../ui/button.tsx';
 
 export const TimerWidget = clientEntry(`${import.meta.url}#TimerWidget`, (handle: Handle) => {
   let elapsed = 0;
@@ -63,30 +41,28 @@ export const TimerWidget = clientEntry(`${import.meta.url}#TimerWidget`, (handle
         >
           {formatDuration(currentElapsed)}
         </div>
-        <button
+        <Button
           type='button'
           aria-label={running ? 'Pause timer' : 'Start timer'}
-          mix={[
-            timerButtonStyle,
-            on('click', () => {
-              if (running && startedAt !== null) {
-                elapsed += Date.now() - startedAt;
-                startedAt = null;
-                running = false;
-                clearTicker();
-              } else {
-                startedAt = Date.now();
-                running = true;
-                interval = setInterval(() => handle.update(), 1000);
-              }
+          variant='primary'
+          mix={on('click', () => {
+            if (running && startedAt !== null) {
+              elapsed += Date.now() - startedAt;
+              startedAt = null;
+              running = false;
+              clearTicker();
+            } else {
+              startedAt = Date.now();
+              running = true;
+              interval = setInterval(() => handle.update(), 1000);
+            }
 
-              handle.update();
-            })
-          ]}
+            handle.update();
+          })}
         >
           <span aria-hidden='true'>{running ? 'Ⅱ' : '▶'}</span>
           {running ? 'Pause' : elapsed > 0 ? 'Resume' : 'Start timer'}
-        </button>
+        </Button>
         {running ? (
           <span
             mix={css({
@@ -120,5 +96,6 @@ const formatDuration = (milliseconds: number) => {
   const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = totalSeconds % 60;
+
   return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 };

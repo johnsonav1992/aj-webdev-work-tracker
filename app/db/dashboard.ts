@@ -1,7 +1,6 @@
 import { database } from './database.ts';
 import { accountSettings, clients, payments, projects, timeEntries } from './schema.ts';
-
-type Tone = 'green' | 'blue' | 'amber';
+import type { AccentTone } from '../theme/accent-tone.ts';
 
 const formatDate = (value: string) =>
   new Intl.DateTimeFormat('en-US', {
@@ -21,8 +20,11 @@ const formatDuration = (seconds: number) => {
   const totalMinutes = Math.round(seconds / 60);
   const hours = Math.floor(totalMinutes / 60);
   const minutes = totalMinutes % 60;
+
   if (hours === 0) return `${minutes}m`;
+
   if (minutes === 0) return `${hours}h`;
+
   return `${hours}h ${minutes}m`;
 };
 
@@ -34,7 +36,7 @@ const initials = (name: string) =>
     .map((part) => part[0]?.toUpperCase() ?? '')
     .join('');
 
-const tones: Tone[] = ['green', 'blue', 'amber'];
+const tones: AccentTone[] = ['green', 'blue', 'amber'];
 
 export const getDashboardData = async (accountId: string, displayName: string | null) => {
   const [clientRows, projectRows, entryRows, paymentRows, currencySetting] = await Promise.all([
@@ -164,6 +166,7 @@ export const getDashboardData = async (accountId: string, displayName: string | 
     timeEntries: entryRows.slice(0, 5).map((entry, index) => {
       const project = projectsById.get(entry.project_id);
       const client = project ? clientsById.get(project.client_id) : undefined;
+
       return {
         id: entry.id,
         title: entry.notes?.trim() || 'Work session',

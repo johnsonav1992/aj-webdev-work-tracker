@@ -12,7 +12,13 @@ export const PaymentsIcon = () => {
       stroke-linejoin='round'
       mix={iconStyle}
     >
-      <rect x='3' y='5' width='18' height='14' rx='2' />
+      <rect
+        x='3'
+        y='5'
+        width='18'
+        height='14'
+        rx='2'
+      />
       <path d='M3 10h18M7 15h3' />
     </svg>
   );

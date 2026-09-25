@@ -14,7 +14,7 @@ export const tokens = {
     dividerStrong: '#cbd4cd',
     focus: '#9ac7ad'
   },
-  spacing: { 0: '0px', 1: '4px', 2: '8px', 3: '12px', 4: '16px', 5: '24px', 6: '32px', 8: '48px' },
+  spacing: { 1: '4px', 2: '8px', 3: '12px', 4: '16px', 5: '24px', 6: '32px', 8: '48px' },
   shape: { small: '9px', medium: '12px', large: '14px', pill: '999px' },
   typography: {
     fontFamily:
@@ -28,7 +28,7 @@ export const tokens = {
       metricSmall: '23px',
       timer: '36px'
     },
-    weight: { regular: 400, medium: 550, semibold: 600, bold: 700 }
+    weight: { medium: 550, semibold: 600, bold: 700 }
   },
   elevation: { low: '0 2px 7px rgb(24 35 31 / 3%)' }
 } as const;
@@ -80,7 +80,6 @@ export const themeTokens = {
     focus: 'var(--palette-focus)'
   },
   spacing: {
-    0: '0px',
     1: 'var(--spacing-1)',
     2: 'var(--spacing-2)',
     3: 'var(--spacing-3)',
@@ -185,51 +184,6 @@ export const panelStyle = css({
   border: '1px solid var(--palette-divider)',
   borderRadius: 'var(--shape-large)',
   boxShadow: 'var(--elevation-low)'
-});
-
-export const quietButtonStyle = css({
-  appearance: 'none',
-  display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  gap: 'var(--spacing-2)',
-  minHeight: '38px',
-  padding: 'var(--spacing-2) var(--spacing-3)',
-  border: '1px solid var(--palette-divider)',
-  borderRadius: 'var(--shape-small)',
-  background: 'var(--palette-background-paper)',
-  color: 'var(--palette-text-primary)',
-  fontWeight: tokens.typography.weight.semibold,
-  textDecoration: 'none',
-  cursor: 'pointer',
-  transition: 'background 140ms ease, border-color 140ms ease',
-  '&:hover': {
-    background: 'var(--palette-background-subtle)',
-    borderColor: 'var(--palette-divider-strong)'
-  }
-});
-
-export const primaryButtonStyle = css({
-  appearance: 'none',
-  display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  gap: 'var(--spacing-2)',
-  minHeight: '40px',
-  padding: '9px 14px',
-  border: '1px solid var(--palette-primary-main)',
-  borderRadius: 'var(--shape-small)',
-  background: 'var(--palette-primary-main)',
-  color: 'var(--palette-primary-contrast-text)',
-  fontWeight: tokens.typography.weight.semibold,
-  textDecoration: 'none',
-  cursor: 'pointer',
-  transition: 'background 140ms ease, border-color 140ms ease, transform 140ms ease',
-  '&:hover': {
-    background: 'var(--palette-primary-dark)',
-    borderColor: 'var(--palette-primary-dark)'
-  },
-  '&:active': { transform: 'translateY(1px)' }
 });
 
 export const eyebrowStyle = css({

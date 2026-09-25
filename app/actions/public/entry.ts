@@ -20,6 +20,7 @@ const app = run({
     if (await detectMultipleImportMapSupport()) return preloads;
 
     preloadShim(preloads);
+
     return [];
   }
 });

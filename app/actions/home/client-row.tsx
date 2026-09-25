@@ -2,13 +2,18 @@ import type { Handle } from 'remix/ui';
 import { css } from 'remix/ui';
 
 import { themeTokens } from '../../theme/tokens.ts';
+import type { AccentTone } from '../../theme/accent-tone.ts';
 import { Avatar } from '../../ui/avatar.tsx';
 
-type Tint = 'green' | 'blue' | 'amber';
+export interface ClientRowProps {
+  initials: string;
+  name: string;
+  summary: string;
+  rate: string;
+  tint: AccentTone;
+}
 
-export const ClientRow = (
-  handle: Handle<{ initials: string; name: string; summary: string; rate: string; tint: Tint }>
-) => {
+export const ClientRow = (handle: Handle<ClientRowProps>) => {
   return () => (
     <div
       mix={css({
@@ -19,7 +24,10 @@ export const ClientRow = (
         borderTop: `1px solid ${themeTokens.palette.divider}`
       })}
     >
-      <Avatar initials={handle.props.initials} tint={handle.props.tint} />
+      <Avatar
+        initials={handle.props.initials}
+        tint={handle.props.tint}
+      />
       <div mix={css({ minWidth: 0, flex: 1 })}>
         <strong mix={css({ display: 'block', fontSize: `${themeTokens.typography.size.small}` })}>
           {handle.props.name}

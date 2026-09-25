@@ -34,6 +34,7 @@ interface SessionAuthValue {
 
 const isSessionAuthValue = (value: unknown): value is SessionAuthValue => {
   if (typeof value !== 'object' || value === null) return false;
+
   return (
     'userId' in value &&
     typeof value.userId === 'string' &&
@@ -47,6 +48,7 @@ export const authMiddleware = auth({
     createSessionAuthScheme<AuthenticatedUser, SessionAuthValue>({
       read: (session) => {
         const value = session.get('auth');
+
         return isSessionAuthValue(value) ? value : null;
       },
       verify: ({ userId, accountId }) => findAuthenticatedUser(userId, accountId),
@@ -61,6 +63,7 @@ export const passwordAuthProvider = createCredentialsAuthProvider<
 >({
   parse: (context) => {
     const data = context.get(FormData) ?? new FormData();
+
     return {
       email: String(data.get('email') ?? ''),
       password: String(data.get('password') ?? '')

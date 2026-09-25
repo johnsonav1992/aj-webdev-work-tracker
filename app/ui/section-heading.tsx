@@ -3,9 +3,13 @@ import { css } from 'remix/ui';
 
 import { eyebrowStyle, themeTokens } from '../theme/tokens.ts';
 
-export const SectionHeading = (
-  handle: Handle<{ eyebrow?: string; title: string; action?: RemixNode }>
-) => {
+export interface SectionHeadingProps {
+  eyebrow?: string;
+  title: string;
+  action?: RemixNode;
+}
+
+export const SectionHeading = (handle: Handle<SectionHeadingProps>) => {
   return () => (
     <div
       mix={css({

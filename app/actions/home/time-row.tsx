@@ -2,13 +2,18 @@ import type { Handle } from 'remix/ui';
 import { css } from 'remix/ui';
 
 import { themeTokens } from '../../theme/tokens.ts';
+import type { AccentTone } from '../../theme/accent-tone.ts';
 import { ClockIcon } from '../../ui/icons/clock-icon.tsx';
 
-type Tint = 'green' | 'blue' | 'amber';
+export interface TimeRowProps {
+  title: string;
+  client: string;
+  date: string;
+  duration: string;
+  tint: AccentTone;
+}
 
-export const TimeRow = (
-  handle: Handle<{ title: string; client: string; date: string; duration: string; tint: Tint }>
-) => {
+export const TimeRow = (handle: Handle<TimeRowProps>) => {
   return () => {
     const background = {
       green: `${themeTokens.palette.success.light}`,

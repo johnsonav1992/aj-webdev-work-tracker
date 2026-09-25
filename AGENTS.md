@@ -19,6 +19,13 @@ Use `npm run hmr` for live server and browser updates; `npm run dev` only watche
 
 Refer to ./.agents/skills/remix/SKILL.md for the Remix mental model and how to find guides and API READMEs through `node_modules/remix/INDEX.md`.
 
+Use the project-specific skills under `./.agents/skills/` for these concerns:
+
+- `project-theming` when adding or changing visual styles and design tokens
+- `project-components` when deciding where UI components belong or how they should behave in Remix
+- `project-types-and-utils` when placing shared, module-scoped, and inline types or utilities
+- `project-composition` when structuring pages and splitting feature JSX into components
+
 ## Starter Layout
 
 - `app/routes.ts` defines the shared route contract used by server and browser modules for type-safe hrefs

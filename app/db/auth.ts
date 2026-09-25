@@ -55,6 +55,7 @@ export const verifyPassword = async (password: string, encodedHash: string): Pro
 
   const salt = Buffer.from(saltText, 'base64url');
   const expected = Buffer.from(hashText, 'base64url');
+
   if (salt.length !== 16 || expected.length !== passwordHashLength) return false;
 
   const actual = await deriveScrypt(password, salt);
@@ -70,11 +71,13 @@ export const findAuthenticatedUser = async (
   accountId: string
 ): Promise<AuthenticatedUser | null> => {
   const user = await database.find(users, userId);
+
   if (!user) return null;
 
   const membership = await database.findOne(accountMembers, {
     where: { account_id: accountId, user_id: userId }
   });
+
   if (!membership) return null;
 
   return { id: user.id, email: user.email, displayName: user.display_name, accountId };
@@ -82,12 +85,14 @@ export const findAuthenticatedUser = async (
 
 export const findLoginUser = async (email: string, password: string) => {
   const user = await findUserByEmail(email);
+
   if (!user?.password_hash || !(await verifyPassword(password, user.password_hash))) return null;
 
   const membership = await database.findOne(accountMembers, {
     where: { user_id: user.id },
     orderBy: ['created_at', 'asc']
   });
+
   if (!membership) return null;
 
   return {
@@ -102,15 +107,18 @@ export const findGoogleLoginUser = async (providerSubject: string) => {
   const identity = await database.findOne(authIdentities, {
     where: { provider: 'google', provider_subject: providerSubject }
   });
+
   if (!identity) return null;
 
   const user = await database.find(users, identity.user_id);
+
   if (!user) return null;
 
   const membership = await database.findOne(accountMembers, {
     where: { user_id: user.id },
     orderBy: ['created_at', 'asc']
   });
+
   if (!membership) return null;
 
   return {

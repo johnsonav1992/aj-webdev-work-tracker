@@ -5,9 +5,15 @@ import { themeTokens } from '../../theme/tokens.ts';
 
 type Method = 'Bank transfer' | 'Card' | 'Check' | 'Cash' | 'Other';
 
-export const PaymentRow = (
-  handle: Handle<{ client: string; project: string; date: string; amount: string; method: Method }>
-) => {
+export interface PaymentRowProps {
+  client: string;
+  project: string;
+  date: string;
+  amount: string;
+  method: Method;
+}
+
+export const PaymentRow = (handle: Handle<PaymentRowProps>) => {
   return () => (
     <div
       mix={css({

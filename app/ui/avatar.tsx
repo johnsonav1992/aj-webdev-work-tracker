@@ -2,10 +2,14 @@ import type { Handle } from 'remix/ui';
 import { css } from 'remix/ui';
 
 import { themeTokens } from '../theme/tokens.ts';
+import type { AccentTone } from '../theme/accent-tone.ts';
 
-type Tint = 'green' | 'blue' | 'amber';
+export interface AvatarProps {
+  initials: string;
+  tint?: AccentTone;
+}
 
-export const Avatar = (handle: Handle<{ initials: string; tint?: Tint }>) => {
+export const Avatar = (handle: Handle<AvatarProps>) => {
   return () => {
     const tint = handle.props.tint ?? 'green';
     const background = {
@@ -32,7 +36,7 @@ export const Avatar = (handle: Handle<{ initials: string; tint?: Tint }>) => {
           background,
           color,
           fontSize: `${themeTokens.typography.size.small}`,
-          fontWeight: 750
+          fontWeight: `${themeTokens.typography.weight.bold}`
         })}
       >
         {handle.props.initials}
