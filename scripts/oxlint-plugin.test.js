@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import { RuleTester } from 'oxlint/plugins-dev';
 
-import { paddingAroundMultilineBlocks } from './oxlint-plugin.js';
+import { paddingAroundMultilineBlocks } from './oxlint-plugin.ts';
 
 RuleTester.describe = describe;
 RuleTester.it = it;
