@@ -1,5 +1,7 @@
 import { randomUUID, scrypt, timingSafeEqual } from 'node:crypto';
 
+import { Temporal } from '../utils/temporal.ts';
+
 import { database } from './database.ts';
 import { accountMembers, accountSettings, accounts, authIdentities, users } from './schema.ts';
 
@@ -135,7 +137,7 @@ export const createGoogleUser = async (input: {
   providerSubject: string;
 }) => {
   const email = normalizeEmail(input.email);
-  const now = Date.now();
+  const now = Temporal.Now.instant().epochMilliseconds;
   const userId = randomUUID();
   const accountId = randomUUID();
 

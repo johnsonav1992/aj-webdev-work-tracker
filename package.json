@@ -18,6 +18,7 @@
     "db:import-timesheet": "node --env-file-if-exists=.env --import remix/node-tsx scripts/import-timesheet.ts"
   },
   "dependencies": {
+    "@js-temporal/polyfill": "^0.5.1",
     "remix": "^3.0.0-rc.3"
   },
   "devDependencies": {

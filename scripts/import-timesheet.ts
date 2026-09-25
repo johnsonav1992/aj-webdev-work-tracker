@@ -3,6 +3,8 @@ import { readFile } from 'node:fs/promises';
 
 import { database } from '../app/db/database.ts';
 import { accounts, clients, projects, timeEntries } from '../app/db/schema.ts';
+import { Temporal, sumTimeDurations } from '../app/utils/temporal.ts';
+import type { TemporalPlainTime } from '../app/utils/temporal-types.ts';
 
 type CsvTimeEntry = {
   workDate: string;
@@ -76,28 +78,17 @@ const parseTimesheetTime = (value: string, fallbackMeridiem?: string) => {
     throw new Error(`Invalid or ambiguous time: ${value}`);
   }
 
-  return (hour % 12) * 60 + minute + (meridiem === 'PM' ? 12 * 60 : 0);
+  return Temporal.PlainTime.from({
+    hour: (hour % 12) + (meridiem === 'PM' ? 12 : 0),
+    minute
+  });
 };
 
-const localTimestamp = (date: string, minutesAfterMidnight: number) => {
-  const [year, month, day] = date.split('-').map(Number);
-  const dateTime = new Date(
-    year!,
-    month! - 1,
-    day!,
-    Math.floor(minutesAfterMidnight / 60),
-    minutesAfterMidnight % 60
-  );
-  if (
-    Number.isNaN(dateTime.getTime()) ||
-    dateTime.getFullYear() !== year ||
-    dateTime.getMonth() !== month! - 1 ||
-    dateTime.getDate() !== day
-  ) {
-    throw new Error(`Invalid date: ${date}`);
-  }
-  return dateTime.getTime();
-};
+const localTimestamp = (date: string, time: TemporalPlainTime) =>
+  Temporal.PlainDate.from(date).toZonedDateTime({
+    timeZone: Temporal.Now.timeZoneId(),
+    plainTime: time
+  }).epochMilliseconds;
 
 const parseTimesheet = (source: string) => {
   const rows = parseCsv(source.replace(/^\uFEFF/, ''));
@@ -124,10 +115,15 @@ const parseTimesheet = (source: string) => {
   const startYear = Number(period[2]);
   const endMonth = Number(period[3]);
   const endYear = Number(period[4]);
-  if (startMonth < 1 || startMonth > 12 || endMonth < 1 || endMonth > 12 || endYear < startYear) {
+  if (startMonth < 1 || startMonth > 12 || endMonth < 1 || endMonth > 12) {
     throw new Error('Billing Period contains an invalid date range.');
   }
-  const crossesYear = endYear > startYear || endMonth < startMonth;
+  const startPeriod = Temporal.PlainYearMonth.from({ year: startYear, month: startMonth });
+  const endPeriod = Temporal.PlainYearMonth.from({ year: endYear, month: endMonth });
+  if (Temporal.PlainYearMonth.compare(endPeriod, startPeriod) < 0) {
+    throw new Error('Billing Period contains an invalid date range.');
+  }
+  const crossesYear = endYear > startYear;
   const headerIndex = rows.findIndex(
     (row) => row[0]?.trim() === 'Date' && row[1]?.trim() === 'Task Description'
   );
@@ -146,23 +142,30 @@ const parseTimesheet = (source: string) => {
     const month = Number(monthText);
     const day = Number(dayText);
     const year = crossesYear && month < startMonth ? endYear : startYear;
-    if (month < 1 || month > 12 || day < 1 || day > 31) {
+    let workDate: string;
+    try {
+      workDate = Temporal.PlainDate.from({ year, month, day }).toString();
+    } catch {
       throw new Error(`Invalid work date: ${row[0]}`);
     }
-
-    const workDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     const start = parseTimesheetTime(row[2] ?? '');
     const end = parseTimesheetTime(row[3] ?? '', /\b(AM|PM)\b/i.exec(row[2] ?? '')?.[1]);
-    if (end <= start) throw new Error(`End time must follow start time for ${workDate}: ${row[1]}`);
+    if (Temporal.PlainTime.compare(end, start) <= 0) {
+      throw new Error(`End time must follow start time for ${workDate}: ${row[1]}`);
+    }
 
-    const durationSeconds = (end - start) * 60;
+    const duration = start.until(end);
+    const durationSeconds = duration.total({ unit: 'seconds' });
     const statedHours = Number(row[4]);
-    if (!Number.isFinite(statedHours) || Math.abs(durationSeconds / 3600 - statedHours) > 0.01) {
+    if (
+      !Number.isFinite(statedHours) ||
+      Math.abs(duration.total({ unit: 'hours' }) - statedHours) > 0.01
+    ) {
       throw new Error(`Time values do not match the listed hours for ${workDate}: ${row[1]}`);
     }
 
     const amountMinor = moneyToMinor(row[5] ?? '');
-    const calculatedMinor = Math.round((durationSeconds * hourlyRateMinor) / 3600);
+    const calculatedMinor = Math.round(duration.total({ unit: 'hours' }) * hourlyRateMinor);
     if (amountMinor !== calculatedMinor) {
       throw new Error(`Listed amount does not match the rate for ${workDate}: ${row[1]}`);
     }
@@ -179,9 +182,13 @@ const parseTimesheet = (source: string) => {
 
   if (entries.length === 0) throw new Error('The CSV has no time entries.');
 
-  const totalHours = entries.reduce((sum, entry) => sum + entry.durationSeconds, 0) / 3600;
+  const totalHours = sumTimeDurations(entries.map((entry) => entry.durationSeconds)).total({
+    unit: 'hours'
+  });
   const totalAmountMinor = entries.reduce((sum, entry) => sum + entry.amountMinor, 0);
-  const hourCapMinutes = Math.round(hourCap * 60);
+  const hourCapMinutes = Math.round(
+    Temporal.Duration.from({ hours: hourCap }).total({ unit: 'minutes' })
+  );
   const invoiceCapMinor = moneyToMinor(required('Max Invoice'));
 
   return {
@@ -219,7 +226,7 @@ const main = async () => {
     return;
   }
 
-  const now = Date.now();
+  const now = Temporal.Now.instant().epochMilliseconds;
   const clientId = randomUUID();
   const projectId = randomUUID();
   const sortedDates = timesheet.entries.map((entry) => entry.workDate).sort();

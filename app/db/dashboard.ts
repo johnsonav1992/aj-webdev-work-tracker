@@ -1,23 +1,25 @@
 import { database } from './database.ts';
 import { accountSettings, clients, payments, projects, timeEntries } from './schema.ts';
 import type { AccentTone } from '../theme/tokens.ts';
+import { Temporal, durationFromSeconds, sumTimeDurations } from '../utils/temporal.ts';
+import type { TemporalDuration } from '../utils/temporal-types.ts';
 
 const formatDate = (value: string) =>
-  new Intl.DateTimeFormat('en-US', {
+  Temporal.PlainDate.from(value).toLocaleString('en-US', {
     month: 'short',
     day: 'numeric',
-    year: 'numeric',
-    timeZone: 'UTC'
-  }).format(new Date(`${value}T12:00:00Z`));
-
-const toDateKey = (value: Date) =>
-  `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(2, '0')}-${String(value.getDate()).padStart(2, '0')}`;
+    year: 'numeric'
+  });
 
 const formatMoney = (minor: number, currency: string) =>
   new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(minor / 100);
 
-const formatDuration = (seconds: number) => {
-  const totalMinutes = Math.round(seconds / 60);
+const formatDuration = (duration: TemporalDuration) => {
+  const totalMinutes = duration
+    .round({ smallestUnit: 'minute', roundingMode: 'halfExpand' })
+    .total({
+      unit: 'minutes'
+    });
   const hours = Math.floor(totalMinutes / 60);
   const minutes = totalMinutes % 60;
 
@@ -70,37 +72,40 @@ export const getDashboardData = async (accountId: string) => {
   const currency = currencySetting ? (JSON.parse(currencySetting.value_json) as string) : 'USD';
   const clientsById = new Map(clientRows.map((client) => [client.id, client]));
   const projectsById = new Map(projectRows.map((project) => [project.id, project]));
-  const secondsByProject = new Map<string, number>();
+  const secondsByProject = new Map<string, TemporalDuration>();
   const loggedValueByProject = new Map<string, number>();
 
   let loggedValueMinor = 0;
-  let hoursThisWeekSeconds = 0;
-  const today = new Date();
-  const weekStart = new Date(today);
-  weekStart.setHours(0, 0, 0, 0);
-  weekStart.setDate(today.getDate() - ((today.getDay() + 6) % 7));
-  const weekStartKey = toDateKey(weekStart);
+  let hoursThisWeek = Temporal.Duration.from({ seconds: 0 });
+  const today = Temporal.Now.plainDateISO();
+  const weekStartKey = today.subtract({ days: today.dayOfWeek - 1 }).toString();
 
   for (const entry of entryRows) {
     if (entry.status !== 'completed') continue;
 
     const seconds = entry.duration_seconds ?? 0;
-    secondsByProject.set(entry.project_id, (secondsByProject.get(entry.project_id) ?? 0) + seconds);
+    const duration = durationFromSeconds(seconds);
+    secondsByProject.set(
+      entry.project_id,
+      (secondsByProject.get(entry.project_id) ?? Temporal.Duration.from({ seconds: 0 })).add(
+        duration
+      )
+    );
 
     const project = projectsById.get(entry.project_id);
     const client = project ? clientsById.get(project.client_id) : undefined;
     const hourlyRate = entry.hourly_rate_minor_snapshot ?? client?.hourly_rate_minor ?? 0;
-    const valueMinor = (seconds * hourlyRate) / 3600;
+    const valueMinor = duration.total({ unit: 'hours' }) * hourlyRate;
     loggedValueMinor += valueMinor;
     loggedValueByProject.set(
       entry.project_id,
       (loggedValueByProject.get(entry.project_id) ?? 0) + valueMinor
     );
 
-    if (String(entry.work_date) >= weekStartKey) hoursThisWeekSeconds += seconds;
+    if (String(entry.work_date) >= weekStartKey) hoursThisWeek = hoursThisWeek.add(duration);
   }
 
-  const currentMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+  const currentMonth = today.toString().slice(0, 7);
   const paymentsThisMonth = paymentRows
     .filter((payment) => String(payment.paid_on).startsWith(currentMonth))
     .reduce((sum, payment) => sum + payment.amount_minor, 0);
@@ -123,9 +128,9 @@ export const getDashboardData = async (accountId: string) => {
     metrics: {
       projects: String(projectRows.length),
       projectsNote: projectNote,
-      hoursThisWeek: (hoursThisWeekSeconds / 3600).toFixed(1),
+      hoursThisWeek: hoursThisWeek.total({ unit: 'hours' }).toFixed(1),
       loggedValue: formatMoney(Math.round(loggedValueMinor), currency),
-      loggedValueNote: `${formatDuration(entryRows.reduce((sum, entry) => sum + (entry.duration_seconds ?? 0), 0))} tracked`,
+      loggedValueNote: `${formatDuration(sumTimeDurations(entryRows.map((entry) => entry.duration_seconds ?? 0)))} tracked`,
       paymentsThisMonth: formatMoney(paymentsThisMonth, currency),
       paymentsNote: 'Stripe sync is not connected'
     },
@@ -139,10 +144,13 @@ export const getDashboardData = async (accountId: string) => {
     projects: projectRows.slice(0, 5).map((project, index) => {
       const client = clientsById.get(project.client_id);
       const rate = client?.hourly_rate_minor;
-      const spentSeconds = secondsByProject.get(project.id) ?? 0;
+      const spentDuration =
+        secondsByProject.get(project.id) ?? Temporal.Duration.from({ seconds: 0 });
+      const spentSeconds = spentDuration.total({ unit: 'seconds' });
       const projectValueMinor = Math.round(loggedValueByProject.get(project.id) ?? 0);
+      const hourCapDuration = Temporal.Duration.from({ minutes: project.hour_cap_minutes ?? 0 });
       const progress = project.hour_cap_minutes
-        ? Math.min(100, (spentSeconds / (project.hour_cap_minutes * 60)) * 100)
+        ? Math.min(100, (spentSeconds / hourCapDuration.total({ unit: 'seconds' })) * 100)
         : null;
 
       return {
@@ -153,8 +161,8 @@ export const getDashboardData = async (accountId: string) => {
         status: project.status as 'planned' | 'active' | 'completed' | 'archived',
         progress,
         timeSummary: project.hour_cap_minutes
-          ? `${formatDuration(spentSeconds)} of ${project.hour_cap_minutes / 60}h cap · ${formatMoney(projectValueMinor, currency)} of ${formatMoney(project.invoice_cap_minor ?? 0, currency)} max`
-          : `${formatDuration(spentSeconds)} logged`,
+          ? `${formatDuration(spentDuration)} of ${hourCapDuration.total({ unit: 'hours' })}h cap · ${formatMoney(projectValueMinor, currency)} of ${formatMoney(project.invoice_cap_minor ?? 0, currency)} max`
+          : `${formatDuration(spentDuration)} logged`,
         rate:
           rate === null || rate === undefined
             ? 'Rate not set'
@@ -171,7 +179,7 @@ export const getDashboardData = async (accountId: string) => {
         title: entry.notes?.trim() || 'Work session',
         client: [client?.name, project?.name].filter(Boolean).join(' · '),
         date: formatDate(String(entry.work_date)),
-        duration: formatDuration(entry.duration_seconds ?? 0),
+        duration: formatDuration(durationFromSeconds(entry.duration_seconds ?? 0)),
         tint: tones[index % tones.length]!
       };
     }),

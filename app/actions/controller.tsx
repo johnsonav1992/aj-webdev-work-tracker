@@ -4,12 +4,19 @@ import { createController } from 'remix/router';
 
 import { assets } from '../assets.ts';
 import { getDashboardData } from '../db/dashboard.ts';
+import { getProjectDetailData } from '../db/project-details.ts';
 import { getProjectsData, type ProjectStatusFilter } from '../db/projects.ts';
 import { routes } from '../routes.ts';
 import { HomePage } from './home-page.tsx';
+import { ProjectDetailPage } from './projects/project-detail-page.tsx';
 import { ProjectsPage } from './projects-page.tsx';
 
-export const rootRoutes = { assets: routes.assets, home: routes.home, projects: routes.projects };
+export const rootRoutes = {
+  assets: routes.assets,
+  home: routes.home,
+  projects: routes.projects,
+  project: routes.project
+};
 
 const projectStatuses: ProjectStatusFilter[] = [
   'all',
@@ -58,6 +65,21 @@ export default createController(rootRoutes, {
           csrfToken={getCsrfToken(context)}
           data={data}
         />
+      );
+    },
+    project: async (context) => {
+      const auth = context.get(Auth);
+
+      if (!auth.ok) return redirectTo(context, '/login');
+
+      const data = await getProjectDetailData(auth.identity.accountId, context.params.projectId);
+
+      return context.render(
+        <ProjectDetailPage
+          csrfToken={getCsrfToken(context)}
+          data={data}
+        />,
+        { status: data ? 200 : 404 }
       );
     }
   }

@@ -2,10 +2,12 @@ import { clientEntry, css, type Handle, on } from 'remix/ui';
 
 import { themeTokens } from '../../theme/tokens.ts';
 import { Button } from '../../ui/button.tsx';
+import { Temporal } from '../../utils/temporal-browser.ts';
+import type { TemporalDuration, TemporalInstant } from '../../utils/temporal-types.ts';
 
 export const TimerWidget = clientEntry(`${import.meta.url}#TimerWidget`, (handle: Handle) => {
-  let elapsed = 0;
-  let startedAt: number | null = null;
+  let elapsed: TemporalDuration = Temporal.Duration.from({ seconds: 0 });
+  let startedAt: TemporalInstant | null = null;
   let interval: ReturnType<typeof setInterval> | undefined;
   let running = false;
 
@@ -17,7 +19,10 @@ export const TimerWidget = clientEntry(`${import.meta.url}#TimerWidget`, (handle
   handle.signal.addEventListener('abort', clearTicker, { once: true });
 
   return () => {
-    const currentElapsed = elapsed + (running && startedAt !== null ? Date.now() - startedAt : 0);
+    const currentElapsed =
+      running && startedAt !== null
+        ? elapsed.add(startedAt.until(Temporal.Now.instant()))
+        : elapsed;
 
     return (
       <div
@@ -47,12 +52,12 @@ export const TimerWidget = clientEntry(`${import.meta.url}#TimerWidget`, (handle
           variant='primary'
           mix={on('click', () => {
             if (running && startedAt !== null) {
-              elapsed += Date.now() - startedAt;
+              elapsed = elapsed.add(startedAt.until(Temporal.Now.instant()));
               startedAt = null;
               running = false;
               clearTicker();
             } else {
-              startedAt = Date.now();
+              startedAt = Temporal.Now.instant();
               running = true;
               interval = setInterval(() => handle.update(), 1000);
             }
@@ -61,7 +66,7 @@ export const TimerWidget = clientEntry(`${import.meta.url}#TimerWidget`, (handle
           })}
         >
           <span aria-hidden='true'>{running ? 'Ⅱ' : '▶'}</span>
-          {running ? 'Pause' : elapsed > 0 ? 'Resume' : 'Start timer'}
+          {running ? 'Pause' : elapsed.total({ unit: 'seconds' }) > 0 ? 'Resume' : 'Start timer'}
         </Button>
         {running ? (
           <span
@@ -91,8 +96,8 @@ export const TimerWidget = clientEntry(`${import.meta.url}#TimerWidget`, (handle
   };
 });
 
-const formatDuration = (milliseconds: number) => {
-  const totalSeconds = Math.floor(milliseconds / 1000);
+const formatDuration = (duration: TemporalDuration) => {
+  const totalSeconds = Math.floor(duration.total({ unit: 'seconds' }));
   const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = totalSeconds % 60;

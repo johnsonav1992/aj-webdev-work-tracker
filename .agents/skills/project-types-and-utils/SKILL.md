@@ -19,3 +19,5 @@ Keep types and helpers close to their consumers until they are genuinely shared.
 ## Sharing threshold
 
 Before moving a type or helper upward, identify its current consumers. Generalize it only when multiple modules share the same concept and behavior; avoid speculative abstractions built for a single call site. Prefer type-only imports for types that do not need runtime values, and keep server-only or browser-only dependencies on the correct side of the boundary.
+
+For date and time logic, follow the Temporal rule in the repository's `AGENTS.md`. Import runtime APIs from the shared Temporal adapter; keep implementation-specific types in its type contract and do not import the polyfill from feature code.

@@ -4,6 +4,7 @@ export const routes = route({
   assets: get('/assets/*path'),
   home: '/',
   projects: get('/projects'),
+  project: get('/projects/:projectId'),
   auth: {
     login: form('/login'),
     signup: form('/signup'),

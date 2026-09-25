@@ -5,6 +5,7 @@ import { themeTokens } from '../../theme/tokens.ts';
 import { Avatar } from '../../ui/avatar.tsx';
 import { StatusBadge } from '../../ui/status-badge.tsx';
 import { Panel } from '../../ui/panel.tsx';
+import { routes } from '../../routes.ts';
 import type { ProjectCardData } from './projects-types.ts';
 
 type ProjectCardProps = {
@@ -41,7 +42,14 @@ export const ProjectCard = (handle: Handle<ProjectCardProps>) => {
             />
             <div mix={titleStyle}>
               <p mix={clientStyle}>{project.client}</p>
-              <h2 mix={projectTitleStyle}>{project.name}</h2>
+              <h2 mix={projectTitleStyle}>
+                <a
+                  href={routes.project.href({ projectId: project.id })}
+                  mix={titleLinkStyle}
+                >
+                  {project.name}
+                </a>
+              </h2>
             </div>
             <StatusBadge tone={statusTone[project.status]}>{statusLabel}</StatusBadge>
           </header>
@@ -120,6 +128,11 @@ const projectTitleStyle = css({
   overflowWrap: 'anywhere',
   fontSize: `${themeTokens.typography.size.section}`,
   lineHeight: 1.25
+});
+const titleLinkStyle = css({
+  color: 'inherit',
+  textDecoration: 'none',
+  '&:hover': { color: `${themeTokens.palette.primary.dark}` }
 });
 const descriptionStyle = css({
   margin: `${themeTokens.spacing[3]} 0 0`,

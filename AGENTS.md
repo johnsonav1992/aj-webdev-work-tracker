@@ -17,6 +17,14 @@ Use `npm run hmr` for live server and browser updates; `npm run dev` only watche
 
 ## Building Features
 
+### Date and time
+
+- Use the JavaScript Temporal APIs for all date, time, timestamp, and elapsed-time logic. Import `Temporal` from `app/utils/temporal.ts` in server code; browser code should use `app/utils/temporal-browser.ts` to access the native API without bundling the server polyfill. Keep direct polyfill imports inside the Temporal adapter and its type contract only.
+- When the supported Node runtime provides native Temporal, the adapter prefers it automatically; remove the polyfill fallback and dependency in the adapter when the app's minimum Node version no longer needs them.
+- Use `Temporal.PlainDate` / `Temporal.PlainTime` for date-only and wall-clock values, `Temporal.Instant` for timestamps, `Temporal.ZonedDateTime` with an explicit time zone when converting wall time to an instant, and `Temporal.Duration` for elapsed time and unit conversion.
+- Keep existing database boundaries stable: ISO date strings for date-only columns and epoch milliseconds for timestamp columns.
+- Do not introduce `Date`, `Date.now()`, legacy Date getters/setters, or `Intl.DateTimeFormat` formatting a `Date`.
+
 Refer to ./.agents/skills/remix/SKILL.md for the Remix mental model and how to find guides and API READMEs through `node_modules/remix/INDEX.md`.
 
 Use the project-specific skills under `./.agents/skills/` for these concerns:

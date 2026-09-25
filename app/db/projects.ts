@@ -1,5 +1,11 @@
 import { database } from './database.ts';
 import { clients, projects, timeEntries } from './schema.ts';
+import { Temporal, durationFromSeconds, sumTimeDurations } from '../utils/temporal.ts';
+import {
+  formatProjectDate as formatDate,
+  formatProjectDuration as formatDuration,
+  formatProjectMoney as formatMoney
+} from './project-format.ts';
 
 export type ProjectStatus = 'planned' | 'active' | 'completed' | 'archived';
 export type ProjectStatusFilter = ProjectStatus | 'all';
@@ -7,30 +13,6 @@ export type ProjectStatusFilter = ProjectStatus | 'all';
 type GetProjectsOptions = {
   search?: string;
   status?: ProjectStatusFilter;
-};
-
-const formatMoney = (minor: number, currency: string) =>
-  new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(minor / 100);
-
-const formatDuration = (seconds: number) => {
-  const minutes = Math.round(seconds / 60);
-  const hours = Math.floor(minutes / 60);
-  const remainingMinutes = minutes % 60;
-
-  if (hours === 0) return `${remainingMinutes}m`;
-
-  return remainingMinutes === 0 ? `${hours}h` : `${hours}h ${remainingMinutes}m`;
-};
-
-const formatDate = (value: string | null) => {
-  if (!value) return null;
-
-  return new Intl.DateTimeFormat('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-    timeZone: 'UTC'
-  }).format(new Date(`${value}T12:00:00Z`));
 };
 
 const initials = (name: string) =>
@@ -68,15 +50,15 @@ export const getProjectsData = async (accountId: string, options: GetProjectsOpt
   const projectsWithSummary = projectRows.map((project, index) => {
     const client = clientsById.get(project.client_id);
     const entries = entriesByProject.get(project.id) ?? [];
-    const trackedSeconds = entries.reduce(
-      (total, entry) => total + (entry.duration_seconds ?? 0),
-      0
-    );
+    const trackedDuration = sumTimeDurations(entries.map((entry) => entry.duration_seconds ?? 0));
+    const trackedSeconds = trackedDuration.total({ unit: 'seconds' });
     const hourlyRate = client?.hourly_rate_minor ?? null;
     const valueMinor = entries.reduce((total, entry) => {
       const rate = entry.hourly_rate_minor_snapshot ?? hourlyRate ?? 0;
 
-      return total + (rate * (entry.duration_seconds ?? 0)) / 3600;
+      return (
+        total + durationFromSeconds(entry.duration_seconds ?? 0).total({ unit: 'hours' }) * rate
+      );
     }, 0);
     const searchText = [project.name, client?.name, project.description]
       .filter(Boolean)
@@ -101,7 +83,14 @@ export const getProjectsData = async (accountId: string, options: GetProjectsOpt
       hourCap: project.hour_cap_minutes,
       invoiceCapMinor: project.invoice_cap_minor,
       progress: project.hour_cap_minutes
-        ? Math.min(100, (trackedSeconds / (project.hour_cap_minutes * 60)) * 100)
+        ? Math.min(
+            100,
+            (trackedSeconds /
+              Temporal.Duration.from({ minutes: project.hour_cap_minutes }).total({
+                unit: 'seconds'
+              })) *
+              100
+          )
         : null,
       accent: (['green', 'blue', 'amber'] as const)[index % 3]!,
       searchText
@@ -124,9 +113,10 @@ export const getProjectsData = async (accountId: string, options: GetProjectsOpt
     completed: projectRows.filter((project) => project.status === 'completed').length,
     archived: projectRows.filter((project) => project.status === 'archived').length
   };
-  const trackedSeconds = [...entriesByProject.values()]
-    .flat()
-    .reduce((total, entry) => total + (entry.duration_seconds ?? 0), 0);
+  const trackedDuration = sumTimeDurations(
+    [...entriesByProject.values()].flat().map((entry) => entry.duration_seconds ?? 0)
+  );
+  const trackedSeconds = trackedDuration.total({ unit: 'seconds' });
 
   return {
     projects: filteredProjects.map(({ searchText: _searchText, ...project }) => project),

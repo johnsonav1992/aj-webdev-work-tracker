@@ -17,6 +17,12 @@ import {
 } from './actions/auth-controller.tsx';
 import { assets } from './assets.ts';
 import { routes } from './routes.ts';
+import { Temporal } from './utils/temporal.ts';
+import type { TemporalNamespace } from './utils/temporal-types.ts';
+
+type TemporalGlobal = typeof globalThis & { Temporal?: TemporalNamespace };
+
+(globalThis as TemporalGlobal).Temporal ??= Temporal;
 
 const renderMiddleware = render({ assets });
 const staticMiddleware = staticFiles('./public', { index: false });
