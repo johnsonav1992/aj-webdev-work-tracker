@@ -9,17 +9,20 @@ const hmrProxyPort = process.env.HMR_PROXY_PORT
   : null;
 
 const server = http.createServer(
-  createRequestListener(async (request) => {
-    try {
-      return await router.fetch(request);
-    } catch (error) {
-      if (!(request.signal.aborted && error === request.signal.reason)) {
-        console.error(error);
-      }
+  createRequestListener(
+    async (request) => {
+      try {
+        return await router.fetch(request);
+      } catch (error) {
+        if (!(request.signal.aborted && error === request.signal.reason)) {
+          console.error(error);
+        }
 
-      return new Response('Internal Server Error', { status: 500 });
-    }
-  }, { trustProxy: Boolean(process.env.REMIX_NODE_HMR) })
+        return new Response('Internal Server Error', { status: 500 });
+      }
+    },
+    { trustProxy: Boolean(process.env.REMIX_NODE_HMR) }
+  )
 );
 
 const onListening = () => {

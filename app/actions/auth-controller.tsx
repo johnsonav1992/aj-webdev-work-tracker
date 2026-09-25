@@ -60,11 +60,7 @@ export const signupController = createController(routes.auth.signup, {
   actions: {
     index: (context) => {
       if (context.get(Auth).ok) return redirectTo(context, '/');
-      return context.render(
-        <SignupPage
-          googleEnabled={googleAuthProvider !== null}
-        />
-      );
+      return context.render(<SignupPage googleEnabled={googleAuthProvider !== null} />);
     },
     action: (context) => redirectTo(context, '/signup')
   }
@@ -89,11 +85,13 @@ export const googleController = createController(routes.auth.google, {
       if (!googleAuthProvider) return redirectTo(context, '/login?error=google-unavailable');
 
       let stage = 'provider callback';
+
       try {
         const { result, returnTo } = await finishExternalAuth(googleAuthProvider, context);
         const { profile } = result;
 
         stage = 'verified Google profile';
+
         if (!profile.email || profile.email_verified !== true) {
           return redirectTo(context, '/login?error=google-failed');
         }
@@ -120,7 +118,10 @@ export const googleController = createController(routes.auth.google, {
           error instanceof Error
             ? error.message
                 .replace(/https?:\/\/\S+/gi, '[url]')
-                .replace(/(code|state|client_secret|access_token|id_token)=[^\s&]+/gi, '$1=[redacted]')
+                .replace(
+                  /(code|state|client_secret|access_token|id_token)=[^\s&]+/gi,
+                  '$1=[redacted]'
+                )
                 .slice(0, 200)
             : 'unknown error';
         console.error(`[google-auth] Callback failed at ${stage}: ${details}`);

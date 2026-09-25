@@ -3,6 +3,7 @@ import type { RuleTester } from 'oxlint/plugins-dev';
 type OxlintRule = Parameters<RuleTester['run']>[1];
 type RuleCreate = NonNullable<OxlintRule['create']>;
 type RuleContext = Parameters<RuleCreate>[0];
+type RuleFixer = Parameters<NonNullable<Parameters<RuleContext['report']>[0]['fix']>>[0];
 type RuleVisitor = ReturnType<RuleCreate>;
 type AnyNode = Parameters<NonNullable<RuleVisitor[string]>>[0];
 type ControlFlowNode =
@@ -81,6 +82,7 @@ function hasBlankLineBetween(lines: string[], previousEndLine: number, nextStart
 const paddingAroundMultilineBlocks = {
   meta: {
     type: 'layout',
+    fixable: 'whitespace',
     docs: {
       description: 'Require blank lines around multiline control-flow blocks'
     },
@@ -104,11 +106,19 @@ const paddingAroundMultilineBlocks = {
       const next = siblings.statements[siblings.index + 1];
 
       if (previous && !hasBlankLineBetween(lines, previous.loc.end.line, node.loc.start.line)) {
-        context.report({ node, messageId: 'before' });
+        context.report({
+          node,
+          messageId: 'before',
+          fix: (fixer) => fixer.insertTextAfter(previous, '\n')
+        });
       }
 
       if (next && !hasBlankLineBetween(lines, node.loc.end.line, next.loc.start.line)) {
-        context.report({ node, messageId: 'after' });
+        context.report({
+          node,
+          messageId: 'after',
+          fix: (fixer) => fixer.insertTextAfter(node, '\n')
+        });
       }
     }
 
@@ -119,6 +129,7 @@ const paddingAroundMultilineBlocks = {
 const onlyArrowFunctions = {
   meta: {
     type: 'problem',
+    fixable: 'code',
     docs: { description: 'Require arrow functions instead of traditional function syntax' },
     schema: [],
     messages: {
@@ -127,6 +138,36 @@ const onlyArrowFunctions = {
     }
   },
   create(context: RuleContext): RuleVisitor {
+    const sourceCode = context.sourceCode;
+
+    const canSafelyUseArrow = (node: FunctionExpressionNode) => {
+      if (node.id || node.generator || !node.body) return false;
+
+      const tokens = sourceCode.getTokens(node);
+      if (tokens.some((token) => ['this', 'arguments', 'super', 'new'].includes(token.value))) {
+        return false;
+      }
+
+      const functionToken = tokens.find((token) => token.value === 'function');
+      if (!functionToken) return false;
+
+      const header = sourceCode.text.slice(functionToken.range[1], node.body.range[0]);
+      return !header.includes('//') && !header.includes('/*');
+    };
+
+    const functionExpressionFix = (node: FunctionExpressionNode, fixer: RuleFixer) => {
+      if (!node.body) return null;
+
+      const text = sourceCode.getText(node);
+      const keywordOffset = text.indexOf('function');
+      const bodyOffset = node.body.range[0] - node.range[0];
+      const prefix = text.slice(0, keywordOffset);
+      const header = text.slice(keywordOffset + 'function'.length, bodyOffset).trimEnd();
+      const body = text.slice(bodyOffset);
+
+      return fixer.replaceText(node, `${prefix}${header} => ${body}`);
+    };
+
     const reportFunction = (node: FunctionDeclarationNode | FunctionExpressionNode) => {
       if (node.type === 'FunctionExpression') {
         const parent = node.parent;
@@ -134,6 +175,15 @@ const onlyArrowFunctions = {
           parent?.type === 'MethodDefinition' ||
           (parent?.type === 'Property' && 'method' in parent && parent.method)
         ) {
+          return;
+        }
+
+        if (canSafelyUseArrow(node)) {
+          context.report({
+            node,
+            messageId: 'function',
+            fix: (fixer) => functionExpressionFix(node, fixer)
+          });
           return;
         }
       }
@@ -148,6 +198,39 @@ const onlyArrowFunctions = {
         context.report({ node, messageId: 'method' }),
       Property: (node: PropertyNode) => {
         if (node.method || node.kind !== 'init') {
+          const value = node.value;
+          if (
+            node.method &&
+            node.kind === 'init' &&
+            value.type === 'FunctionExpression' &&
+            value.body !== null &&
+            !value.generator &&
+            !context.sourceCode
+              .getTokens(value)
+              .some((token) => ['this', 'arguments', 'super', 'new'].includes(token.value))
+          ) {
+            const key = node.computed
+              ? `[${sourceCode.getText(node.key)}]`
+              : sourceCode.getText(node.key);
+            const tailStart = node.key.range[1] - node.range[0];
+            const bodyStart = value.body.range[0] - node.range[0];
+            const text = sourceCode.getText(node);
+            const paramsAndReturnType = text.slice(tailStart, bodyStart).trimEnd();
+
+            if (!paramsAndReturnType.includes('//') && !paramsAndReturnType.includes('/*')) {
+              context.report({
+                node,
+                messageId: 'method',
+                fix: (fixer) =>
+                  fixer.replaceText(
+                    node,
+                    `${key}: ${value.async ? 'async ' : ''}${paramsAndReturnType} => ${text.slice(bodyStart)}`
+                  )
+              });
+              return;
+            }
+          }
+
           context.report({ node, messageId: 'method' });
         }
       }

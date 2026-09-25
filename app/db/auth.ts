@@ -1,13 +1,7 @@
 import { randomUUID, scrypt, timingSafeEqual } from 'node:crypto';
 
 import { database } from './database.ts';
-import {
-  accountMembers,
-  accountSettings,
-  accounts,
-  authIdentities,
-  users
-} from './schema.ts';
+import { accountMembers, accountSettings, accounts, authIdentities, users } from './schema.ts';
 
 const passwordHashLength = 64;
 const passwordCost = 32_768;
@@ -160,7 +154,9 @@ export const createGoogleUser = async (input: {
     if (!accountIdForUser) {
       await transaction.create(accounts, {
         id: accountId,
-        name: input.displayName?.trim() ? `${input.displayName.trim()}'s Workspace` : 'My Workspace',
+        name: input.displayName?.trim()
+          ? `${input.displayName.trim()}'s Workspace`
+          : 'My Workspace',
         created_at: now,
         updated_at: now
       });
