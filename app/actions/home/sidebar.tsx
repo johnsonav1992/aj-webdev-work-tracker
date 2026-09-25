@@ -12,7 +12,7 @@ import { UsersIcon } from '../../ui/icons/users-icon.tsx';
 
 type NavItem = { label: string; href: string; icon: RemixNode; active?: boolean };
 
-export function Sidebar(_handle: Handle) {
+export const Sidebar = (_handle: Handle) => {
   const navigation: NavItem[] = [
     { label: 'Overview', href: '#overview', icon: <GridIcon />, active: true },
     { label: 'Clients', href: '#clients', icon: <UsersIcon /> },
@@ -185,4 +185,4 @@ export function Sidebar(_handle: Handle) {
       </div>
     </aside>
   );
-}
+};

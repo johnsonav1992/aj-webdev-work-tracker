@@ -6,10 +6,10 @@ import { HomePage } from './home-page.tsx';
 
 export default createController(routes, {
   actions: {
-    async assets(context) {
+    assets: async (context) => {
       return (await assets.fetch(context.request)) ?? new Response('Not Found', { status: 404 });
     },
-    home(context) {
+    home: (context) => {
       return context.render(<HomePage />);
     }
   }

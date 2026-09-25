@@ -1,6 +1,6 @@
 import { iconStyle } from './icon-style.ts';
 
-export function BrandMarkIcon() {
+export const BrandMarkIcon = () => {
   return () => (
     <svg
       aria-hidden='true'
@@ -15,4 +15,4 @@ export function BrandMarkIcon() {
       <path d='M5 18V6l7 7 7-7v12' />
     </svg>
   );
-}
+};

@@ -5,7 +5,7 @@ import { themeTokens } from '../theme/tokens.ts';
 
 type Tone = 'green' | 'amber' | 'blue' | 'gray';
 
-export function StatusBadge(handle: Handle<{ tone?: Tone; children: RemixNode }>) {
+export const StatusBadge = (handle: Handle<{ tone?: Tone; children: RemixNode }>) => {
   return () => {
     const colors = {
       green: {
@@ -44,4 +44,4 @@ export function StatusBadge(handle: Handle<{ tone?: Tone; children: RemixNode }>
       </span>
     );
   };
-}
+};

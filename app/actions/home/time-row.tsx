@@ -6,9 +6,9 @@ import { ClockIcon } from '../../ui/icons/clock-icon.tsx';
 
 type Tint = 'green' | 'blue' | 'amber';
 
-export function TimeRow(
+export const TimeRow = (
   handle: Handle<{ title: string; client: string; date: string; duration: string; tint: Tint }>
-) {
+) => {
   return () => {
     const background = {
       green: `${themeTokens.palette.success.light}`,
@@ -82,4 +82,4 @@ export function TimeRow(
       </div>
     );
   };
-}
+};

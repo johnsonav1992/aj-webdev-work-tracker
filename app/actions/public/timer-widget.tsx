@@ -25,7 +25,7 @@ const timerButtonStyle = css({
   '&:active': { transform: 'translateY(1px)' }
 });
 
-export const TimerWidget = clientEntry(import.meta.url, function TimerWidget(handle: Handle) {
+export const TimerWidget = clientEntry(`${import.meta.url}#TimerWidget`, (handle: Handle) => {
   let elapsed = 0;
   let startedAt: number | null = null;
   let interval: ReturnType<typeof setInterval> | undefined;
@@ -115,10 +115,10 @@ export const TimerWidget = clientEntry(import.meta.url, function TimerWidget(han
   };
 });
 
-function formatDuration(milliseconds: number) {
+const formatDuration = (milliseconds: number) => {
   const totalSeconds = Math.floor(milliseconds / 1000);
   const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = totalSeconds % 60;
   return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-}
+};

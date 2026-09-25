@@ -1,6 +1,6 @@
 import { iconStyle } from './icon-style.ts';
 
-export function GridIcon() {
+export const GridIcon = () => {
   return () => (
     <svg
       aria-hidden='true'
@@ -18,4 +18,4 @@ export function GridIcon() {
       <rect x='14' y='14' width='7' height='7' rx='1.5' />
     </svg>
   );
-}
+};

@@ -1,6 +1,6 @@
 import { iconStyle } from './icon-style.ts';
 
-export function ArrowIcon() {
+export const ArrowIcon = () => {
   return () => (
     <svg
       aria-hidden='true'
@@ -15,4 +15,4 @@ export function ArrowIcon() {
       <path d='M5 12h14M13 6l6 6-6 6' />
     </svg>
   );
-}
+};

@@ -1,6 +1,6 @@
 import { iconStyle } from './icon-style.ts';
 
-export function ProjectsIcon() {
+export const ProjectsIcon = () => {
   return () => (
     <svg
       aria-hidden='true'
@@ -16,4 +16,4 @@ export function ProjectsIcon() {
       <path d='m3 12 9 5 9-5M3 16l9 5 9-5' />
     </svg>
   );
-}
+};

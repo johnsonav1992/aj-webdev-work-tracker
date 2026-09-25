@@ -5,7 +5,7 @@ import { themeTokens } from '../theme/tokens.ts';
 
 type Tint = 'green' | 'blue' | 'amber';
 
-export function Avatar(handle: Handle<{ initials: string; tint?: Tint }>) {
+export const Avatar = (handle: Handle<{ initials: string; tint?: Tint }>) => {
   return () => {
     const tint = handle.props.tint ?? 'green';
     const background = {
@@ -39,4 +39,4 @@ export function Avatar(handle: Handle<{ initials: string; tint?: Tint }>) {
       </span>
     );
   };
-}
+};

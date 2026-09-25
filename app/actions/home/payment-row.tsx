@@ -5,9 +5,9 @@ import { themeTokens } from '../../theme/tokens.ts';
 
 type Method = 'Bank transfer' | 'Card' | 'Check' | 'Cash' | 'Other';
 
-export function PaymentRow(
+export const PaymentRow = (
   handle: Handle<{ client: string; project: string; date: string; amount: string; method: Method }>
-) {
+) => {
   return () => (
     <div
       mix={css({
@@ -38,4 +38,4 @@ export function PaymentRow(
       </strong>
     </div>
   );
-}
+};

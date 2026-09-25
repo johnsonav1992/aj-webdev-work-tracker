@@ -10,9 +10,13 @@ export interface DocumentProps {
   title?: string;
 }
 
+const readAppDisplayName = (value: string): string => {
+  return value.startsWith('%%') ? 'Remix App' : decodeURIComponent(value);
+};
+
 const DEFAULT_TITLE = readAppDisplayName('Aj%20Webdev%20Work%20Tracker');
 
-export function Document(handle: Handle<DocumentProps>) {
+export const Document = (handle: Handle<DocumentProps>) => {
   return () => {
     const { children, head, title = DEFAULT_TITLE } = handle.props;
     const { href, importMap, preloads } = scriptEntry;
@@ -36,8 +40,4 @@ export function Document(handle: Handle<DocumentProps>) {
       </html>
     );
   };
-}
-
-function readAppDisplayName(value: string): string {
-  return value.startsWith('%%') ? 'Remix App' : decodeURIComponent(value);
-}
+};

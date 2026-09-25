@@ -6,9 +6,9 @@ import { Avatar } from '../../ui/avatar.tsx';
 
 type Tint = 'green' | 'blue' | 'amber';
 
-export function ClientRow(
+export const ClientRow = (
   handle: Handle<{ initials: string; name: string; summary: string; rate: string; tint: Tint }>
-) {
+) => {
   return () => (
     <div
       mix={css({
@@ -42,4 +42,4 @@ export function ClientRow(
       </strong>
     </div>
   );
-}
+};

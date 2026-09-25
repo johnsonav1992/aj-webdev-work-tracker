@@ -4,7 +4,7 @@ import { css } from 'remix/ui';
 import { themeTokens } from '../../theme/tokens.ts';
 import { BellIcon } from '../../ui/icons/bell-icon.tsx';
 
-export function Topbar(_handle: Handle) {
+export const Topbar = (_handle: Handle) => {
   return () => (
     <header
       mix={css({
@@ -66,4 +66,4 @@ export function Topbar(_handle: Handle) {
       </div>
     </header>
   );
-}
+};

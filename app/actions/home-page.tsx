@@ -26,7 +26,7 @@ import { TimeRow } from './home/time-row.tsx';
 import { Topbar } from './home/topbar.tsx';
 import { TimerWidget } from './public/timer-widget.tsx';
 
-export function HomePage() {
+export const HomePage = () => {
   return () => (
     <Document title='Overview · AJ Workbench'>
       <div mix={theme}>
@@ -420,7 +420,7 @@ export function HomePage() {
       </div>
     </Document>
   );
-}
+};
 
 const cardPaddingStyle = css({ padding: `${themeTokens.spacing[5]}` });
 const fieldLabelStyle = css({

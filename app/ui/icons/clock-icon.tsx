@@ -1,6 +1,6 @@
 import { iconStyle } from './icon-style.ts';
 
-export function ClockIcon() {
+export const ClockIcon = () => {
   return () => (
     <svg
       aria-hidden='true'
@@ -16,4 +16,4 @@ export function ClockIcon() {
       <path d='M12 7v5l3 2' />
     </svg>
   );
-}
+};

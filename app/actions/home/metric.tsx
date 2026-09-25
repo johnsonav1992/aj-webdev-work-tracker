@@ -5,9 +5,9 @@ import { panelStyle, themeTokens } from '../../theme/tokens.ts';
 
 type Tone = 'green' | 'blue' | 'amber';
 
-export function Metric(
+export const Metric = (
   handle: Handle<{ label: string; value: string; note: string; icon: RemixNode; tone: Tone }>
-) {
+) => {
   return () => {
     const iconColor = {
       green: `${themeTokens.palette.success.dark}`,
@@ -91,4 +91,4 @@ export function Metric(
       </section>
     );
   };
-}
+};

@@ -1,6 +1,6 @@
 import { iconStyle } from './icon-style.ts';
 
-export function CheckIcon() {
+export const CheckIcon = () => {
   return () => (
     <svg
       aria-hidden='true'
@@ -16,4 +16,4 @@ export function CheckIcon() {
       <path d='M21 12a9 9 0 1 1-5.3-8.2' />
     </svg>
   );
-}
+};

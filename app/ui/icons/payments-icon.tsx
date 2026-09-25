@@ -1,6 +1,6 @@
 import { iconStyle } from './icon-style.ts';
 
-export function PaymentsIcon() {
+export const PaymentsIcon = () => {
   return () => (
     <svg
       aria-hidden='true'
@@ -16,4 +16,4 @@ export function PaymentsIcon() {
       <path d='M3 10h18M7 15h3' />
     </svg>
   );
-}
+};

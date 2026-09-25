@@ -32,7 +32,7 @@ server.listen(port, () => {
 
 let shuttingDown = false;
 
-function shutdown() {
+const shutdown = () => {
   if (shuttingDown) {
     return;
   }
@@ -40,7 +40,7 @@ function shutdown() {
   shuttingDown = true;
   server.close(() => process.exit(0));
   server.closeAllConnections();
-}
+};
 
 process.on('SIGINT', shutdown);
 process.on('SIGTERM', shutdown);

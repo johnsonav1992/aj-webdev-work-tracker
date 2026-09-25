@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import { RuleTester } from 'oxlint/plugins-dev';
 
-import { paddingAroundMultilineBlocks } from './oxlint-plugin.ts';
+import { onlyArrowFunctions, paddingAroundMultilineBlocks } from './oxlint-plugin.ts';
 
 RuleTester.describe = describe;
 RuleTester.it = it;
@@ -18,6 +18,32 @@ ruleTester.run('padding-around-multiline-blocks', paddingAroundMultilineBlocks, 
     {
       code: 'function run() {\n  prepare();\n  if (ready) {\n    start();\n  }\n  finish();\n}',
       errors: [{ messageId: 'before' }, { messageId: 'after' }]
+    }
+  ]
+});
+
+ruleTester.run('only-arrow-functions', onlyArrowFunctions, {
+  valid: [
+    'const run = () => {};',
+    'const handlers = { run: () => {} };',
+    'const run = () => callback();'
+  ],
+  invalid: [
+    {
+      code: 'function run() {}',
+      errors: [{ messageId: 'function' }]
+    },
+    {
+      code: 'const run = function () {};',
+      errors: [{ messageId: 'function' }]
+    },
+    {
+      code: 'const handlers = { run() {} };',
+      errors: [{ messageId: 'method' }]
+    },
+    {
+      code: 'class Runner { run() {} }',
+      errors: [{ messageId: 'method' }]
     }
   ]
 });

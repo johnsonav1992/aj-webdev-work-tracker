@@ -1,6 +1,6 @@
 import { iconStyle } from './icon-style.ts';
 
-export function MoreIcon() {
+export const MoreIcon = () => {
   return () => (
     <svg
       aria-hidden='true'
@@ -17,4 +17,4 @@ export function MoreIcon() {
       <circle cx='19' cy='12' r='1' />
     </svg>
   );
-}
+};

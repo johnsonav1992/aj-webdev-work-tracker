@@ -1,6 +1,6 @@
 import { iconStyle } from './icon-style.ts';
 
-export function PlusIcon() {
+export const PlusIcon = () => {
   return () => (
     <svg
       aria-hidden='true'
@@ -15,4 +15,4 @@ export function PlusIcon() {
       <path d='M12 5v14M5 12h14' />
     </svg>
   );
-}
+};

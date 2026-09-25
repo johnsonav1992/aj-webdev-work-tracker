@@ -6,7 +6,7 @@ import {
 import { run } from 'remix/ui';
 
 const app = run({
-  async loadModule(moduleUrl, exportName) {
+  loadModule: async (moduleUrl, exportName) => {
     const mod = await importModule(moduleUrl);
     const Component = mod[exportName];
 
@@ -16,7 +16,7 @@ const app = run({
 
     return Component;
   },
-  async processClientEntryPreloads(preloads) {
+  processClientEntryPreloads: async (preloads) => {
     if (await detectMultipleImportMapSupport()) return preloads;
 
     preloadShim(preloads);

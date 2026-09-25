@@ -8,7 +8,7 @@ import { Progress } from './progress.tsx';
 
 type Tone = 'green' | 'blue' | 'amber';
 
-export function ProjectRow(
+export const ProjectRow = (
   handle: Handle<{
     initials: string;
     name: string;
@@ -18,7 +18,7 @@ export function ProjectRow(
     rate: string;
     tone: Tone;
   }>
-) {
+) => {
   return () => (
     <div
       mix={css({
@@ -81,4 +81,4 @@ export function ProjectRow(
       </strong>
     </div>
   );
-}
+};
