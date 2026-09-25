@@ -63,7 +63,7 @@ export const Topbar = (handle: Handle<{ csrfToken: string }>) => {
         >
           <BellIcon />
         </button>
-        <form method='post' action='/logout'>
+        <form method='post' action='/logout' data-rmx-document>
           <input type='hidden' name='_csrf' value={handle.props.csrfToken} />
           <button type='submit' mix={quietButtonStyle}>
             Sign out

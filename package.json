@@ -14,9 +14,7 @@
     "typecheck": "tsc --noEmit",
     "db:status": "remix db status",
     "db:migrate": "remix db migrate",
-    "db:rollback": "remix db rollback",
-    "account:setup": "node --import remix/node-tsx scripts/setup-owner.ts",
-    "account:invite": "node --import remix/node-tsx scripts/create-invitation.ts"
+    "db:rollback": "remix db rollback"
   },
   "dependencies": {
     "remix": "^3.0.0-rc.3"

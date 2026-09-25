@@ -19,16 +19,22 @@ const server = http.createServer(
 
       return new Response('Internal Server Error', { status: 500 });
     }
-  })
+  }, { trustProxy: Boolean(process.env.REMIX_NODE_HMR) })
 );
 
-server.listen(port, () => {
+const onListening = () => {
   if (process.env.REMIX_NODE_HMR) {
     import('remix/node-hmr/runtime').then((nodeHmr) => nodeHmr.emitServerReady());
   }
 
   console.log(`Server listening on http://localhost:${hmrProxyPort ?? port}`);
-});
+};
+
+if (process.env.REMIX_NODE_HMR) {
+  server.listen(port, '127.0.0.1', onListening);
+} else {
+  server.listen(port, onListening);
+}
 
 let shuttingDown = false;
 

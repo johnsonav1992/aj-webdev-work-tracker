@@ -25,7 +25,8 @@ const server = http.createServer(
     createHmrReadyFetch(
       hmrRunner,
       createFetchProxy(`http://127.0.0.1:${appPort}`, {
-        xForwardedHeaders: true
+        xForwardedHeaders: true,
+        fetch: (input, init) => fetch(input, { ...init, redirect: 'manual' })
       })
     )
   )

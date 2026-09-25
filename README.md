@@ -8,7 +8,8 @@ The initial product requirements and still-open technology decisions are in [`do
 
 - The overview dashboard uses illustrative data only.
 - The timer runs in the current browser session and does not save entries.
-- Authentication and application-level create/edit flows are not implemented yet.
+- Google OAuth login and first-time signup are implemented when `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` are configured. First-time Google sign-in creates a workspace for that user.
+- Email/password login remains available for existing credentials; the initial account is created through Google sign-up.
 - The local SQLite connector, account-scoped schema, and SQL-first migration are in place. Run `npm run db:migrate` to initialize the local database and `npm run db:status` to inspect migration state.
 - Invoices, Stripe, and deployment are future work. The planned database path is local SQLite through Remix's SQLite connector, with the future Turso driver documented in `docs/requirements.md`.
 

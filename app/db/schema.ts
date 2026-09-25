@@ -56,28 +56,6 @@ export const authIdentities = table({
   }
 });
 
-export const accountInvitations = table({
-  name: 'account_invitations',
-  columns: {
-    id: c.uuid().notNull(),
-    account_id: c
-      .uuid()
-      .references('accounts', 'id', 'account_invitations_account_fk')
-      .onDelete('cascade')
-      .notNull(),
-    email: c.varchar(320).notNull(),
-    token_hash: c.varchar(64).notNull().unique('account_invitations_token_hash_uq'),
-    created_by_user_id: c
-      .uuid()
-      .references('users', 'id', 'account_invitations_creator_fk')
-      .onDelete('set null')
-      .nullable(),
-    created_at: c.integer().notNull(),
-    expires_at: c.integer().notNull(),
-    accepted_at: c.integer().nullable()
-  }
-});
-
 export const accountSettings = table({
   name: 'account_settings',
   columns: {

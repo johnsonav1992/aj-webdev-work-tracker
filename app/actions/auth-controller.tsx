@@ -10,12 +10,7 @@ import {
   googleAuthProvider,
   passwordAuthProvider
 } from '../auth/auth.server.ts';
-import {
-  createGoogleUserFromInvitation,
-  createInvitedUser,
-  findGoogleLoginUser,
-  findValidInvitation
-} from '../db/auth.ts';
+import { createGoogleUser, findGoogleLoginUser } from '../db/auth.ts';
 import { routes } from '../routes.ts';
 import type { AppContext } from '../router.ts';
 import { LoginPage } from './auth/login-page.tsx';
@@ -24,19 +19,10 @@ import { SignupPage } from './auth/signup-page.tsx';
 const redirectTo = (context: { url: URL }, path: string) =>
   Response.redirect(new URL(path, context.url), 303);
 
-const hasValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
 const loginError = (
   value: string | null
 ): 'invalid-credentials' | 'google-unavailable' | 'google-failed' | undefined =>
   value === 'invalid-credentials' || value === 'google-unavailable' || value === 'google-failed'
-    ? value
-    : undefined;
-
-const signupError = (
-  value: string | null
-): 'invalid-invitation' | 'password-too-short' | 'invalid-email' | undefined =>
-  value === 'invalid-invitation' || value === 'password-too-short' || value === 'invalid-email'
     ? value
     : undefined;
 
@@ -72,60 +58,15 @@ export const loginController = createController(routes.auth.login, {
 
 export const signupController = createController(routes.auth.signup, {
   actions: {
-    index: async (context) => {
+    index: (context) => {
       if (context.get(Auth).ok) return redirectTo(context, '/');
-      const token = context.url.searchParams.get('token') ?? '';
-      const invitation = token ? await findValidInvitation(token) : null;
       return context.render(
         <SignupPage
-          csrfToken={getCsrfToken(context)}
-          token={token}
-          invitedEmail={invitation?.email ?? ''}
-          invitationValid={invitation !== null}
           googleEnabled={googleAuthProvider !== null}
-          error={signupError(context.url.searchParams.get('error'))}
         />
       );
     },
-    action: async (context) => {
-      const data = context.get(FormData) ?? new FormData();
-      const token = String(data.get('token') ?? '');
-      const email = String(data.get('email') ?? '').trim();
-      const displayName = String(data.get('displayName') ?? '').trim();
-      const password = String(data.get('password') ?? '');
-
-      if (!hasValidEmail(email)) {
-        return redirectTo(
-          context,
-          `/signup?token=${encodeURIComponent(token)}&error=invalid-email`
-        );
-      }
-
-      if (password.length < 12 || Buffer.byteLength(password, 'utf8') > 1024) {
-        return redirectTo(
-          context,
-          `/signup?token=${encodeURIComponent(token)}&error=password-too-short`
-        );
-      }
-
-      if (!displayName || displayName.length > 160) {
-        return redirectTo(
-          context,
-          `/signup?token=${encodeURIComponent(token)}&error=invalid-invitation`
-        );
-      }
-
-      try {
-        const user = await createInvitedUser({ token, email, displayName, password });
-        completeSession(context, user);
-        return redirectTo(context, '/');
-      } catch {
-        return redirectTo(
-          context,
-          `/signup?token=${encodeURIComponent(token)}&error=invalid-invitation`
-        );
-      }
-    }
+    action: (context) => redirectTo(context, '/signup')
   }
 });
 
@@ -141,38 +82,32 @@ export const googleController = createController(routes.auth.google, {
     start: (context) => {
       if (!googleAuthProvider) return redirectTo(context, '/login?error=google-unavailable');
       return startExternalAuth(googleAuthProvider, context, {
-        returnTo: context.url.searchParams.get('returnTo') ?? '/login'
+        returnTo: context.url.searchParams.get('returnTo') ?? '/'
       });
     },
     callback: async (context) => {
       if (!googleAuthProvider) return redirectTo(context, '/login?error=google-unavailable');
 
+      let stage = 'provider callback';
       try {
         const { result, returnTo } = await finishExternalAuth(googleAuthProvider, context);
         const { profile } = result;
 
+        stage = 'verified Google profile';
         if (!profile.email || profile.email_verified !== true) {
           return redirectTo(context, '/login?error=google-failed');
         }
 
-        let user = await findGoogleLoginUser(result.account.providerAccountId);
-
-        if (!user) {
-          const redirectTarget = returnTo ? new URL(returnTo, appOrigin) : null;
-          const token =
-            redirectTarget?.pathname === '/signup'
-              ? redirectTarget.searchParams.get('token')
-              : null;
-          if (!token) return redirectTo(context, '/signup?error=invalid-invitation');
-
-          user = await createGoogleUserFromInvitation({
-            token,
+        stage = 'find or create account';
+        const user =
+          (await findGoogleLoginUser(result.account.providerAccountId)) ??
+          (await createGoogleUser({
             email: profile.email,
             displayName: profile.name ?? null,
             providerSubject: result.account.providerAccountId
-          });
-        }
+          }));
 
+        stage = 'complete app session';
         completeSession(context, user);
         const target = returnTo ? new URL(returnTo, appOrigin) : null;
         const safeReturnTo =
@@ -180,7 +115,15 @@ export const googleController = createController(routes.auth.google, {
             ? target.pathname
             : '/';
         return redirectTo(context, safeReturnTo);
-      } catch {
+      } catch (error) {
+        const details =
+          error instanceof Error
+            ? error.message
+                .replace(/https?:\/\/\S+/gi, '[url]')
+                .replace(/(code|state|client_secret|access_token|id_token)=[^\s&]+/gi, '$1=[redacted]')
+                .slice(0, 200)
+            : 'unknown error';
+        console.error(`[google-auth] Callback failed at ${stage}: ${details}`);
         return redirectTo(context, '/login?error=google-failed');
       }
     }

@@ -1,8 +1,7 @@
-import { createHash, randomBytes, randomUUID, scrypt, timingSafeEqual } from 'node:crypto';
+import { randomUUID, scrypt, timingSafeEqual } from 'node:crypto';
 
 import { database } from './database.ts';
 import {
-  accountInvitations,
   accountMembers,
   accountSettings,
   accounts,
@@ -15,7 +14,6 @@ const passwordCost = 32_768;
 const passwordBlockSize = 8;
 const passwordParallelization = 3;
 const passwordMaxMemory = 64 * 1024 * 1024;
-const invitationLifetimeMs = 7 * 24 * 60 * 60 * 1000;
 
 const deriveScrypt = (password: string, salt: Buffer): Promise<Buffer> =>
   new Promise((resolve, reject) => {
@@ -44,20 +42,6 @@ export interface AuthenticatedUser {
 }
 
 const normalizeEmail = (email: string): string => email.trim().toLowerCase();
-
-export const hashPassword = async (password: string): Promise<string> => {
-  const salt = randomBytes(16);
-  const derived = await deriveScrypt(password, salt);
-
-  return [
-    'scrypt',
-    passwordCost,
-    passwordBlockSize,
-    passwordParallelization,
-    salt.toString('base64url'),
-    derived.toString('base64url')
-  ].join('$');
-};
 
 export const verifyPassword = async (password: string, encodedHash: string): Promise<boolean> => {
   const [algorithm, cost, blockSize, parallelization, saltText, hashText, ...extra] =
@@ -143,170 +127,17 @@ export const findGoogleLoginUser = async (providerSubject: string) => {
   } satisfies AuthenticatedUser;
 };
 
-export const createOwnerAccount = async (input: {
-  accountName: string;
-  displayName: string;
-  email: string;
-  password: string;
-}) => {
-  const existingUsers = await database.findMany(users, { limit: 1 });
-  if (existingUsers.length > 0) throw new Error('An owner account has already been provisioned.');
-
-  const now = Date.now();
-  const accountId = randomUUID();
-  const userId = randomUUID();
-  const normalizedEmail = normalizeEmail(input.email);
-  const passwordHash = await hashPassword(input.password);
-
-  await database.transaction(async (transaction) => {
-    await transaction.create(accounts, {
-      id: accountId,
-      name: input.accountName.trim(),
-      created_at: now,
-      updated_at: now
-    });
-    await transaction.create(users, {
-      id: userId,
-      email: normalizedEmail,
-      display_name: input.displayName.trim(),
-      password_hash: passwordHash,
-      created_at: now,
-      updated_at: now
-    });
-    await transaction.create(accountMembers, {
-      account_id: accountId,
-      user_id: userId,
-      role: 'owner',
-      created_at: now
-    });
-    await transaction.create(accountSettings, {
-      account_id: accountId,
-      key: 'default_currency',
-      value_json: JSON.stringify('USD'),
-      updated_at: now
-    });
-  });
-
-  return { accountId, userId, email: normalizedEmail };
-};
-
-export const createAccountInvitation = async (input: {
-  accountId: string;
-  email: string;
-  createdByUserId: string;
-}) => {
-  const token = randomBytes(32).toString('base64url');
-  const now = Date.now();
-  const expiresAt = now + invitationLifetimeMs;
-
-  await database.create(accountInvitations, {
-    id: randomUUID(),
-    account_id: input.accountId,
-    email: normalizeEmail(input.email),
-    token_hash: createHash('sha256').update(token).digest('hex'),
-    created_by_user_id: input.createdByUserId,
-    created_at: now,
-    expires_at: expiresAt,
-    accepted_at: null
-  });
-
-  return { token, expiresAt };
-};
-
-export const findValidInvitation = async (token: string) => {
-  if (!/^[A-Za-z0-9_-]{40,50}$/.test(token)) return null;
-
-  const invitation = await database.findOne(accountInvitations, {
-    where: { token_hash: createHash('sha256').update(token).digest('hex') }
-  });
-
-  if (!invitation || invitation.accepted_at !== null || invitation.expires_at <= Date.now()) {
-    return null;
-  }
-
-  return invitation;
-};
-
-export const createInvitedUser = async (input: {
-  token: string;
-  email: string;
-  displayName: string;
-  password: string;
-}) => {
-  const email = normalizeEmail(input.email);
-  const invitation = await findValidInvitation(input.token);
-  if (!invitation || invitation.email !== email)
-    throw new Error('This invitation is invalid or expired.');
-  if (await findUserByEmail(email)) throw new Error('This invitation is invalid or expired.');
-
-  const now = Date.now();
-  const userId = randomUUID();
-  const passwordHash = await hashPassword(input.password);
-
-  return database.transaction(async (transaction) => {
-    const currentInvitation = await transaction.find(accountInvitations, invitation.id);
-
-    if (
-      !currentInvitation ||
-      currentInvitation.accepted_at !== null ||
-      currentInvitation.expires_at <= Date.now()
-    ) {
-      throw new Error('This invitation is invalid or expired.');
-    }
-
-    const duplicate = await transaction.findOne(users, { where: { email } });
-    if (duplicate) throw new Error('This invitation is invalid or expired.');
-
-    await transaction.create(users, {
-      id: userId,
-      email,
-      display_name: input.displayName.trim(),
-      password_hash: passwordHash,
-      created_at: now,
-      updated_at: now
-    });
-    await transaction.create(accountMembers, {
-      account_id: currentInvitation.account_id,
-      user_id: userId,
-      role: 'member',
-      created_at: now
-    });
-    await transaction.update(accountInvitations, currentInvitation.id, { accepted_at: now });
-
-    return {
-      id: userId,
-      email,
-      displayName: input.displayName.trim(),
-      accountId: currentInvitation.account_id
-    } satisfies AuthenticatedUser;
-  });
-};
-
-export const createGoogleUserFromInvitation = async (input: {
-  token: string;
+export const createGoogleUser = async (input: {
   email: string;
   displayName: string | null;
   providerSubject: string;
 }) => {
   const email = normalizeEmail(input.email);
-  const invitation = await findValidInvitation(input.token);
-  if (!invitation || invitation.email !== email)
-    throw new Error('This invitation is invalid or expired.');
-
   const now = Date.now();
   const userId = randomUUID();
+  const accountId = randomUUID();
 
   return database.transaction(async (transaction) => {
-    const currentInvitation = await transaction.find(accountInvitations, invitation.id);
-
-    if (
-      !currentInvitation ||
-      currentInvitation.accepted_at !== null ||
-      currentInvitation.expires_at <= Date.now()
-    ) {
-      throw new Error('This invitation is invalid or expired.');
-    }
-
     const existingUser = await transaction.findOne(users, { where: { email } });
     const user = existingUser ?? {
       id: userId,
@@ -320,16 +151,32 @@ export const createGoogleUserFromInvitation = async (input: {
     if (!existingUser) await transaction.create(users, user);
 
     const membership = await transaction.findOne(accountMembers, {
-      where: { account_id: currentInvitation.account_id, user_id: user.id }
+      where: { user_id: user.id },
+      orderBy: ['created_at', 'asc']
     });
 
-    if (!membership) {
+    let accountIdForUser = membership?.account_id;
+
+    if (!accountIdForUser) {
+      await transaction.create(accounts, {
+        id: accountId,
+        name: input.displayName?.trim() ? `${input.displayName.trim()}'s Workspace` : 'My Workspace',
+        created_at: now,
+        updated_at: now
+      });
       await transaction.create(accountMembers, {
-        account_id: currentInvitation.account_id,
+        account_id: accountId,
         user_id: user.id,
-        role: 'member',
+        role: 'owner',
         created_at: now
       });
+      await transaction.create(accountSettings, {
+        account_id: accountId,
+        key: 'default_currency',
+        value_json: JSON.stringify('USD'),
+        updated_at: now
+      });
+      accountIdForUser = accountId;
     }
 
     const identity = await transaction.findOne(authIdentities, {
@@ -346,13 +193,11 @@ export const createGoogleUserFromInvitation = async (input: {
       });
     }
 
-    await transaction.update(accountInvitations, currentInvitation.id, { accepted_at: now });
-
     return {
       id: user.id,
       email,
       displayName: user.display_name,
-      accountId: currentInvitation.account_id
+      accountId: accountIdForUser
     } satisfies AuthenticatedUser;
   });
 };

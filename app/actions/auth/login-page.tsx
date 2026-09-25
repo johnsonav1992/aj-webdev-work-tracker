@@ -4,6 +4,7 @@ import { css } from 'remix/ui';
 import { primaryButtonStyle, quietButtonStyle, themeTokens } from '../../theme/tokens.ts';
 import { AuthLayout } from '../../ui/auth-layout.tsx';
 import { TextField } from '../../ui/text-field.tsx';
+import { GoogleIcon } from '../../ui/icons/google-icon.tsx';
 
 export interface LoginPageProps {
   csrfToken: string;
@@ -53,16 +54,21 @@ export const LoginPage = (handle: Handle<LoginPageProps>) => {
           Sign in
         </button>
       </form>
-      {handle.props.googleEnabled ? (
-        <a
-          href='/auth/google'
-          mix={[
-            quietButtonStyle,
-            css({ width: '100%', justifyContent: 'center', marginTop: `${themeTokens.spacing[3]}` })
-          ]}
-        >
-          Continue with Google
-        </a>
+      <a
+        href='/auth/google'
+        data-rmx-document
+        mix={[
+          quietButtonStyle,
+          css({ width: '100%', justifyContent: 'center', marginTop: `${themeTokens.spacing[3]}` })
+        ]}
+      >
+        <GoogleIcon />
+        Continue with Google
+      </a>
+      {!handle.props.googleEnabled ? (
+        <p mix={css({ color: `${themeTokens.palette.text.muted}`, textAlign: 'center' })}>
+          Google sign-in needs OAuth credentials in the local environment.
+        </p>
       ) : null}
       <p
         mix={css({
@@ -72,7 +78,7 @@ export const LoginPage = (handle: Handle<LoginPageProps>) => {
           textAlign: 'center'
         })}
       >
-        Have an invitation? <a href='/signup'>Create your account</a>
+        New to the tracker? <a href='/signup'>Create your account</a>
       </p>
     </AuthLayout>
   );
