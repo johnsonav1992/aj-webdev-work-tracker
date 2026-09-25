@@ -1,12 +1,12 @@
-import type { Handle } from 'remix/ui'
-import { css } from 'remix/ui'
+import type { Handle } from 'remix/ui';
+import { css } from 'remix/ui';
 
-import { themeTokens } from '../../theme/tokens.ts'
+import { themeTokens } from '../../theme/tokens.ts';
 
-type Method = 'Bank transfer' | 'Card' | 'Check' | 'Cash' | 'Other'
+type Method = 'Bank transfer' | 'Card' | 'Check' | 'Cash' | 'Other';
 
 export function PaymentRow(
-  handle: Handle<{ client: string; project: string; date: string; amount: string; method: Method }>,
+  handle: Handle<{ client: string; project: string; date: string; amount: string; method: Method }>
 ) {
   return () => (
     <div
@@ -15,7 +15,7 @@ export function PaymentRow(
         gridTemplateColumns: 'minmax(0, 1fr) auto',
         gap: `${themeTokens.spacing[2]}`,
         padding: `${themeTokens.spacing[3]} 0`,
-        borderTop: `1px solid ${themeTokens.palette.divider}`,
+        borderTop: `1px solid ${themeTokens.palette.divider}`
       })}
     >
       <div mix={css({ minWidth: 0 })}>
@@ -27,7 +27,7 @@ export function PaymentRow(
             display: 'block',
             marginTop: `${themeTokens.spacing[1]}`,
             color: `${themeTokens.palette.text.muted}`,
-            fontSize: `${themeTokens.typography.size.caption}`,
+            fontSize: `${themeTokens.typography.size.caption}`
           })}
         >
           {handle.props.project} · {handle.props.date} · {handle.props.method}
@@ -37,5 +37,5 @@ export function PaymentRow(
         {handle.props.amount}
       </strong>
     </div>
-  )
+  );
 }

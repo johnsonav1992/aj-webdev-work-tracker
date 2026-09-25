@@ -1,10 +1,10 @@
-import type { Handle, RemixNode } from 'remix/ui'
-import { css } from 'remix/ui'
+import type { Handle, RemixNode } from 'remix/ui';
+import { css } from 'remix/ui';
 
-import { eyebrowStyle, themeTokens } from '../theme/tokens.ts'
+import { eyebrowStyle, themeTokens } from '../theme/tokens.ts';
 
 export function SectionHeading(
-  handle: Handle<{ eyebrow?: string; title: string; action?: RemixNode }>,
+  handle: Handle<{ eyebrow?: string; title: string; action?: RemixNode }>
 ) {
   return () => (
     <div
@@ -13,7 +13,7 @@ export function SectionHeading(
         alignItems: 'end',
         justifyContent: 'space-between',
         gap: `${themeTokens.spacing[4]}`,
-        marginBottom: '15px',
+        marginBottom: '15px'
       })}
     >
       <div>
@@ -25,7 +25,7 @@ export function SectionHeading(
             margin: 0,
             fontSize: `${themeTokens.typography.size.section}`,
             lineHeight: 1.3,
-            letterSpacing: '-0.025em',
+            letterSpacing: '-0.025em'
           })}
         >
           {handle.props.title}
@@ -33,5 +33,5 @@ export function SectionHeading(
       </div>
       {handle.props.action}
     </div>
-  )
+  );
 }

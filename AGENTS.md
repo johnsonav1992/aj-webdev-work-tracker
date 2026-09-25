@@ -34,4 +34,4 @@ Refer to ./.agents/skills/remix/SKILL.md for the Remix mental model and how to f
 
 This starter intentionally begins small; add directories like `app/data/`, `app/middleware/`, `app/ui/`, and `test/` only when you need them.
 
-Use `npm run lint`, `npm run format`, and `npm run check` for Biome. Keep checks separate from formatting so lint and check commands do not rewrite files.
+Use `npm run lint` for Oxlint and `npm run format` for Oxfmt. `npm run format:check` and `npm run lint` are non-mutating; `npm run check` runs both checks.

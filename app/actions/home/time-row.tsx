@@ -1,25 +1,25 @@
-import type { Handle } from 'remix/ui'
-import { css } from 'remix/ui'
+import type { Handle } from 'remix/ui';
+import { css } from 'remix/ui';
 
-import { themeTokens } from '../../theme/tokens.ts'
-import { ClockIcon } from '../../ui/icons/clock-icon.tsx'
+import { themeTokens } from '../../theme/tokens.ts';
+import { ClockIcon } from '../../ui/icons/clock-icon.tsx';
 
-type Tint = 'green' | 'blue' | 'amber'
+type Tint = 'green' | 'blue' | 'amber';
 
 export function TimeRow(
-  handle: Handle<{ title: string; client: string; date: string; duration: string; tint: Tint }>,
+  handle: Handle<{ title: string; client: string; date: string; duration: string; tint: Tint }>
 ) {
   return () => {
     const background = {
       green: `${themeTokens.palette.success.light}`,
       blue: `${themeTokens.palette.info.light}`,
-      amber: `${themeTokens.palette.warning.light}`,
-    }[handle.props.tint]
+      amber: `${themeTokens.palette.warning.light}`
+    }[handle.props.tint];
     const color = {
       green: `${themeTokens.palette.success.dark}`,
       blue: `${themeTokens.palette.info.main}`,
-      amber: `${themeTokens.palette.warning.main}`,
-    }[handle.props.tint]
+      amber: `${themeTokens.palette.warning.main}`
+    }[handle.props.tint];
 
     return (
       <div
@@ -28,7 +28,7 @@ export function TimeRow(
           alignItems: 'center',
           gap: `${themeTokens.spacing[3]}`,
           padding: `${themeTokens.spacing[3]} 0`,
-          borderTop: `1px solid ${themeTokens.palette.divider}`,
+          borderTop: `1px solid ${themeTokens.palette.divider}`
         })}
       >
         <span
@@ -40,7 +40,7 @@ export function TimeRow(
             flex: '0 0 32px',
             borderRadius: `${themeTokens.shape.medium}`,
             background,
-            color,
+            color
           })}
         >
           <ClockIcon />
@@ -52,7 +52,7 @@ export function TimeRow(
               overflow: 'hidden',
               fontSize: `${themeTokens.typography.size.small}`,
               textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
+              whiteSpace: 'nowrap'
             })}
           >
             {handle.props.title}
@@ -64,22 +64,22 @@ export function TimeRow(
               color: `${themeTokens.palette.text.muted}`,
               fontSize: `${themeTokens.typography.size.caption}`,
               textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
+              whiteSpace: 'nowrap'
             })}
           >
-            {handle.props.client} <span aria-hidden="true">·</span> {handle.props.date}
+            {handle.props.client} <span aria-hidden='true'>·</span> {handle.props.date}
           </p>
         </div>
         <strong
           mix={css({
             fontSize: `${themeTokens.typography.size.small}`,
             fontVariantNumeric: 'tabular-nums',
-            whiteSpace: 'nowrap',
+            whiteSpace: 'nowrap'
           })}
         >
           {handle.props.duration}
         </strong>
       </div>
-    )
-  }
+    );
+  };
 }

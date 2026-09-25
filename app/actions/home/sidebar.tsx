@@ -1,16 +1,16 @@
-import type { Handle, RemixNode } from 'remix/ui'
-import { css } from 'remix/ui'
-import { eyebrowStyle, themeTokens } from '../../theme/tokens.ts'
-import { Avatar } from '../../ui/avatar.tsx'
-import { BrandMarkIcon } from '../../ui/icons/brand-mark-icon.tsx'
-import { ClockIcon } from '../../ui/icons/clock-icon.tsx'
-import { GridIcon } from '../../ui/icons/grid-icon.tsx'
-import { MoreIcon } from '../../ui/icons/more-icon.tsx'
-import { PaymentsIcon } from '../../ui/icons/payments-icon.tsx'
-import { ProjectsIcon } from '../../ui/icons/projects-icon.tsx'
-import { UsersIcon } from '../../ui/icons/users-icon.tsx'
+import type { Handle, RemixNode } from 'remix/ui';
+import { css } from 'remix/ui';
+import { eyebrowStyle, themeTokens } from '../../theme/tokens.ts';
+import { Avatar } from '../../ui/avatar.tsx';
+import { BrandMarkIcon } from '../../ui/icons/brand-mark-icon.tsx';
+import { ClockIcon } from '../../ui/icons/clock-icon.tsx';
+import { GridIcon } from '../../ui/icons/grid-icon.tsx';
+import { MoreIcon } from '../../ui/icons/more-icon.tsx';
+import { PaymentsIcon } from '../../ui/icons/payments-icon.tsx';
+import { ProjectsIcon } from '../../ui/icons/projects-icon.tsx';
+import { UsersIcon } from '../../ui/icons/users-icon.tsx';
 
-type NavItem = { label: string; href: string; icon: RemixNode; active?: boolean }
+type NavItem = { label: string; href: string; icon: RemixNode; active?: boolean };
 
 export function Sidebar(_handle: Handle) {
   const navigation: NavItem[] = [
@@ -18,8 +18,8 @@ export function Sidebar(_handle: Handle) {
     { label: 'Clients', href: '#clients', icon: <UsersIcon /> },
     { label: 'Projects', href: '#projects', icon: <ProjectsIcon /> },
     { label: 'Time tracking', href: '#time-tracking', icon: <ClockIcon /> },
-    { label: 'Payments', href: '#payments', icon: <PaymentsIcon /> },
-  ]
+    { label: 'Payments', href: '#payments', icon: <PaymentsIcon /> }
+  ];
 
   return () => (
     <aside
@@ -38,19 +38,19 @@ export function Sidebar(_handle: Handle) {
           height: 'auto',
           padding: `${themeTokens.spacing[3]} ${themeTokens.spacing[5]}`,
           borderRight: 0,
-          borderBottom: `1px solid ${themeTokens.palette.divider}`,
-        },
+          borderBottom: `1px solid ${themeTokens.palette.divider}`
+        }
       })}
     >
       <a
-        href="#overview"
+        href='#overview'
         mix={css({
           display: 'flex',
           alignItems: 'center',
           gap: `${themeTokens.spacing[3]}`,
           padding: `0 ${themeTokens.spacing[2]}`,
           color: `${themeTokens.palette.text.primary}`,
-          textDecoration: 'none',
+          textDecoration: 'none'
         })}
       >
         <span
@@ -61,7 +61,7 @@ export function Sidebar(_handle: Handle) {
             placeItems: 'center',
             borderRadius: `${themeTokens.shape.medium}`,
             background: `${themeTokens.palette.success.main}`,
-            color: `${themeTokens.palette.primary.contrastText}`,
+            color: `${themeTokens.palette.primary.contrastText}`
           })}
         >
           <BrandMarkIcon />
@@ -71,7 +71,7 @@ export function Sidebar(_handle: Handle) {
             mix={css({
               display: 'block',
               fontSize: `${themeTokens.typography.size.body}`,
-              letterSpacing: '-0.02em',
+              letterSpacing: '-0.02em'
             })}
           >
             AJ Workbench
@@ -80,7 +80,7 @@ export function Sidebar(_handle: Handle) {
             mix={css({
               display: 'block',
               color: `${themeTokens.palette.text.muted}`,
-              fontSize: `${themeTokens.typography.size.caption}`,
+              fontSize: `${themeTokens.typography.size.caption}`
             })}
           >
             Freelance workspace
@@ -93,22 +93,22 @@ export function Sidebar(_handle: Handle) {
           eyebrowStyle,
           css({
             margin: `${themeTokens.spacing[8]} ${themeTokens.spacing[3]} ${themeTokens.spacing[2]}`,
-            '@media (max-width: 900px)': { display: 'none' },
-          }),
+            '@media (max-width: 900px)': { display: 'none' }
+          })
         ]}
       >
         Workspace
       </p>
       <nav
-        aria-label="Main navigation"
+        aria-label='Main navigation'
         mix={css({
           display: 'grid',
           gap: `${themeTokens.spacing[1]}`,
           '@media (max-width: 900px)': {
             display: 'flex',
             overflowX: 'auto',
-            marginTop: `${themeTokens.spacing[3]}`,
-          },
+            marginTop: `${themeTokens.spacing[3]}`
+          }
         })}
       >
         {navigation.map((item) => (
@@ -136,8 +136,8 @@ export function Sidebar(_handle: Handle) {
               '&:hover': {
                 background: item.active
                   ? `${themeTokens.palette.success.light}`
-                  : `${themeTokens.palette.background.hover}`,
-              },
+                  : `${themeTokens.palette.background.hover}`
+              }
             })}
           >
             <span mix={css({ display: 'grid', placeItems: 'center', width: '18px' })}>
@@ -150,23 +150,23 @@ export function Sidebar(_handle: Handle) {
 
       <div mix={css({ marginTop: 'auto', '@media (max-width: 900px)': { display: 'none' } })}>
         <a
-          href="#settings"
+          href='#settings'
           mix={css({
             display: 'flex',
             alignItems: 'center',
             gap: `${themeTokens.spacing[3]}`,
             padding: `${themeTokens.spacing[3]} ${themeTokens.spacing[2]} ${themeTokens.spacing[1]}`,
             color: `${themeTokens.palette.text.secondary}`,
-            textDecoration: 'none',
+            textDecoration: 'none'
           })}
         >
-          <Avatar initials="AJ" />
+          <Avatar initials='AJ' />
           <span mix={css({ minWidth: 0, flex: 1 })}>
             <strong
               mix={css({
                 display: 'block',
                 color: `${themeTokens.palette.text.primary}`,
-                fontSize: `${themeTokens.typography.size.small}`,
+                fontSize: `${themeTokens.typography.size.small}`
               })}
             >
               Alex Johnson
@@ -174,7 +174,7 @@ export function Sidebar(_handle: Handle) {
             <small
               mix={css({
                 color: `${themeTokens.palette.text.muted}`,
-                fontSize: `${themeTokens.typography.size.caption}`,
+                fontSize: `${themeTokens.typography.size.caption}`
               })}
             >
               Account settings
@@ -184,5 +184,5 @@ export function Sidebar(_handle: Handle) {
         </a>
       </div>
     </aside>
-  )
+  );
 }

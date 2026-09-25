@@ -1,8 +1,8 @@
-import type { Handle } from 'remix/ui'
-import { css } from 'remix/ui'
+import type { Handle } from 'remix/ui';
+import { css } from 'remix/ui';
 
-import { themeTokens } from '../../theme/tokens.ts'
-import { BellIcon } from '../../ui/icons/bell-icon.tsx'
+import { themeTokens } from '../../theme/tokens.ts';
+import { BellIcon } from '../../ui/icons/bell-icon.tsx';
 
 export function Topbar(_handle: Handle) {
   return () => (
@@ -11,7 +11,7 @@ export function Topbar(_handle: Handle) {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        minHeight: '35px',
+        minHeight: '35px'
       })}
     >
       <div
@@ -20,15 +20,15 @@ export function Topbar(_handle: Handle) {
           alignItems: 'center',
           gap: `${themeTokens.spacing[2]}`,
           color: `${themeTokens.palette.text.muted}`,
-          fontSize: `${themeTokens.typography.size.small}`,
+          fontSize: `${themeTokens.typography.size.small}`
         })}
       >
         <span>Workspace</span>
-        <span aria-hidden="true">/</span>
+        <span aria-hidden='true'>/</span>
         <strong
           mix={css({
             color: `${themeTokens.palette.text.secondary}`,
-            fontWeight: `${themeTokens.typography.weight.semibold}`,
+            fontWeight: `${themeTokens.typography.weight.semibold}`
           })}
         >
           Overview
@@ -42,14 +42,14 @@ export function Topbar(_handle: Handle) {
             borderRadius: `${themeTokens.shape.small}`,
             background: `${themeTokens.palette.background.paper}`,
             color: `${themeTokens.palette.text.secondary}`,
-            fontSize: `${themeTokens.typography.size.caption}`,
+            fontSize: `${themeTokens.typography.size.caption}`
           })}
         >
           This week
         </span>
         <button
-          type="button"
-          aria-label="Notifications"
+          type='button'
+          aria-label='Notifications'
           mix={css({
             width: '34px',
             height: '34px',
@@ -58,12 +58,12 @@ export function Topbar(_handle: Handle) {
             border: `1px solid ${themeTokens.palette.divider}`,
             borderRadius: `${themeTokens.shape.medium}`,
             background: `${themeTokens.palette.background.paper}`,
-            color: `${themeTokens.palette.text.secondary}`,
+            color: `${themeTokens.palette.text.secondary}`
           })}
         >
           <BellIcon />
         </button>
       </div>
     </header>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-import { css } from 'remix/ui'
+import { css } from 'remix/ui';
 
 /** Shared, semantic design tokens. Components should choose roles, not own colors. */
 export const tokens = {
@@ -12,7 +12,7 @@ export const tokens = {
     background: { default: '#f5f7f4', paper: '#ffffff', subtle: '#f7f9f7', hover: '#eef2ee' },
     divider: '#e5e9e5',
     dividerStrong: '#cbd4cd',
-    focus: '#9ac7ad',
+    focus: '#9ac7ad'
   },
   spacing: { 0: '0px', 1: '4px', 2: '8px', 3: '12px', 4: '16px', 5: '24px', 6: '32px', 8: '48px' },
   shape: { small: '9px', medium: '12px', large: '14px', pill: '999px' },
@@ -26,14 +26,14 @@ export const tokens = {
       section: '17px',
       metric: '29px',
       metricSmall: '23px',
-      timer: '36px',
+      timer: '36px'
     },
-    weight: { regular: 400, medium: 550, semibold: 600, bold: 700 },
+    weight: { regular: 400, medium: 550, semibold: 600, bold: 700 }
   },
-  elevation: { low: '0 2px 7px rgb(24 35 31 / 3%)' },
-} as const
+  elevation: { low: '0 2px 7px rgb(24 35 31 / 3%)' }
+} as const;
 
-export type ThemeTokens = typeof tokens
+export type ThemeTokens = typeof tokens;
 
 /** Typed references for component styles; invalid token paths fail at compile time. */
 export const themeTokens = {
@@ -42,42 +42,42 @@ export const themeTokens = {
       main: 'var(--palette-primary-main)',
       dark: 'var(--palette-primary-dark)',
       light: 'var(--palette-primary-light)',
-      contrastText: 'var(--palette-primary-contrast-text)',
+      contrastText: 'var(--palette-primary-contrast-text)'
     },
     success: {
       main: 'var(--palette-success-main)',
       dark: 'var(--palette-success-dark)',
-      light: 'var(--palette-success-light)',
+      light: 'var(--palette-success-light)'
     },
     warning: {
       main: 'var(--palette-warning-main)',
       dark: 'var(--palette-warning-dark)',
-      light: 'var(--palette-warning-light)',
+      light: 'var(--palette-warning-light)'
     },
     info: {
       main: 'var(--palette-info-main)',
       dark: 'var(--palette-info-dark)',
-      light: 'var(--palette-info-light)',
+      light: 'var(--palette-info-light)'
     },
     error: {
       main: 'var(--palette-error-main)',
       dark: 'var(--palette-error-dark)',
-      light: 'var(--palette-error-light)',
+      light: 'var(--palette-error-light)'
     },
     text: {
       primary: 'var(--palette-text-primary)',
       secondary: 'var(--palette-text-secondary)',
-      muted: 'var(--palette-text-muted)',
+      muted: 'var(--palette-text-muted)'
     },
     background: {
       default: 'var(--palette-background-default)',
       paper: 'var(--palette-background-paper)',
       subtle: 'var(--palette-background-subtle)',
-      hover: 'var(--palette-background-hover)',
+      hover: 'var(--palette-background-hover)'
     },
     divider: 'var(--palette-divider)',
     dividerStrong: 'var(--palette-divider-strong)',
-    focus: 'var(--palette-focus)',
+    focus: 'var(--palette-focus)'
   },
   spacing: {
     0: '0px',
@@ -87,13 +87,13 @@ export const themeTokens = {
     4: 'var(--spacing-4)',
     5: 'var(--spacing-5)',
     6: 'var(--spacing-6)',
-    8: 'var(--spacing-8)',
+    8: 'var(--spacing-8)'
   },
   shape: {
     small: 'var(--shape-small)',
     medium: 'var(--shape-medium)',
     large: 'var(--shape-large)',
-    pill: 'var(--shape-pill)',
+    pill: 'var(--shape-pill)'
   },
   typography: {
     size: {
@@ -103,16 +103,16 @@ export const themeTokens = {
       section: 'var(--typography-size-section)',
       metric: 'var(--typography-size-metric)',
       metricSmall: 'var(--typography-size-metric-small)',
-      timer: 'var(--typography-size-timer)',
+      timer: 'var(--typography-size-timer)'
     },
     weight: {
       medium: 'var(--typography-weight-medium)',
       semibold: 'var(--typography-weight-semibold)',
-      bold: 'var(--typography-weight-bold)',
-    },
+      bold: 'var(--typography-weight-bold)'
+    }
   },
-  elevation: { low: 'var(--elevation-low)' },
-} as const
+  elevation: { low: 'var(--elevation-low)' }
+} as const;
 
 export const theme = css({
   '--palette-primary-main': tokens.palette.primary.main,
@@ -176,16 +176,16 @@ export const theme = css({
   '& button, & input': { font: 'inherit' },
   '& button:focus-visible, & a:focus-visible, & input:focus-visible': {
     outline: '3px solid var(--palette-focus)',
-    outlineOffset: '2px',
-  },
-})
+    outlineOffset: '2px'
+  }
+});
 
 export const panelStyle = css({
   background: 'var(--palette-background-paper)',
   border: '1px solid var(--palette-divider)',
   borderRadius: 'var(--shape-large)',
-  boxShadow: 'var(--elevation-low)',
-})
+  boxShadow: 'var(--elevation-low)'
+});
 
 export const quietButtonStyle = css({
   appearance: 'none',
@@ -205,9 +205,9 @@ export const quietButtonStyle = css({
   transition: 'background 140ms ease, border-color 140ms ease',
   '&:hover': {
     background: 'var(--palette-background-subtle)',
-    borderColor: 'var(--palette-divider-strong)',
-  },
-})
+    borderColor: 'var(--palette-divider-strong)'
+  }
+});
 
 export const primaryButtonStyle = css({
   appearance: 'none',
@@ -227,10 +227,10 @@ export const primaryButtonStyle = css({
   transition: 'background 140ms ease, border-color 140ms ease, transform 140ms ease',
   '&:hover': {
     background: 'var(--palette-primary-dark)',
-    borderColor: 'var(--palette-primary-dark)',
+    borderColor: 'var(--palette-primary-dark)'
   },
-  '&:active': { transform: 'translateY(1px)' },
-})
+  '&:active': { transform: 'translateY(1px)' }
+});
 
 export const eyebrowStyle = css({
   margin: 0,
@@ -239,5 +239,5 @@ export const eyebrowStyle = css({
   fontWeight: tokens.typography.weight.bold,
   letterSpacing: '0.09em',
   lineHeight: 1.3,
-  textTransform: 'uppercase',
-})
+  textTransform: 'uppercase'
+});

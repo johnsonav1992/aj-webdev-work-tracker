@@ -1,10 +1,10 @@
-import { createAssetServer } from 'remix/assets'
-import { uiHmr } from 'remix/ui-hmr/assets'
+import { createAssetServer } from 'remix/assets';
+import { uiHmr } from 'remix/ui-hmr/assets';
 
-const rootDir = process.cwd()
-const nodeEnv = process.env.NODE_ENV ?? 'development'
-const isDevelopment = nodeEnv === 'development'
-const isHmr = Boolean(isDevelopment && process.env.REMIX_NODE_HMR)
+const rootDir = process.cwd();
+const nodeEnv = process.env.NODE_ENV ?? 'development';
+const isDevelopment = nodeEnv === 'development';
+const isHmr = Boolean(isDevelopment && process.env.REMIX_NODE_HMR);
 
 export const assets = createAssetServer({
   basePath: '/assets',
@@ -19,12 +19,12 @@ export const assets = createAssetServer({
   hmr: isHmr
     ? {
         channel: async () => (await import('remix/node-hmr/runtime')).createBrowserHmrChannel(),
-        moduleImporter: 'remix/multiple-import-maps-polyfill',
+        moduleImporter: 'remix/multiple-import-maps-polyfill'
       }
     : undefined,
-  scripts: { loaders: isHmr ? [uiHmr()] : undefined },
-})
+  scripts: { loaders: isHmr ? [uiHmr()] : undefined }
+});
 
-const entry = 'app/actions/public/entry.ts'
+const entry = 'app/actions/public/entry.ts';
 
-export const scriptEntry = await assets.getScriptEntry(entry)
+export const scriptEntry = await assets.getScriptEntry(entry);
