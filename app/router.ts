@@ -1,6 +1,6 @@
-import { createRouter, type MiddlewareContext } from 'remix/router'
 import { render } from 'remix/middleware/render'
 import { staticFiles } from 'remix/middleware/static'
+import { createRouter, type MiddlewareContext } from 'remix/router'
 
 import controller from './actions/controller.tsx'
 import { assets } from './assets.ts'

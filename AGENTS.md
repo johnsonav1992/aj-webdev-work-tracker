@@ -25,8 +25,13 @@ Refer to ./.agents/skills/remix/SKILL.md for the Remix mental model and how to f
 - `app/router.ts` wires routes to controllers and installs the standard Remix UI renderer used by actions
 - Put top-level route actions in `app/actions/controller.tsx`; add `app/actions/<route-key>/controller.tsx` for nested route maps. `app/actions/controller.test.ts` is the root controller's router smoke test
 - `app/actions/home-page.tsx` and `app/actions/document.tsx` render the route-owned starter UI
-- `app/actions/public/` contains the browser runtime entry and interactive prompt button
+- `app/actions/public/` contains browser-reachable source and hydrated interactions; keep database access and secrets in server-only modules
+- `app/db/` owns database setup, domain tables, and SQL-first migrations
+- `app/theme/` contains shared design tokens and common styles
+- `app/ui/` contains reusable interface components
 - `app/assets.ts` owns the server-side asset pipeline used by the asset route and render middleware
 - Root `public/` contains static files served unchanged from the app root
 
 This starter intentionally begins small; add directories like `app/data/`, `app/middleware/`, `app/ui/`, and `test/` only when you need them.
+
+Use `npm run lint`, `npm run format`, and `npm run check` for Biome. Keep checks separate from formatting so lint and check commands do not rewrite files.

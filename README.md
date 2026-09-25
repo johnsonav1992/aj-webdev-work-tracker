@@ -8,7 +8,8 @@ The initial product requirements and still-open technology decisions are in [`do
 
 - The overview dashboard uses illustrative data only.
 - The timer runs in the current browser session and does not save entries.
-- Authentication, persistence, payment processing, and deployment are not implemented or selected yet.
+- Authentication and persistent records are not implemented yet.
+- Invoices, Stripe, and deployment are future work. The planned database path is local SQLite through Remix's SQLite connector, with the future Turso driver documented in `docs/requirements.md`.
 
 ## Remix structure
 
@@ -28,4 +29,7 @@ npm run hmr
 npm run start
 npm test
 npm run typecheck
+npm run lint
+npm run format
+npm run check
 ```

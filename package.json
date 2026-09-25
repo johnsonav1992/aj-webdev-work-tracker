@@ -7,6 +7,9 @@
     "hmr": "NODE_ENV=development node hmr.ts",
     "start": "NODE_ENV=production node --import remix/node-tsx server.ts",
     "test": "NODE_ENV=test remix test",
+    "lint": "biome lint .",
+    "format": "biome format --write .",
+    "check": "biome check .",
     "typecheck": "tsc --noEmit"
   },
   "engines": {
@@ -16,6 +19,7 @@
     "remix": "^3.0.0-rc.3"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.5.14",
     "@types/node": "latest",
     "typescript": "latest"
   }

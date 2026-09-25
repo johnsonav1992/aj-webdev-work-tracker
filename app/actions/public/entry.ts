@@ -7,8 +7,8 @@ import { run } from 'remix/ui'
 
 const app = run({
   async loadModule(moduleUrl, exportName) {
-    let mod = await importModule(moduleUrl)
-    let Component = mod[exportName]
+    const mod = await importModule(moduleUrl)
+    const Component = mod[exportName]
     if (typeof Component !== 'function') {
       throw new Error(`Unknown component: ${moduleUrl}#${exportName}`)
     }
