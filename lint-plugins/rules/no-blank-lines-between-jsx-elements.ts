@@ -6,14 +6,12 @@ type RuleContext = Parameters<RuleCreate>[0];
 type RuleVisitor = ReturnType<RuleCreate>;
 type JSXElementNode = Parameters<NonNullable<RuleVisitor['JSXElement']>>[0];
 type JSXFragmentNode = Parameters<NonNullable<RuleVisitor['JSXFragment']>>[0];
+type JSXTextNode = Parameters<NonNullable<RuleVisitor['JSXText']>>[0];
 type JSXChildNode = JSXElementNode['children'][number] | JSXFragmentNode['children'][number];
 type JSXParentNode = JSXElementNode | JSXFragmentNode;
 
-const isElement = (node: JSXChildNode): node is JSXElementNode | JSXFragmentNode =>
-  node.type === 'JSXElement' || node.type === 'JSXFragment';
-
-const isWhitespaceText = (node: JSXChildNode) =>
-  node.type === 'JSXText' && node.value.trim() === '';
+const isElement = (node: JSXChildNode | undefined): node is JSXElementNode | JSXFragmentNode =>
+  node?.type === 'JSXElement' || node?.type === 'JSXFragment';
 
 const isJSXParent = (node: unknown): node is JSXParentNode =>
   typeof node === 'object' &&
@@ -25,45 +23,52 @@ export const noBlankLinesBetweenJSXElements = {
   meta: {
     type: 'layout',
     fixable: 'whitespace',
-    docs: { description: 'Disallow blank lines between JSX sibling elements' },
+    docs: { description: 'Disallow blank lines adjacent to JSX elements' },
     schema: [],
-    messages: { blankLine: 'Remove the blank line between these JSX elements.' }
+    messages: { blankLine: 'Remove the blank line adjacent to this JSX element.' }
   },
   create(context: RuleContext): RuleVisitor {
     const { sourceCode } = context;
-    const lines = sourceCode.lines;
     const newline = sourceCode.text.includes('\r\n') ? '\r\n' : '\n';
-
-    const checkElement = (node: JSXElementNode | JSXFragmentNode) => {
-      const parent = node.parent;
-      if (!isJSXParent(parent)) return;
-
-      const children = parent.children;
-      const index = children.indexOf(node);
-      if (index < 0) return;
-
-      let previousIndex = index - 1;
-      while (previousIndex >= 0 && isWhitespaceText(children[previousIndex]!)) previousIndex -= 1;
-      const previous = children[previousIndex];
-      if (!previous || !isElement(previous)) return;
-
-      const intervening = children.slice(previousIndex + 1, index);
-      if (!intervening.every(isWhitespaceText)) return;
-      if (!lines.slice(previous.loc.end.line, node.loc.start.line - 1).some((line) => !line.trim()))
-        return;
-
-      const indent = lines[node.loc.start.line - 1]?.match(/^\s*/)?.[0] ?? '';
-      context.report({
-        node,
-        messageId: 'blankLine',
-        fix: (fixer) =>
-          fixer.replaceTextRange([previous.range[1], node.range[0]], `${newline}${indent}`)
-      });
-    };
+    const blankLinePattern = /(?:\r?\n[ \t]*){2,}/;
 
     return {
-      JSXElement: checkElement,
-      JSXFragment: checkElement
+      JSXText(node: JSXTextNode) {
+        if (node.value.trim() !== '') return;
+
+        const parent = node.parent;
+        if (!isJSXParent(parent)) return;
+
+        const children = parent.children;
+        const index = children.indexOf(node);
+        if (index < 0) return;
+
+        const previous = children[index - 1];
+        const next = children[index + 1];
+        const hasElement = children.some(isElement);
+        const isAtElementBoundary =
+          isElement(previous) ||
+          isElement(next) ||
+          (index === 0 && hasElement) ||
+          (index === children.length - 1 && hasElement);
+        if (!isAtElementBoundary) return;
+
+        const text = sourceCode.getText(node);
+        if (!blankLinePattern.test(text)) return;
+
+        context.report({
+          node,
+          messageId: 'blankLine',
+          fix: (fixer) =>
+            fixer.replaceText(
+              node,
+              text.replace(/(?:\r?\n[ \t]*){2,}/g, (sequence) => {
+                const indent = sequence.match(/[ \t]*$/)?.[0] ?? '';
+                return `${newline}${indent}`;
+              })
+            )
+        });
+      }
     };
   }
 };

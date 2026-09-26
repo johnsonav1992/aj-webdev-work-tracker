@@ -53,9 +53,7 @@ export const ProjectCard = (handle: Handle<ProjectCardProps>) => {
             </div>
             <StatusBadge tone={statusTone[project.status]}>{statusLabel}</StatusBadge>
           </header>
-
           {project.description ? <p mix={descriptionStyle}>{project.description}</p> : null}
-
           <div mix={statsStyle}>
             <div>
               <span mix={statLabelStyle}>Time tracked</span>
@@ -70,7 +68,6 @@ export const ProjectCard = (handle: Handle<ProjectCardProps>) => {
               <strong mix={statValueStyle}>{project.entryCount}</strong>
             </div>
           </div>
-
           {project.progress !== null ? (
             <div mix={progressSectionStyle}>
               <div mix={progressHeaderStyle}>
@@ -94,7 +91,6 @@ export const ProjectCard = (handle: Handle<ProjectCardProps>) => {
               </div>
             </div>
           ) : null}
-
           <footer mix={footerStyle}>
             <span>
               {project.completedOn

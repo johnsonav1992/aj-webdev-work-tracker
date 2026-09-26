@@ -29,7 +29,6 @@ export const ProjectsPage = (handle: Handle<ProjectsPageProps>) => {
           filters={handle.props.data.filters}
           statusCounts={handle.props.data.statusCounts}
         />
-
         {handle.props.data.projects.length ? (
           <div mix={projectGridStyle}>
             {handle.props.data.projects.map((project) => (

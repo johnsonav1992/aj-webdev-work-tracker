@@ -41,7 +41,6 @@ export const ProjectDetailPage = (handle: Handle<ProjectDetailPageProps>) => {
           >
             ← All projects
           </Button>
-
           {data ? (
             <>
               <header mix={headingStyle}>
@@ -53,11 +52,9 @@ export const ProjectDetailPage = (handle: Handle<ProjectDetailPageProps>) => {
                   {data.project.status[0]!.toUpperCase() + data.project.status.slice(1)}
                 </StatusBadge>
               </header>
-
               {data.project.description ? (
                 <p mix={descriptionStyle}>{data.project.description}</p>
               ) : null}
-
               <ProjectSummary summary={data.summary} />
               <div mix={contentGridStyle}>
                 <ProjectHistory

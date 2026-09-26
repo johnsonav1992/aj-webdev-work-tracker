@@ -34,7 +34,6 @@ export const ClientDetailPage = (handle: Handle<ClientDetailPageProps>) => {
           >
             ← All clients
           </Button>
-
           {data ? (
             <>
               <header mix={headingStyle}>
