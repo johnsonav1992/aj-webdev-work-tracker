@@ -6,76 +6,62 @@ import { Button } from '../../ui/button.tsx';
 import { StatusBadge } from '../../ui/status-badge.tsx';
 import { routes } from '../../routes.ts';
 import { WorkspaceLayout } from '../workspace/layout.tsx';
-import { ProjectDetailsPanel } from './project-details-panel.tsx';
-import { ProjectHistory } from './project-history.tsx';
-import { ProjectSummary } from './project-summary.tsx';
-import type { ProjectDetailData } from './project-detail-types.ts';
+import { ClientDetailsPanel } from './client-details-panel.tsx';
+import type { ClientDetailData } from './client-detail-types.ts';
+import { ClientSummary } from './client-summary.tsx';
+import { ClientWork } from './client-work.tsx';
 
-type ProjectDetailPageProps = {
+type ClientDetailPageProps = {
   csrfToken: string;
-  data: ProjectDetailData | null;
+  data: ClientDetailData | null;
 };
 
-const statusTone = {
-  planned: 'amber',
-  active: 'blue',
-  completed: 'green',
-  archived: 'gray'
-} as const;
-
-export const ProjectDetailPage = (handle: Handle<ProjectDetailPageProps>) => {
+export const ClientDetailPage = (handle: Handle<ClientDetailPageProps>) => {
   return () => {
     const data = handle.props.data;
 
     return (
       <WorkspaceLayout
-        activePage='projects'
+        activePage='clients'
         csrfToken={handle.props.csrfToken}
-        pageTitle={data?.project.name ?? 'Project'}
+        pageTitle={data?.client.name ?? 'Client'}
       >
         <div mix={pageStyle}>
           <Button
-            href={routes.projects.href()}
+            href={routes.clients.href()}
             variant='quiet'
             mix={backButtonStyle}
           >
-            ← All projects
+            ← All clients
           </Button>
 
           {data ? (
             <>
               <header mix={headingStyle}>
-                <div mix={headingTextStyle}>
-                  <p mix={clientNameStyle}>{data.client.name}</p>
-                  <h1 mix={titleStyle}>{data.project.name}</h1>
+                <div>
+                  <h1 mix={titleStyle}>{data.client.name}</h1>
+                  {data.client.contactName ? (
+                    <p mix={contactNameStyle}>{data.client.contactName}</p>
+                  ) : null}
                 </div>
-                <StatusBadge tone={statusTone[data.project.status]}>
-                  {data.project.status[0]!.toUpperCase() + data.project.status.slice(1)}
+                <StatusBadge tone={data.client.status === 'active' ? 'green' : 'gray'}>
+                  {data.client.status[0]!.toUpperCase() + data.client.status.slice(1)}
                 </StatusBadge>
               </header>
-
-              {data.project.description ? (
-                <p mix={descriptionStyle}>{data.project.description}</p>
-              ) : null}
-
-              <ProjectSummary summary={data.summary} />
+              <ClientSummary summary={data.summary} />
               <div mix={contentGridStyle}>
-                <ProjectHistory
+                <ClientWork
                   payments={data.payments}
-                  timeEntries={data.timeEntries}
+                  projects={data.projects}
                 />
-                <ProjectDetailsPanel
-                  client={data.client}
-                  project={data.project}
-                  summary={data.summary}
-                />
+                <ClientDetailsPanel client={data.client} />
               </div>
             </>
           ) : (
             <section mix={notFoundStyle}>
-              <h1 mix={notFoundTitleStyle}>Project not found</h1>
+              <h1 mix={notFoundTitleStyle}>Client not found</h1>
               <p mix={notFoundTextStyle}>
-                This project may have been removed or you may not have access.
+                This client may have been removed or you may not have access.
               </p>
             </section>
           )}
@@ -93,23 +79,17 @@ const headingStyle = css({
   alignItems: 'center',
   gap: `${themeTokens.spacing[4]}`
 });
-const headingTextStyle = css({ minWidth: 0 });
-const clientNameStyle = css({
-  margin: 0,
-  color: `${themeTokens.palette.text.muted}`,
-  fontSize: `${themeTokens.typography.size.small}`
-});
 const titleStyle = css({
-  margin: `${themeTokens.spacing[1]} 0 0`,
+  margin: 0,
   fontSize: 'clamp(27px, 4vw, 35px)',
   lineHeight: 1.15,
   letterSpacing: '-0.045em',
   overflowWrap: 'anywhere'
 });
-const descriptionStyle = css({
-  maxWidth: '760px',
-  margin: `${themeTokens.spacing[3]} 0 0`,
-  color: `${themeTokens.palette.text.secondary}`
+const contactNameStyle = css({
+  margin: `${themeTokens.spacing[1]} 0 0`,
+  color: `${themeTokens.palette.text.muted}`,
+  fontSize: `${themeTokens.typography.size.small}`
 });
 const contentGridStyle = css({
   display: 'grid',

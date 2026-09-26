@@ -41,7 +41,6 @@ export const OverviewAside = (handle: Handle<OverviewAsideProps>) => {
           )}
         </div>
       </Panel>
-
       <Panel>
         <div mix={cardPaddingStyle}>
           <SectionHeading

@@ -24,9 +24,7 @@ export const ProjectsPage = (handle: Handle<ProjectsPageProps>) => {
         <div>
           <h1 mix={headingStyle}>Projects</h1>
         </div>
-
         <ProjectsSummary metrics={handle.props.data.metrics} />
-
         <ProjectFilters
           filters={handle.props.data.filters}
           statusCounts={handle.props.data.statusCounts}

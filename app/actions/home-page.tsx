@@ -36,7 +36,6 @@ export const HomePage = (handle: Handle<HomePageProps>) => {
           Overview
         </h1>
       </div>
-
       <div
         mix={css({
           display: 'grid',
@@ -76,7 +75,6 @@ export const HomePage = (handle: Handle<HomePageProps>) => {
           tone='amber'
         />
       </div>
-
       <div
         mix={css({
           display: 'grid',
@@ -93,7 +91,6 @@ export const HomePage = (handle: Handle<HomePageProps>) => {
             timeEntries={handle.props.data.timeEntries}
           />
         </div>
-
         <OverviewAside
           payments={handle.props.data.payments}
           clients={handle.props.data.clients}

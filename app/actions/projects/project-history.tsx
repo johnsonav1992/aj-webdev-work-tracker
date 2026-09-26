@@ -48,7 +48,6 @@ export const ProjectHistory = (handle: Handle<ProjectHistoryProps>) => {
           )}
         </section>
       </Panel>
-
       <Panel>
         <section mix={panelContentStyle}>
           <SectionHeading title='Payments' />

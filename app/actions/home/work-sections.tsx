@@ -44,7 +44,6 @@ export const WorkSections = (handle: Handle<WorkSectionsProps>) => {
           </div>
         </div>
       </Panel>
-
       <Panel>
         <div mix={cardPaddingStyle}>
           <SectionHeading

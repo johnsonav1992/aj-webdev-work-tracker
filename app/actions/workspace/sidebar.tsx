@@ -12,7 +12,7 @@ import { routes } from '../../routes.ts';
 import { BrandMark } from '../brand-mark.tsx';
 
 type NavItem = { label: string; href: string; icon: RemixNode; active?: boolean };
-type WorkspaceSidebarProps = { activePage: 'overview' | 'projects' };
+type WorkspaceSidebarProps = { activePage: 'overview' | 'clients' | 'projects' };
 
 export const WorkspaceSidebar = (handle: Handle<WorkspaceSidebarProps>) => {
   return () => {
@@ -23,7 +23,12 @@ export const WorkspaceSidebar = (handle: Handle<WorkspaceSidebarProps>) => {
         icon: <GridIcon />,
         active: handle.props.activePage === 'overview'
       },
-      { label: 'Clients', href: '#clients', icon: <UsersIcon /> },
+      {
+        label: 'Clients',
+        href: routes.clients.href(),
+        icon: <UsersIcon />,
+        active: handle.props.activePage === 'clients'
+      },
       {
         label: 'Projects',
         href: routes.projects.href(),
@@ -75,7 +80,7 @@ export const WorkspaceSidebar = (handle: Handle<WorkspaceSidebarProps>) => {
                 letterSpacing: '-0.02em'
               })}
             >
-              AJ Webdev
+              AJ Web Dev
             </strong>
             <small
               mix={css({
@@ -88,7 +93,6 @@ export const WorkspaceSidebar = (handle: Handle<WorkspaceSidebarProps>) => {
             </small>
           </span>
         </a>
-
         <p
           mix={[
             eyebrowStyle,
@@ -148,7 +152,6 @@ export const WorkspaceSidebar = (handle: Handle<WorkspaceSidebarProps>) => {
             </a>
           ))}
         </nav>
-
         <div mix={css({ marginTop: 'auto', '@media (max-width: 900px)': { display: 'none' } })}>
           <a
             href='#settings'

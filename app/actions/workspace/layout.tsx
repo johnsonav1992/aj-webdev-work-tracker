@@ -7,7 +7,7 @@ import { WorkspaceSidebar } from './sidebar.tsx';
 import { WorkspaceTopbar } from './topbar.tsx';
 
 type WorkspaceLayoutProps = {
-  activePage: 'overview' | 'projects';
+  activePage: 'overview' | 'clients' | 'projects';
   children: RemixNode;
   csrfToken: string;
   pageTitle: string;

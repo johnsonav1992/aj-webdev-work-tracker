@@ -3,6 +3,8 @@ import { form, get, post, route } from 'remix/routes';
 export const routes = route({
   assets: get('/assets/*path'),
   home: '/',
+  clients: get('/clients'),
+  client: get('/clients/:clientId'),
   projects: get('/projects'),
   project: get('/projects/:projectId'),
   auth: {

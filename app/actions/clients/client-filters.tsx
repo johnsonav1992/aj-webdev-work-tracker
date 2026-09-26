@@ -4,38 +4,50 @@ import { css } from 'remix/ui';
 import { themeTokens } from '../../theme/tokens.ts';
 import { Button } from '../../ui/button.tsx';
 import { routes } from '../../routes.ts';
-import type { ProjectsPageData } from './projects-types.ts';
+import type { ClientsPageData } from './clients-types.ts';
 
-type ProjectFiltersProps = {
-  filters: ProjectsPageData['filters'];
-  statusCounts: ProjectsPageData['statusCounts'];
-};
+const statuses = ['all', 'active', 'archived'] as const;
 
-const statuses = ['all', 'active', 'planned', 'completed', 'archived'] as const;
-
-const hrefForFilters = (status: (typeof statuses)[number], search: string) => {
+const hrefForFilters = (
+  status: (typeof statuses)[number],
+  search: string,
+  sortBy: ClientsPageData['filters']['sortBy'],
+  sortDirection: ClientsPageData['filters']['sortDirection']
+) => {
   const query = new URLSearchParams();
 
   if (status !== 'all') query.set('status', status);
   if (search) query.set('search', search);
+  if (sortBy !== 'name') query.set('sort', sortBy);
+  if (sortDirection !== 'asc') query.set('direction', sortDirection);
 
-  return `${routes.projects.href()}${query.size ? `?${query.toString()}` : ''}`;
+  return `${routes.clients.href()}${query.size ? `?${query.toString()}` : ''}`;
 };
 
-export const ProjectFilters = (handle: Handle<ProjectFiltersProps>) => {
+type ClientFiltersProps = {
+  filters: ClientsPageData['filters'];
+  statusCounts: ClientsPageData['statusCounts'];
+};
+
+export const ClientFilters = (handle: Handle<ClientFiltersProps>) => {
   return () => (
     <section
-      aria-label='Filter projects'
+      aria-label='Filter clients'
       mix={containerStyle}
     >
       <nav
-        aria-label='Project status'
+        aria-label='Client status'
         mix={tabsStyle}
       >
         {statuses.map((status) => (
           <a
             key={status}
-            href={hrefForFilters(status, handle.props.filters.search)}
+            href={hrefForFilters(
+              status,
+              handle.props.filters.search,
+              handle.props.filters.sortBy,
+              handle.props.filters.sortDirection
+            )}
             aria-current={handle.props.filters.status === status ? 'page' : undefined}
             mix={tabStyle(handle.props.filters.status === status)}
           >
@@ -45,7 +57,7 @@ export const ProjectFilters = (handle: Handle<ProjectFiltersProps>) => {
         ))}
       </nav>
       <form
-        action={routes.projects.href()}
+        action={routes.clients.href()}
         method='get'
         mix={searchFormStyle}
       >
@@ -56,13 +68,27 @@ export const ProjectFilters = (handle: Handle<ProjectFiltersProps>) => {
             value={handle.props.filters.status}
           />
         ) : null}
+        {handle.props.filters.sortBy !== 'name' ? (
+          <input
+            type='hidden'
+            name='sort'
+            value={handle.props.filters.sortBy}
+          />
+        ) : null}
+        {handle.props.filters.sortDirection !== 'asc' ? (
+          <input
+            type='hidden'
+            name='direction'
+            value={handle.props.filters.sortDirection}
+          />
+        ) : null}
         <label mix={searchLabelStyle}>
-          <span>Search projects</span>
+          <span>Search clients</span>
           <input
             type='search'
             name='search'
             value={handle.props.filters.search}
-            placeholder='Project or client'
+            placeholder='Client, contact, or email'
             mix={searchInputStyle}
           />
         </label>
@@ -74,7 +100,12 @@ export const ProjectFilters = (handle: Handle<ProjectFiltersProps>) => {
         </Button>
         {handle.props.filters.search ? (
           <a
-            href={hrefForFilters(handle.props.filters.status, '')}
+            href={hrefForFilters(
+              handle.props.filters.status,
+              '',
+              handle.props.filters.sortBy,
+              handle.props.filters.sortDirection
+            )}
             mix={clearStyle}
           >
             Clear

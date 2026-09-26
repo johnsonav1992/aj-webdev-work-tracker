@@ -8,7 +8,8 @@ export default defineConfig({
       rules: {
         'aj-webdev-work-tracker/padding-around-multiline-blocks': 'error',
         'aj-webdev-work-tracker/only-arrow-functions': 'error',
-        'aj-webdev-work-tracker/blank-line-before-return': 'error'
+        'aj-webdev-work-tracker/blank-line-before-return': 'error',
+        'aj-webdev-work-tracker/no-blank-lines-between-jsx-elements': 'error'
       }
     }
   ]
