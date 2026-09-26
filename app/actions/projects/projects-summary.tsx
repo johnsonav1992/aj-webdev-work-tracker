@@ -5,7 +5,7 @@ import { themeTokens } from '../../theme/tokens.ts';
 import { CheckIcon } from '../../ui/icons/check-icon.tsx';
 import { ClockIcon } from '../../ui/icons/clock-icon.tsx';
 import { ProjectsIcon } from '../../ui/icons/projects-icon.tsx';
-import { Panel } from '../../ui/panel.tsx';
+import { Card } from '../../ui/card.tsx';
 import type { ProjectsPageData } from './projects-types.ts';
 
 type ProjectsSummaryProps = {
@@ -24,7 +24,7 @@ export const ProjectsSummary = (handle: Handle<ProjectsSummaryProps>) => {
     return (
       <div mix={summaryGridStyle}>
         {items.map((item) => (
-          <Panel key={item.label}>
+          <Card key={item.label}>
             <div mix={metricStyle}>
               <span mix={iconStyle}>{item.icon}</span>
               <div>
@@ -32,7 +32,7 @@ export const ProjectsSummary = (handle: Handle<ProjectsSummaryProps>) => {
                 <strong mix={valueStyle}>{item.value}</strong>
               </div>
             </div>
-          </Panel>
+          </Card>
         ))}
       </div>
     );

@@ -3,7 +3,7 @@ import { css } from 'remix/ui';
 
 import { themeTokens } from '../../theme/tokens.ts';
 import { ArrowIcon } from '../../ui/icons/arrow-icon.tsx';
-import { Panel } from '../../ui/panel.tsx';
+import { Card } from '../../ui/card.tsx';
 import { Button } from '../../ui/button.tsx';
 import { SectionHeading } from '../../ui/section-heading.tsx';
 import { routes } from '../../routes.ts';
@@ -16,7 +16,7 @@ export type WorkSectionsProps = Pick<HomeDashboardData, 'projects' | 'timeEntrie
 export const WorkSections = (handle: Handle<WorkSectionsProps>) => {
   return () => (
     <div mix={css({ display: 'grid', gap: `${themeTokens.spacing[4]}`, minWidth: 0 })}>
-      <Panel>
+      <Card>
         <div mix={cardPaddingStyle}>
           <SectionHeading
             eyebrow='Workspace'
@@ -43,8 +43,8 @@ export const WorkSections = (handle: Handle<WorkSectionsProps>) => {
             )}
           </div>
         </div>
-      </Panel>
-      <Panel>
+      </Card>
+      <Card>
         <div mix={cardPaddingStyle}>
           <SectionHeading
             eyebrow='Time tracking'
@@ -69,7 +69,7 @@ export const WorkSections = (handle: Handle<WorkSectionsProps>) => {
             <p mix={emptyStateStyle}>No time entries yet.</p>
           )}
         </div>
-      </Panel>
+      </Card>
     </div>
   );
 };

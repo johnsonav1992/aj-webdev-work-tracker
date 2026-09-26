@@ -1,7 +1,8 @@
 import type { Handle, RemixNode } from 'remix/ui';
 import { css } from 'remix/ui';
 
-import { theme, themeTokens, panelStyle } from '../../theme/tokens.ts';
+import { theme, themeTokens } from '../../theme/tokens.ts';
+import { Card } from '../../ui/card.tsx';
 import { Document } from '../document.tsx';
 import { BrandMark } from '../brand-mark.tsx';
 
@@ -39,14 +40,12 @@ export const AuthLayout = (handle: Handle<AuthLayoutProps>) => {
               <BrandMark size='medium' />
               <span>AJ Webdev Work Tracker</span>
             </a>
-            <section
-              mix={[
-                panelStyle,
-                css({
-                  padding: `${themeTokens.spacing[6]}`,
-                  '@media (max-width: 480px)': { padding: `${themeTokens.spacing[4]}` }
-                })
-              ]}
+            <Card
+              as='section'
+              mix={css({
+                padding: `${themeTokens.spacing[6]}`,
+                '@media (max-width: 480px)': { padding: `${themeTokens.spacing[4]}` }
+              })}
             >
               <h1
                 mix={css({
@@ -59,7 +58,7 @@ export const AuthLayout = (handle: Handle<AuthLayoutProps>) => {
                 {handle.props.title}
               </h1>
               {handle.props.children}
-            </section>
+            </Card>
           </div>
         </main>
       </div>

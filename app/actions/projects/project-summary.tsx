@@ -2,7 +2,7 @@ import type { Handle } from 'remix/ui';
 import { css } from 'remix/ui';
 
 import { themeTokens } from '../../theme/tokens.ts';
-import { Panel } from '../../ui/panel.tsx';
+import { Card } from '../../ui/card.tsx';
 import type { ProjectDetailData } from './project-detail-types.ts';
 
 type ProjectSummaryProps = {
@@ -20,12 +20,12 @@ export const ProjectSummary = (handle: Handle<ProjectSummaryProps>) => {
     return (
       <div mix={summaryGridStyle}>
         {items.map((item) => (
-          <Panel key={item.label}>
+          <Card key={item.label}>
             <div mix={summaryItemStyle}>
               <span mix={labelStyle}>{item.label}</span>
               <strong mix={valueStyle}>{item.value}</strong>
             </div>
-          </Panel>
+          </Card>
         ))}
       </div>
     );

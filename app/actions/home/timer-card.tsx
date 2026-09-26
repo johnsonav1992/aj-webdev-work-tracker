@@ -2,7 +2,7 @@ import type { Handle } from 'remix/ui';
 import { css } from 'remix/ui';
 
 import { eyebrowStyle, themeTokens } from '../../theme/tokens.ts';
-import { Panel } from '../../ui/panel.tsx';
+import { Card } from '../../ui/card.tsx';
 import type { HomeDashboardData } from './dashboard-types.ts';
 import { TimerWidget } from '../public/timer-widget.tsx';
 
@@ -12,7 +12,7 @@ export type TimerCardProps = {
 
 export const TimerCard = (handle: Handle<TimerCardProps>) => {
   return () => (
-    <Panel>
+    <Card>
       <div mix={css({ padding: `${themeTokens.spacing[5]}` })}>
         <div
           mix={css({
@@ -86,7 +86,7 @@ export const TimerCard = (handle: Handle<TimerCardProps>) => {
           <TimerWidget />
         </div>
       </div>
-    </Panel>
+    </Card>
   );
 };
 

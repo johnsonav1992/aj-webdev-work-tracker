@@ -1,8 +1,9 @@
 import type { Handle, RemixNode } from 'remix/ui';
 import { css } from 'remix/ui';
 
-import { panelStyle, themeTokens } from '../../theme/tokens.ts';
+import { themeTokens } from '../../theme/tokens.ts';
 import type { AccentTone } from '../../theme/tokens.ts';
+import { Card } from '../../ui/card.tsx';
 
 export interface MetricProps {
   label: string;
@@ -26,15 +27,13 @@ export const Metric = (handle: Handle<MetricProps>) => {
     }[handle.props.tone];
 
     return (
-      <section
-        mix={[
-          panelStyle,
-          css({
-            padding: `${themeTokens.spacing[4]}`,
-            minWidth: 0,
-            '@media (max-width: 480px)': { padding: `${themeTokens.spacing[3]}` }
-          })
-        ]}
+      <Card
+        as='section'
+        mix={css({
+          padding: `${themeTokens.spacing[4]}`,
+          minWidth: 0,
+          '@media (max-width: 480px)': { padding: `${themeTokens.spacing[3]}` }
+        })}
       >
         <div
           mix={css({
@@ -93,7 +92,7 @@ export const Metric = (handle: Handle<MetricProps>) => {
         >
           {handle.props.note}
         </p>
-      </section>
+      </Card>
     );
   };
 };

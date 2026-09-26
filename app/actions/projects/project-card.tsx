@@ -4,7 +4,7 @@ import { css } from 'remix/ui';
 import { themeTokens } from '../../theme/tokens.ts';
 import { Avatar } from '../../ui/avatar.tsx';
 import { StatusBadge } from '../../ui/status-badge.tsx';
-import { Panel } from '../../ui/panel.tsx';
+import { Card } from '../../ui/card.tsx';
 import { routes } from '../../routes.ts';
 import type { ProjectCardData } from './projects-types.ts';
 
@@ -33,7 +33,7 @@ export const ProjectCard = (handle: Handle<ProjectCardProps>) => {
           }).format(project.invoiceCapMinor / 100);
 
     return (
-      <Panel>
+      <Card>
         <article mix={cardStyle}>
           <header mix={headerStyle}>
             <Avatar
@@ -102,7 +102,7 @@ export const ProjectCard = (handle: Handle<ProjectCardProps>) => {
             {invoiceCap ? <span>Budget {invoiceCap}</span> : null}
           </footer>
         </article>
-      </Panel>
+      </Card>
     );
   };
 };

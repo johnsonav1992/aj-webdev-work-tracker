@@ -3,7 +3,7 @@ import { css } from 'remix/ui';
 
 import { formatProjectMoney } from '../../db/project-format.ts';
 import { themeTokens } from '../../theme/tokens.ts';
-import { Panel } from '../../ui/panel.tsx';
+import { Card } from '../../ui/card.tsx';
 import { SectionHeading } from '../../ui/section-heading.tsx';
 import { StatusBadge } from '../../ui/status-badge.tsx';
 import type { ClientDetailData } from './client-detail-types.ts';
@@ -14,7 +14,7 @@ type ClientDetailsPanelProps = {
 
 export const ClientDetailsPanel = (handle: Handle<ClientDetailsPanelProps>) => {
   return () => (
-    <Panel>
+    <Card>
       <section mix={panelContentStyle}>
         <SectionHeading title='Client details' />
         <div mix={statusStyle}>
@@ -48,7 +48,7 @@ export const ClientDetailsPanel = (handle: Handle<ClientDetailsPanelProps>) => {
           </div>
         ) : null}
       </section>
-    </Panel>
+    </Card>
   );
 };
 

@@ -3,7 +3,7 @@ import { css } from 'remix/ui';
 
 import { themeTokens } from '../../theme/tokens.ts';
 import { Button } from '../../ui/button.tsx';
-import { Panel } from '../../ui/panel.tsx';
+import { Card } from '../../ui/card.tsx';
 import { SectionHeading } from '../../ui/section-heading.tsx';
 import { StatusBadge } from '../../ui/status-badge.tsx';
 import { routes } from '../../routes.ts';
@@ -29,7 +29,7 @@ type ClientWorkProps = Pick<ClientDetailData, 'payments' | 'projects'>;
 export const ClientWork = (handle: Handle<ClientWorkProps>) => {
   return () => (
     <div mix={workStyle}>
-      <Panel>
+      <Card>
         <section mix={panelContentStyle}>
           <SectionHeading title='Projects' />
           {handle.props.projects.length ? (
@@ -66,8 +66,8 @@ export const ClientWork = (handle: Handle<ClientWorkProps>) => {
             <p mix={emptyTextStyle}>No projects for this client.</p>
           )}
         </section>
-      </Panel>
-      <Panel>
+      </Card>
+      <Card>
         <section mix={panelContentStyle}>
           <SectionHeading title='Payments' />
           {handle.props.payments.length ? (
@@ -92,7 +92,7 @@ export const ClientWork = (handle: Handle<ClientWorkProps>) => {
             <p mix={emptyTextStyle}>No payments recorded.</p>
           )}
         </section>
-      </Panel>
+      </Card>
     </div>
   );
 };

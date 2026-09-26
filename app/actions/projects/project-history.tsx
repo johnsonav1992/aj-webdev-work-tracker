@@ -2,7 +2,7 @@ import type { Handle } from 'remix/ui';
 import { css } from 'remix/ui';
 
 import { themeTokens } from '../../theme/tokens.ts';
-import { Panel } from '../../ui/panel.tsx';
+import { Card } from '../../ui/card.tsx';
 import { SectionHeading } from '../../ui/section-heading.tsx';
 import { StatusBadge } from '../../ui/status-badge.tsx';
 import type { ProjectDetailData } from './project-detail-types.ts';
@@ -12,7 +12,7 @@ type ProjectHistoryProps = Pick<ProjectDetailData, 'payments' | 'timeEntries'>;
 export const ProjectHistory = (handle: Handle<ProjectHistoryProps>) => {
   return () => (
     <div mix={historyStyle}>
-      <Panel>
+      <Card>
         <section mix={panelContentStyle}>
           <SectionHeading title='Time entries' />
           {handle.props.timeEntries.length ? (
@@ -47,8 +47,8 @@ export const ProjectHistory = (handle: Handle<ProjectHistoryProps>) => {
             <p mix={emptyTextStyle}>No time entries recorded.</p>
           )}
         </section>
-      </Panel>
-      <Panel>
+      </Card>
+      <Card>
         <section mix={panelContentStyle}>
           <SectionHeading title='Payments' />
           {handle.props.payments.length ? (
@@ -72,7 +72,7 @@ export const ProjectHistory = (handle: Handle<ProjectHistoryProps>) => {
             <p mix={emptyTextStyle}>No payments recorded.</p>
           )}
         </section>
-      </Panel>
+      </Card>
     </div>
   );
 };

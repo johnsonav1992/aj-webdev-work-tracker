@@ -1,7 +1,8 @@
 import type { Handle, RemixNode } from 'remix/ui';
 import { css } from 'remix/ui';
 
-import { panelStyle, themeTokens } from '../theme/tokens.ts';
+import { themeTokens } from '../theme/tokens.ts';
+import { Card } from './card.tsx';
 
 type DataTableAlignment = 'start' | 'center' | 'end';
 type DataTableDensity = 'comfortable' | 'compact';
@@ -36,7 +37,7 @@ export const createDataTable = <Row,>() => {
 
   const DataTableForRow = (handle: Handle<DataTableProps>) => {
     return () => (
-      <div mix={[panelStyle, tableFrameStyle]}>
+      <Card mix={tableFrameStyle}>
         <div
           role='region'
           aria-label={handle.props.ariaLabel}
@@ -123,7 +124,7 @@ export const createDataTable = <Row,>() => {
             </tbody>
           </table>
         </div>
-      </div>
+      </Card>
     );
   };
 

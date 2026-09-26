@@ -2,7 +2,7 @@ import type { Handle } from 'remix/ui';
 import { css } from 'remix/ui';
 
 import { themeTokens } from '../../theme/tokens.ts';
-import { Panel } from '../../ui/panel.tsx';
+import { Card } from '../../ui/card.tsx';
 import { SectionHeading } from '../../ui/section-heading.tsx';
 import type { ProjectDetailData } from './project-detail-types.ts';
 
@@ -39,7 +39,7 @@ export const ProjectDetailsPanel = (handle: Handle<ProjectDetailsPanelProps>) =>
       : null;
 
     return (
-      <Panel>
+      <Card>
         <section mix={panelContentStyle}>
           <SectionHeading title='Details' />
           <dl mix={detailsListStyle}>
@@ -114,7 +114,7 @@ export const ProjectDetailsPanel = (handle: Handle<ProjectDetailsPanelProps>) =>
             </div>
           ) : null}
         </section>
-      </Panel>
+      </Card>
     );
   };
 };

@@ -86,13 +86,6 @@ export const theme = css({
   }
 });
 
-export const panelStyle = css({
-  background: themeTokens.palette.background.paper,
-  border: `1px solid ${themeTokens.palette.divider}`,
-  borderRadius: themeTokens.shape.large,
-  boxShadow: themeTokens.elevation.low
-});
-
 export const eyebrowStyle = css({
   margin: 0,
   color: themeTokens.palette.text.muted,

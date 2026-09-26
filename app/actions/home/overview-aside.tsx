@@ -4,7 +4,7 @@ import { css } from 'remix/ui';
 import { themeTokens } from '../../theme/tokens.ts';
 import { ArrowIcon } from '../../ui/icons/arrow-icon.tsx';
 import { Button } from '../../ui/button.tsx';
-import { Panel } from '../../ui/panel.tsx';
+import { Card } from '../../ui/card.tsx';
 import { SectionHeading } from '../../ui/section-heading.tsx';
 import type { HomeDashboardData } from './dashboard-types.ts';
 import { ClientRow } from './client-row.tsx';
@@ -15,7 +15,7 @@ export type OverviewAsideProps = Pick<HomeDashboardData, 'payments' | 'clients'>
 export const OverviewAside = (handle: Handle<OverviewAsideProps>) => {
   return () => (
     <aside mix={css({ display: 'grid', gap: `${themeTokens.spacing[4]}` })}>
-      <Panel>
+      <Card>
         <div mix={cardPaddingStyle}>
           <SectionHeading
             eyebrow='Transactions'
@@ -40,8 +40,8 @@ export const OverviewAside = (handle: Handle<OverviewAsideProps>) => {
             <p mix={emptyStateStyle}>No payments recorded.</p>
           )}
         </div>
-      </Panel>
-      <Panel>
+      </Card>
+      <Card>
         <div mix={cardPaddingStyle}>
           <SectionHeading
             eyebrow='Directory'
@@ -66,7 +66,7 @@ export const OverviewAside = (handle: Handle<OverviewAsideProps>) => {
             <p mix={emptyStateStyle}>No clients yet.</p>
           )}
         </div>
-      </Panel>
+      </Card>
     </aside>
   );
 };
