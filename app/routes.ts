@@ -9,6 +9,8 @@ export const routes = route({
   project: get('/projects/:projectId'),
   projectCreate: form('/projects/new'),
   time: {
+    index: get('/time'),
+    create: post('/time/manual'),
     start: post('/time/start'),
     pause: post('/time/pause'),
     resume: post('/time/resume'),

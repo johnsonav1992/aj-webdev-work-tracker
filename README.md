@@ -1,13 +1,14 @@
 # AJ Webdev Work Tracker
 
-A private workbench for tracking freelance clients, projects, payments, and time. The current Remix 3 starter slice includes an illustrative overview dashboard, a browser-only timer interaction, and reusable theme/UI primitives.
+A private work tracker for freelance clients, projects, payments, and time, built with Remix 3.
 
 The initial product requirements and still-open technology decisions are in [`docs/requirements.md`](docs/requirements.md).
 
 ## Current state
 
-- The overview dashboard uses illustrative data only.
-- The timer runs in the current browser session and does not save entries.
+- The overview, client, project, and time pages use account-scoped data from the local database.
+- Time can be tracked with the start/pause/resume/stop timer on Overview or entered manually on the Time page. Manual entries keep the selected work date and duration without requiring exact start and end times.
+- Completed entries retain the hourly-rate snapshot used for their project at entry creation.
 - Google OAuth login and first-time signup are implemented when `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` are configured. First-time Google sign-in creates a workspace for that user.
 - Email/password login remains available for existing credentials; the initial account is created through Google sign-up.
 - The local SQLite connector, account-scoped schema, and SQL-first migration are in place. Run `npm run db:migrate` to initialize the local database and `npm run db:status` to inspect migration state.
@@ -18,10 +19,14 @@ The initial product requirements and still-open technology decisions are in [`do
 - `app/routes.ts` defines the route contract.
 - `app/router.ts` connects routes, middleware, and the controller.
 - `app/actions/controller.tsx` owns top-level route actions.
-- `app/actions/home-page.tsx` renders the overview page.
-- `app/actions/public/` contains browser-reachable hydrated interactions.
+- `app/actions/home/components/` contains the overview page and its feature components.
+- `app/actions/time/` contains time-entry routes and the time page.
+- `app/actions/home/public/` contains browser-reachable timer interactions for the home feature.
+- `app/actions/public/entry.ts` starts the app-wide browser runtime.
 - `app/theme/` contains shared design tokens and common styles.
 - `app/ui/` contains reusable interface components.
+
+Invoices, Stripe integration, and deployment are future work.
 
 ## Commands
 

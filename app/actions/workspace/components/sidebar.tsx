@@ -12,7 +12,7 @@ import { routes } from '#app/routes.ts';
 import { BrandMark } from '#app/ui/brand-mark.tsx';
 import type { NavItem } from '#app/actions/workspace/types/navigation.ts';
 
-type WorkspaceSidebarProps = { activePage: 'overview' | 'clients' | 'projects' };
+type WorkspaceSidebarProps = { activePage: 'overview' | 'clients' | 'projects' | 'time' };
 
 export const WorkspaceSidebar = (handle: Handle<WorkspaceSidebarProps>) => {
   return () => {
@@ -35,7 +35,12 @@ export const WorkspaceSidebar = (handle: Handle<WorkspaceSidebarProps>) => {
         icon: <ProjectsIcon />,
         active: handle.props.activePage === 'projects'
       },
-      { label: 'Time tracking', href: '#time-tracking', icon: <ClockIcon /> },
+      {
+        label: 'Time tracking',
+        href: routes.time.index.href(),
+        icon: <ClockIcon />,
+        active: handle.props.activePage === 'time'
+      },
       { label: 'Payments', href: '#payments', icon: <PaymentsIcon /> }
     ];
 
