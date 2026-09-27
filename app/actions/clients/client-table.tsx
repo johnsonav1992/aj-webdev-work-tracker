@@ -147,6 +147,7 @@ export const ClientTable = (handle: Handle<ClientTableProps>) => {
       getRowId={(client) => client.id}
       emptyMessage={handle.props.emptyMessage}
       stickyHeader
+      density='compact'
     />
   );
 };

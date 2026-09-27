@@ -72,6 +72,7 @@ export const getDashboardData = async (accountId: string) => {
   const currency = currencySetting ? (JSON.parse(currencySetting.value_json) as string) : 'USD';
   const clientsById = new Map(clientRows.map((client) => [client.id, client]));
   const projectsById = new Map(projectRows.map((project) => [project.id, project]));
+  const runningEntry = entryRows.find((entry) => entry.status === 'running');
   const secondsByProject = new Map<string, TemporalDuration>();
   const loggedValueByProject = new Map<string, number>();
 
@@ -141,6 +142,19 @@ export const getDashboardData = async (accountId: string) => {
         name: project.name,
         client: clientsById.get(project.client_id)?.name ?? 'Unknown client'
       })),
+    activeTimer: runningEntry
+      ? {
+          id: runningEntry.id,
+          projectId: runningEntry.project_id,
+          project: projectsById.get(runningEntry.project_id)?.name ?? 'Unknown project',
+          client:
+            clientsById.get(projectsById.get(runningEntry.project_id)?.client_id ?? '')?.name ??
+            'Unknown client',
+          startedAt: runningEntry.started_at,
+          durationSeconds: runningEntry.duration_seconds ?? 0,
+          notes: runningEntry.notes
+        }
+      : null,
     projects: projectRows.slice(0, 5).map((project, index) => {
       const client = clientsById.get(project.client_id);
       const rate = client?.hourly_rate_minor;

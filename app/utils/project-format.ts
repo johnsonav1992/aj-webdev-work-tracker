@@ -1,4 +1,4 @@
-import { Temporal } from '../utils/temporal.ts';
+import { Temporal } from './temporal.ts';
 
 export const formatProjectMoney = (minor: number, currency: string) =>
   new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(minor / 100);

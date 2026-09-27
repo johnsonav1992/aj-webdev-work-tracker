@@ -8,13 +8,13 @@ import {
   sessionMiddleware
 } from './auth/auth.server.ts';
 
-import controller, { rootRoutes } from './actions/controller.tsx';
-import {
-  googleController,
-  loginController,
-  logoutAction,
-  signupController
-} from './actions/auth-controller.tsx';
+import controller, { assetRoutes, assetsController, rootRoutes } from './actions/controller.tsx';
+import { logoutController, logoutRoutes } from './actions/auth/controller.tsx';
+import { googleController } from './actions/auth/google/controller.tsx';
+import { loginController } from './actions/auth/login/controller.tsx';
+import { signupController } from './actions/auth/signup/controller.tsx';
+import { projectCreateController } from './actions/project-create/controller.tsx';
+import { timeController } from './actions/time/controller.tsx';
 import { assets } from './assets.ts';
 import { routes } from './routes.ts';
 import { Temporal } from './utils/temporal.ts';
@@ -55,7 +55,10 @@ export const router = createRouter<AppContext>({
 });
 
 router.map(rootRoutes, controller);
+router.map(assetRoutes, assetsController);
 router.map(routes.auth.login, loginController);
 router.map(routes.auth.signup, signupController);
-router.map(routes.auth.logout, logoutAction);
+router.map(logoutRoutes, logoutController);
 router.map(routes.auth.google, googleController);
+router.map(routes.projectCreate, projectCreateController);
+router.map(routes.time, timeController);

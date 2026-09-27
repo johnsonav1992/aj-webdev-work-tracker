@@ -1,5 +1,9 @@
 import { database } from './database.ts';
-import { formatProjectDate, formatProjectDuration, formatProjectMoney } from './project-format.ts';
+import {
+  formatProjectDate,
+  formatProjectDuration,
+  formatProjectMoney
+} from '../utils/project-format.ts';
 import { clients, payments, projects, timeEntries } from './schema.ts';
 import type { ProjectStatus } from './projects.ts';
 import { Temporal, durationFromSeconds } from '../utils/temporal.ts';

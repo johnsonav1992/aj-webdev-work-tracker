@@ -1,7 +1,7 @@
 import type { Handle, RemixNode } from 'remix/ui';
 import { css } from 'remix/ui';
 
-import { formatProjectMoney } from '../../db/project-format.ts';
+import { formatProjectMoney } from '../../utils/project-format.ts';
 import { themeTokens } from '../../theme/tokens.ts';
 import { Card } from '../../ui/card.tsx';
 import { SectionHeading } from '../../ui/section-heading.tsx';

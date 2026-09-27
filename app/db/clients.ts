@@ -1,6 +1,6 @@
 import { database } from './database.ts';
 import { clients, payments, projects, timeEntries } from './schema.ts';
-import { formatProjectDuration, formatProjectMoney } from './project-format.ts';
+import { formatProjectDuration, formatProjectMoney } from '../utils/project-format.ts';
 import { durationFromSeconds, sumTimeDurations } from '../utils/temporal.ts';
 
 export type ClientStatus = 'active' | 'archived';

@@ -7,6 +7,13 @@ export const routes = route({
   client: get('/clients/:clientId'),
   projects: get('/projects'),
   project: get('/projects/:projectId'),
+  projectCreate: form('/projects/new'),
+  time: {
+    start: post('/time/start'),
+    pause: post('/time/pause'),
+    resume: post('/time/resume'),
+    stop: post('/time/stop')
+  },
   auth: {
     login: form('/login'),
     signup: form('/signup'),

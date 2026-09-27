@@ -3,6 +3,7 @@ import { getCsrfToken } from 'remix/middleware/csrf';
 import { createController } from 'remix/router';
 
 import { assets } from '../assets.ts';
+import { requireAppAuth } from '../auth/require-app-auth.ts';
 import { getDashboardData } from '../db/dashboard.ts';
 import { getClientDetailData } from '../db/client-details.ts';
 import {
@@ -21,13 +22,14 @@ import { ProjectDetailPage } from './projects/project-detail-page.tsx';
 import { ProjectsPage } from './projects-page.tsx';
 
 export const rootRoutes = {
-  assets: routes.assets,
   home: routes.home,
   clients: routes.clients,
   client: routes.client,
   projects: routes.projects,
   project: routes.project
 };
+
+export const assetRoutes = { assets: routes.assets };
 
 const projectStatuses: ProjectStatusFilter[] = [
   'all',
@@ -39,19 +41,19 @@ const projectStatuses: ProjectStatusFilter[] = [
 const clientStatuses: ClientStatusFilter[] = ['all', 'active', 'archived'];
 const clientSortFields: ClientSortBy[] = ['name', 'projects', 'tracked'];
 
-const redirectTo = (context: { url: URL }, path: string) =>
-  Response.redirect(new URL(path, context.url), 303);
-
-export default createController(rootRoutes, {
+export const assetsController = createController(assetRoutes, {
   actions: {
     assets: async (context) => {
       return (await assets.fetch(context.request)) ?? new Response('Not Found', { status: 404 });
-    },
+    }
+  }
+});
+
+export default createController(rootRoutes, {
+  middleware: [requireAppAuth],
+  actions: {
     home: async (context) => {
       const auth = context.get(Auth);
-
-      if (!auth.ok) return redirectTo(context, '/login');
-
       const data = await getDashboardData(auth.identity.accountId);
 
       return context.render(
@@ -63,8 +65,6 @@ export default createController(rootRoutes, {
     },
     clients: async (context) => {
       const auth = context.get(Auth);
-
-      if (!auth.ok) return redirectTo(context, '/login');
 
       const requestedStatus = context.url.searchParams.get('status') ?? 'all';
       const status = clientStatuses.includes(requestedStatus as ClientStatusFilter)
@@ -94,8 +94,6 @@ export default createController(rootRoutes, {
     client: async (context) => {
       const auth = context.get(Auth);
 
-      if (!auth.ok) return redirectTo(context, '/login');
-
       const data = await getClientDetailData(auth.identity.accountId, context.params.clientId);
 
       return context.render(
@@ -108,8 +106,6 @@ export default createController(rootRoutes, {
     },
     projects: async (context) => {
       const auth = context.get(Auth);
-
-      if (!auth.ok) return redirectTo(context, '/login');
 
       const requestedStatus = context.url.searchParams.get('status') ?? 'all';
       const status = projectStatuses.includes(requestedStatus as ProjectStatusFilter)
@@ -127,8 +123,6 @@ export default createController(rootRoutes, {
     },
     project: async (context) => {
       const auth = context.get(Auth);
-
-      if (!auth.ok) return redirectTo(context, '/login');
 
       const data = await getProjectDetailData(auth.identity.accountId, context.params.projectId);
 

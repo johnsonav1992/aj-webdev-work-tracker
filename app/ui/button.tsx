@@ -34,6 +34,10 @@ const variants = {
     '&:hover': {
       background: `${themeTokens.palette.background.hover}`,
       borderColor: `${themeTokens.palette.dividerStrong}`
+    },
+    '&:disabled': {
+      cursor: 'not-allowed',
+      opacity: 0.55
     }
   }),
   primary: css({
@@ -61,6 +65,11 @@ const variants = {
       background: `${themeTokens.palette.primary.active}`,
       borderColor: `${themeTokens.palette.primary.active}`,
       transform: 'translateY(1px)'
+    },
+    '&:disabled': {
+      cursor: 'not-allowed',
+      opacity: 0.55,
+      boxShadow: 'none'
     }
   })
 };

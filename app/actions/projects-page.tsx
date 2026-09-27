@@ -2,6 +2,8 @@ import type { Handle } from 'remix/ui';
 import { css } from 'remix/ui';
 
 import { themeTokens } from '../theme/tokens.ts';
+import { routes } from '../routes.ts';
+import { Button } from '../ui/button.tsx';
 import { WorkspaceLayout } from './workspace/layout.tsx';
 import { ProjectCard } from './projects/project-card.tsx';
 import { ProjectFilters } from './projects/project-filters.tsx';
@@ -21,9 +23,15 @@ export const ProjectsPage = (handle: Handle<ProjectsPageProps>) => {
       pageTitle='Projects'
     >
       <div mix={pageStyle}>
-        <div>
+        <header mix={pageHeadingStyle}>
           <h1 mix={headingStyle}>Projects</h1>
-        </div>
+          <Button
+            href={routes.projectCreate.index.href()}
+            variant='primary'
+          >
+            New project
+          </Button>
+        </header>
         <ProjectsSummary metrics={handle.props.data.metrics} />
         <ProjectFilters
           filters={handle.props.data.filters}
@@ -61,6 +69,12 @@ const headingStyle = css({
   fontSize: 'clamp(27px, 4vw, 35px)',
   lineHeight: 1.15,
   letterSpacing: '-0.045em'
+});
+const pageHeadingStyle = css({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: `${themeTokens.spacing[4]}`
 });
 const projectGridStyle = css({
   display: 'grid',

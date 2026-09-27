@@ -85,7 +85,10 @@ export const HomePage = (handle: Handle<HomePageProps>) => {
         })}
       >
         <div mix={css({ display: 'grid', gap: `${themeTokens.spacing[4]}`, minWidth: 0 })}>
-          <TimerCard projectOptions={handle.props.data.projectOptions} />
+          <TimerCard
+            csrfToken={handle.props.csrfToken}
+            data={handle.props.data}
+          />
           <WorkSections
             projects={handle.props.data.projects}
             timeEntries={handle.props.data.timeEntries}

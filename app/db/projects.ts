@@ -1,3 +1,5 @@
+import { randomUUID } from 'node:crypto';
+
 import { database } from './database.ts';
 import { clients, projects, timeEntries } from './schema.ts';
 import { Temporal, durationFromSeconds, sumTimeDurations } from '../utils/temporal.ts';
@@ -5,7 +7,7 @@ import {
   formatProjectDate as formatDate,
   formatProjectDuration as formatDuration,
   formatProjectMoney as formatMoney
-} from './project-format.ts';
+} from '../utils/project-format.ts';
 
 export type ProjectStatus = 'planned' | 'active' | 'completed' | 'archived';
 export type ProjectStatusFilter = ProjectStatus | 'all';
@@ -13,6 +15,54 @@ export type ProjectStatusFilter = ProjectStatus | 'all';
 type GetProjectsOptions = {
   search?: string;
   status?: ProjectStatusFilter;
+};
+
+export const getActiveClientsForProjectForm = async (accountId: string) => {
+  const rows = await database.findMany(clients, {
+    where: { account_id: accountId, status: 'active' },
+    orderBy: ['name', 'asc']
+  });
+
+  return rows.map((client) => ({ id: client.id, name: client.name }));
+};
+
+export const createActiveProject = async (
+  accountId: string,
+  input: { clientId: string; name: string; description: string }
+) => {
+  const name = input.name.trim();
+
+  if (!name || name.length > 200) return null;
+
+  return database.transaction(async (transaction) => {
+    const client = await transaction.findOne(clients, {
+      where: { id: input.clientId, account_id: accountId, status: 'active' }
+    });
+
+    if (!client) return null;
+
+    const now = Temporal.Now.instant();
+    const timestamp = now.epochMilliseconds;
+    const id = randomUUID();
+
+    await transaction.create(projects, {
+      id,
+      account_id: accountId,
+      client_id: client.id,
+      name,
+      description: input.description.trim() || null,
+      notes: null,
+      status: 'active',
+      hour_cap_minutes: null,
+      invoice_cap_minor: null,
+      started_on: Temporal.Now.plainDateISO().toString(),
+      completed_on: null,
+      created_at: timestamp,
+      updated_at: timestamp
+    });
+
+    return id;
+  });
 };
 
 const initials = (name: string) =>
