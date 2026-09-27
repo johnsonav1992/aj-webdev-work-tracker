@@ -1,9 +1,9 @@
 import { createController } from 'remix/router';
 import { Session } from 'remix/session';
 
-import { requireAppAuth } from '../../auth/require-app-auth.ts';
-import { routes } from '../../routes.ts';
-import { redirectTo } from './controller-utils.ts';
+import { requireAppAuth } from '#app/middleware/auth.server.ts';
+import { routes } from '#app/routes.ts';
+import { redirectTo } from './utils/controller-utils.ts';
 
 export const logoutRoutes = { logout: routes.auth.logout };
 

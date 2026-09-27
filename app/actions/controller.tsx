@@ -2,24 +2,26 @@ import { Auth } from 'remix/middleware/auth';
 import { getCsrfToken } from 'remix/middleware/csrf';
 import { createController } from 'remix/router';
 
-import { assets } from '../assets.ts';
-import { requireAppAuth } from '../auth/require-app-auth.ts';
-import { getDashboardData } from '../db/dashboard.ts';
-import { getClientDetailData } from '../db/client-details.ts';
-import {
-  getClientsData,
-  type ClientSortBy,
-  type ClientSortDirection,
-  type ClientStatusFilter
-} from '../db/clients.ts';
-import { getProjectDetailData } from '../db/project-details.ts';
-import { getProjectsData, type ProjectStatusFilter } from '../db/projects.ts';
-import { routes } from '../routes.ts';
-import { ClientDetailPage } from './clients/client-detail-page.tsx';
-import { ClientsPage } from './clients-page.tsx';
-import { HomePage } from './home-page.tsx';
-import { ProjectDetailPage } from './projects/project-detail-page.tsx';
-import { ProjectsPage } from './projects-page.tsx';
+import { assets } from '#app/assets.ts';
+import { requireAppAuth } from '#app/middleware/auth.server.ts';
+import { getDashboardData } from '#app/db/dashboard.ts';
+import { getClientDetailData } from '#app/db/client-details.ts';
+import { getClientsData } from '#app/db/clients.ts';
+import { getProjectDetailData } from '#app/db/project-details.ts';
+import { getProjectsData } from '#app/db/projects.ts';
+import type {
+  ClientSortBy,
+  ClientSortDirection,
+  ClientStatusFilter
+} from '#app/db/types/client.ts';
+import { clientSortFields, clientStatusFilters } from '#app/db/types/client.ts';
+import { projectStatusFilters, type ProjectStatusFilter } from '#app/db/types/project.ts';
+import { routes } from '#app/routes.ts';
+import { ClientDetailPage } from './clients/components/client-detail-page.tsx';
+import { ClientsPage } from './clients/components/clients-page.tsx';
+import { HomePage } from './home/components/home-page.tsx';
+import { ProjectDetailPage } from './projects/components/project-detail-page.tsx';
+import { ProjectsPage } from './projects/components/projects-page.tsx';
 
 export const rootRoutes = {
   home: routes.home,
@@ -30,16 +32,6 @@ export const rootRoutes = {
 };
 
 export const assetRoutes = { assets: routes.assets };
-
-const projectStatuses: ProjectStatusFilter[] = [
-  'all',
-  'planned',
-  'active',
-  'completed',
-  'archived'
-];
-const clientStatuses: ClientStatusFilter[] = ['all', 'active', 'archived'];
-const clientSortFields: ClientSortBy[] = ['name', 'projects', 'tracked'];
 
 export const assetsController = createController(assetRoutes, {
   actions: {
@@ -67,7 +59,7 @@ export default createController(rootRoutes, {
       const auth = context.get(Auth);
 
       const requestedStatus = context.url.searchParams.get('status') ?? 'all';
-      const status = clientStatuses.includes(requestedStatus as ClientStatusFilter)
+      const status = clientStatusFilters.includes(requestedStatus as ClientStatusFilter)
         ? (requestedStatus as ClientStatusFilter)
         : 'all';
       const search = context.url.searchParams.get('search') ?? '';
@@ -108,7 +100,7 @@ export default createController(rootRoutes, {
       const auth = context.get(Auth);
 
       const requestedStatus = context.url.searchParams.get('status') ?? 'all';
-      const status = projectStatuses.includes(requestedStatus as ProjectStatusFilter)
+      const status = projectStatusFilters.includes(requestedStatus as ProjectStatusFilter)
         ? (requestedStatus as ProjectStatusFilter)
         : 'all';
       const search = context.url.searchParams.get('search') ?? '';

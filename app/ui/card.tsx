@@ -1,12 +1,25 @@
 import type { Handle, MixInput, RemixNode } from 'remix/ui';
 import { css } from 'remix/ui';
 
-import { themeTokens } from '../theme/tokens.ts';
+import { themeTokens } from '#app/theme/tokens.ts';
 
 type CardProps = {
   children?: RemixNode;
   as?: 'article' | 'div' | 'section';
   mix?: MixInput<HTMLElement>;
+  padding?: 'none' | 'compact' | 'comfortable';
+};
+
+export const Card = (handle: Handle<CardProps>) => {
+  return () => {
+    const Element = handle.props.as ?? 'div';
+
+    return (
+      <Element mix={[cardStyle, paddingStyles[handle.props.padding ?? 'none'], handle.props.mix]}>
+        {handle.props.children}
+      </Element>
+    );
+  };
 };
 
 const cardStyle = css({
@@ -15,11 +28,8 @@ const cardStyle = css({
   borderRadius: themeTokens.shape.large,
   boxShadow: themeTokens.elevation.low
 });
-
-export const Card = (handle: Handle<CardProps>) => {
-  return () => {
-    const Element = handle.props.as ?? 'div';
-
-    return <Element mix={[cardStyle, handle.props.mix]}>{handle.props.children}</Element>;
-  };
+const paddingStyles = {
+  none: undefined,
+  compact: css({ padding: `${themeTokens.spacing[4]}` }),
+  comfortable: css({ padding: `${themeTokens.spacing[5]}` })
 };

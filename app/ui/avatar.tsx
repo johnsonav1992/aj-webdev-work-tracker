@@ -1,8 +1,8 @@
 import type { Handle } from 'remix/ui';
 import { css } from 'remix/ui';
 
-import { themeTokens } from '../theme/tokens.ts';
-import type { AccentTone } from '../theme/tokens.ts';
+import { themeTokens } from '#app/theme/tokens.ts';
+import type { AccentTone } from '#app/theme/types/accent-tone.ts';
 
 export interface AvatarProps {
   initials: string;

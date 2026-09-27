@@ -1,10 +1,10 @@
 import { finishExternalAuth, startExternalAuth } from 'remix/auth';
 import { createController } from 'remix/router';
 
-import { appOrigin, googleAuthProvider } from '../../../auth/auth.server.ts';
-import { createGoogleUser, findGoogleLoginUser } from '../../../db/auth.ts';
-import { routes } from '../../../routes.ts';
-import { completeSession, redirectTo } from '../controller-utils.ts';
+import { appOrigin, googleAuthProvider } from '#app/auth/auth.server.ts';
+import { createGoogleUser, findGoogleLoginUser } from '#app/db/auth.ts';
+import { routes } from '#app/routes.ts';
+import { completeSession, redirectTo } from '#app/actions/auth/utils/controller-utils.ts';
 
 export const googleController = createController(routes.auth.google, {
   actions: {

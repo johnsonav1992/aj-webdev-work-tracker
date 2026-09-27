@@ -1,12 +1,11 @@
 import type { Handle, RemixNode } from 'remix/ui';
 import { css } from 'remix/ui';
 
-import { themeTokens } from '../theme/tokens.ts';
-
-type Tone = 'green' | 'amber' | 'blue' | 'gray';
+import { themeTokens } from '#app/theme/tokens.ts';
+import type { StatusBadgeTone } from './types/status-badge.ts';
 
 export interface StatusBadgeProps {
-  tone?: Tone;
+  tone?: StatusBadgeTone;
   children: RemixNode;
 }
 

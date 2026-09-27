@@ -1,6 +1,6 @@
 import { css } from 'remix/ui';
 
-export type AccentTone = 'green' | 'blue' | 'amber';
+export const accentTones = ['green', 'blue', 'amber'] as const;
 
 /** The single source of truth for the app's visual design. */
 export const themeTokens = {

@@ -1,7 +1,7 @@
 import type { Handle, RemixNode } from 'remix/ui';
 import { css } from 'remix/ui';
 
-import { themeTokens } from '../theme/tokens.ts';
+import { themeTokens } from '#app/theme/tokens.ts';
 import { Card } from './card.tsx';
 
 type DataTableAlignment = 'start' | 'center' | 'end';

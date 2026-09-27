@@ -11,7 +11,7 @@ Keep pages easy to scan by composing focused components, while avoiding fragment
 
 - Let route-owned page components coordinate the page structure and data passed from the controller.
 - Split a long render function when a section has its own meaning, behavior, or reusable boundary, or when extracting it makes the parent substantially easier to understand.
-- Keep feature-specific sections in their feature folder (for example, `app/actions/home/`). Only move a component to `app/ui/` when it is generic and useful beyond that feature; follow `project-components` for that decision.
+- Keep feature-specific components in `app/actions/<feature>/components/`. Only move a component to `app/ui/` when it is generic and useful beyond the feature; follow `project-components` for that decision.
 - Keep small, one-use markup inline when naming and extracting it would add indirection without clarifying the page.
 - Avoid both extremes: a single file containing an entire complex screen, and a file for every wrapper, label, or handful of static elements.
 - Pass section data and actions explicitly. Keep database loading, route decisions, and browser behavior in their owning layers rather than hiding them in a visual subcomponent.

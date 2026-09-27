@@ -1,12 +1,12 @@
 import { render } from 'remix/middleware/render';
 import { staticFiles } from 'remix/middleware/static';
 import { createRouter, type MiddlewareContext } from 'remix/router';
+import { authMiddleware } from './middleware/auth.server.ts';
 import {
   csrfMiddleware,
-  authMiddleware,
   formDataMiddleware,
   sessionMiddleware
-} from './auth/auth.server.ts';
+} from './middleware/session.server.ts';
 
 import controller, { assetRoutes, assetsController, rootRoutes } from './actions/controller.tsx';
 import { logoutController, logoutRoutes } from './actions/auth/controller.tsx';
@@ -18,7 +18,7 @@ import { timeController } from './actions/time/controller.tsx';
 import { assets } from './assets.ts';
 import { routes } from './routes.ts';
 import { Temporal } from './utils/temporal.ts';
-import type { TemporalNamespace } from './utils/temporal-types.ts';
+import type { TemporalNamespace } from './utils/temporal/types.ts';
 
 type TemporalGlobal = typeof globalThis & { Temporal?: TemporalNamespace };
 

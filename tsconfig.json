@@ -7,7 +7,7 @@
     "moduleResolution": "NodeNext",
     "target": "ESNext",
     "allowImportingTsExtensions": true,
-    "rewriteRelativeImportExtensions": true,
+    "rewriteRelativeImportExtensions": false,
     "verbatimModuleSyntax": true,
     "isolatedModules": true,
     "skipLibCheck": true,

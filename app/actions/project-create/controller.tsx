@@ -2,10 +2,10 @@ import { getCsrfToken } from 'remix/middleware/csrf';
 import { createController } from 'remix/router';
 
 import { Auth } from 'remix/middleware/auth';
-import { requireAppAuth } from '../../auth/require-app-auth.ts';
-import { createActiveProject, getActiveClientsForProjectForm } from '../../db/projects.ts';
-import { routes } from '../../routes.ts';
-import { ProjectCreatePage } from '../projects/project-create-page.tsx';
+import { requireAppAuth } from '#app/middleware/auth.server.ts';
+import { createActiveProject, getActiveClientsForProjectForm } from '#app/db/projects.ts';
+import { routes } from '#app/routes.ts';
+import { ProjectCreatePage } from './components/project-create-page.tsx';
 
 const redirectWithError = (context: { url: URL }, error: 'invalid' | 'client') =>
   Response.redirect(

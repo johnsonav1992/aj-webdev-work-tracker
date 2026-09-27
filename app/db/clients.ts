@@ -1,12 +1,16 @@
 import { database } from './database.ts';
 import { clients, payments, projects, timeEntries } from './schema.ts';
-import { formatProjectDuration, formatProjectMoney } from '../utils/project-format.ts';
-import { durationFromSeconds, sumTimeDurations } from '../utils/temporal.ts';
+import { durationFromSeconds, sumTimeDurations } from '#app/utils/temporal.ts';
+import { formatCurrency } from '#app/utils/format-currency.ts';
+import { formatCurrencyTotals } from '#app/utils/format-currency-totals.ts';
+import { formatDuration } from '#app/utils/format-duration.ts';
 
-export type ClientStatus = 'active' | 'archived';
-export type ClientStatusFilter = ClientStatus | 'all';
-export type ClientSortBy = 'name' | 'projects' | 'tracked';
-export type ClientSortDirection = 'asc' | 'desc';
+import type {
+  ClientSortBy,
+  ClientSortDirection,
+  ClientStatus,
+  ClientStatusFilter
+} from './types/client.ts';
 
 type GetClientsOptions = {
   search?: string;
@@ -14,13 +18,6 @@ type GetClientsOptions = {
   sortBy?: ClientSortBy;
   sortDirection?: ClientSortDirection;
 };
-
-const formatMoneyByCurrency = (amounts: Map<string, number>, fallbackCurrency: string) =>
-  amounts.size
-    ? [...amounts]
-        .map(([currency, amount]) => formatProjectMoney(Math.round(amount), currency))
-        .join(' · ')
-    : formatProjectMoney(0, fallbackCurrency);
 
 export const getClientsData = async (accountId: string, options: GetClientsOptions = {}) => {
   const [clientRows, projectRows, entryRows, paymentRows] = await Promise.all([
@@ -100,13 +97,13 @@ export const getClientsData = async (accountId: string, options: GetClientsOptio
       hourlyRate:
         client.hourly_rate_minor === null
           ? null
-          : formatProjectMoney(client.hourly_rate_minor, client.currency),
+          : formatCurrency(client.hourly_rate_minor, client.currency),
       projectCount: clientProjects.length,
       activeProjectCount: clientProjects.filter((project) => project.status === 'active').length,
-      trackedTime: formatProjectDuration(trackedTime.total({ unit: 'seconds' })),
+      trackedTime: formatDuration(trackedTime.total({ unit: 'seconds' })),
       trackedSeconds: trackedTime.total({ unit: 'seconds' }),
-      loggedValue: formatMoneyByCurrency(loggedValueByCurrency, client.currency),
-      paidValue: formatMoneyByCurrency(paidValueByCurrency, client.currency),
+      loggedValue: formatCurrencyTotals(loggedValueByCurrency, client.currency),
+      paidValue: formatCurrencyTotals(paidValueByCurrency, client.currency),
       searchText
     };
   });

@@ -3,10 +3,10 @@ import { Auth } from 'remix/middleware/auth';
 import { getCsrfToken } from 'remix/middleware/csrf';
 import { createController } from 'remix/router';
 
-import { googleAuthProvider, passwordAuthProvider } from '../../../auth/auth.server.ts';
-import { routes } from '../../../routes.ts';
-import { LoginPage } from '../login-page.tsx';
-import { completeSession, redirectTo } from '../controller-utils.ts';
+import { googleAuthProvider, passwordAuthProvider } from '#app/auth/auth.server.ts';
+import { routes } from '#app/routes.ts';
+import { LoginPage } from '#app/actions/auth/components/login-page.tsx';
+import { completeSession, redirectTo } from '#app/actions/auth/utils/controller-utils.ts';
 
 const loginError = (
   value: string | null
@@ -36,6 +36,6 @@ export const loginController = createController(routes.auth.login, {
       completeSession(context, user);
 
       return redirectTo(context, '/');
-    },
+    }
   }
 });

@@ -1,7 +1,7 @@
 import type { Handle } from 'remix/ui';
 import { css } from 'remix/ui';
 
-import { themeTokens } from '../theme/tokens.ts';
+import { themeTokens } from '#app/theme/tokens.ts';
 
 interface TextFieldProps {
   label: string;

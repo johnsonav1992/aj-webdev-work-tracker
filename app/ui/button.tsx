@@ -1,7 +1,7 @@
 import type { Handle, MixInput, RemixNode } from 'remix/ui';
 import { css } from 'remix/ui';
 
-import { themeTokens } from '../theme/tokens.ts';
+import { themeTokens } from '#app/theme/tokens.ts';
 
 export interface ButtonProps {
   children: RemixNode;
@@ -13,6 +13,34 @@ export interface ButtonProps {
   'data-rmx-document'?: boolean;
   mix?: MixInput<HTMLElement>;
 }
+
+export const Button = (handle: Handle<ButtonProps>) => {
+  return () => {
+    const mix = [variants[handle.props.variant ?? 'quiet'], handle.props.mix];
+    const sharedProps = {
+      'aria-label': handle.props['aria-label'],
+      disabled: handle.props.disabled,
+      mix
+    };
+
+    return handle.props.href ? (
+      <a
+        href={handle.props.href}
+        data-rmx-document={handle.props['data-rmx-document']}
+        {...sharedProps}
+      >
+        {handle.props.children}
+      </a>
+    ) : (
+      <button
+        type={handle.props.type ?? 'button'}
+        {...sharedProps}
+      >
+        {handle.props.children}
+      </button>
+    );
+  };
+};
 
 const variants = {
   quiet: css({
@@ -72,32 +100,4 @@ const variants = {
       boxShadow: 'none'
     }
   })
-};
-
-export const Button = (handle: Handle<ButtonProps>) => {
-  return () => {
-    const mix = [variants[handle.props.variant ?? 'quiet'], handle.props.mix];
-    const sharedProps = {
-      'aria-label': handle.props['aria-label'],
-      disabled: handle.props.disabled,
-      mix
-    };
-
-    return handle.props.href ? (
-      <a
-        href={handle.props.href}
-        data-rmx-document={handle.props['data-rmx-document']}
-        {...sharedProps}
-      >
-        {handle.props.children}
-      </a>
-    ) : (
-      <button
-        type={handle.props.type ?? 'button'}
-        {...sharedProps}
-      >
-        {handle.props.children}
-      </button>
-    );
-  };
 };

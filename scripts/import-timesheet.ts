@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { database } from '../app/db/database.ts';
 import { accounts, clients, projects, timeEntries } from '../app/db/schema.ts';
 import { Temporal, sumTimeDurations } from '../app/utils/temporal.ts';
-import type { TemporalPlainTime } from '../app/utils/temporal-types.ts';
+import type { TemporalPlainTime } from '../app/utils/temporal/types.ts';
 
 type CsvTimeEntry = {
   workDate: string;

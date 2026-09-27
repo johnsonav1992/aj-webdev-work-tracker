@@ -1,14 +1,14 @@
 import { Auth } from 'remix/middleware/auth';
 import { createController } from 'remix/router';
 
-import { requireAppAuth } from '../../auth/require-app-auth.ts';
+import { requireAppAuth } from '#app/middleware/auth.server.ts';
 import {
   pauseTimeEntry,
   resumeTimeEntry,
   startTimeEntry,
   stopTimeEntry
-} from '../../db/time-entries.ts';
-import { routes } from '../../routes.ts';
+} from '#app/db/time-entries.ts';
+import { routes } from '#app/routes.ts';
 
 const redirectHome = (context: { url: URL }) =>
   Response.redirect(new URL(routes.home.href(), context.url), 303);

@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 
-import { Temporal } from '../utils/temporal.ts';
+import { Temporal } from '#app/utils/temporal.ts';
 import { database } from './database.ts';
 import { clients, projects, timeEntries } from './schema.ts';
 

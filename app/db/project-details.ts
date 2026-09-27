@@ -1,20 +1,12 @@
 import { database } from './database.ts';
-import {
-  formatProjectDate,
-  formatProjectDuration,
-  formatProjectMoney
-} from '../utils/project-format.ts';
+import { formatCurrency } from '#app/utils/format-currency.ts';
+import { formatCurrencyTotals } from '#app/utils/format-currency-totals.ts';
+import { formatDate } from '#app/utils/format-date.ts';
+import { formatDuration } from '#app/utils/format-duration.ts';
+import { formatPaymentMethodLabel } from '#app/utils/payment-method-label.ts';
 import { clients, payments, projects, timeEntries } from './schema.ts';
-import type { ProjectStatus } from './projects.ts';
-import { Temporal, durationFromSeconds } from '../utils/temporal.ts';
-
-const paymentMethods = {
-  bank_transfer: 'Bank transfer',
-  card: 'Card',
-  check: 'Check',
-  cash: 'Cash',
-  other: 'Other'
-} as const;
+import type { ProjectStatus } from './types/project.ts';
+import { Temporal, durationFromSeconds } from '#app/utils/temporal.ts';
 
 export const getProjectDetailData = async (accountId: string, projectId: string) => {
   const project = await database.findOne(projects, {
@@ -56,11 +48,7 @@ export const getProjectDetailData = async (accountId: string, projectId: string)
     valueByCurrency.set(currency, (valueByCurrency.get(currency) ?? 0) + value);
   }
 
-  const loggedValue = valueByCurrency.size
-    ? [...valueByCurrency]
-        .map(([currency, value]) => formatProjectMoney(Math.round(value), currency))
-        .join(' · ')
-    : formatProjectMoney(0, client?.currency ?? 'USD');
+  const loggedValue = formatCurrencyTotals(valueByCurrency, client?.currency ?? 'USD');
 
   return {
     project: {
@@ -69,8 +57,8 @@ export const getProjectDetailData = async (accountId: string, projectId: string)
       status: project.status as ProjectStatus,
       description: project.description?.trim() || null,
       notes: project.notes?.trim() || null,
-      startedOn: formatProjectDate(project.started_on ? String(project.started_on) : null),
-      completedOn: formatProjectDate(project.completed_on ? String(project.completed_on) : null),
+      startedOn: project.started_on ? formatDate(String(project.started_on)) : null,
+      completedOn: project.completed_on ? formatDate(String(project.completed_on)) : null,
       hourCapMinutes: project.hour_cap_minutes,
       invoiceCapMinor: project.invoice_cap_minor
     },
@@ -83,25 +71,25 @@ export const getProjectDetailData = async (accountId: string, projectId: string)
       currency: client?.currency ?? 'USD'
     },
     summary: {
-      trackedTime: formatProjectDuration(trackedDuration.total({ unit: 'seconds' })),
+      trackedTime: formatDuration(trackedDuration.total({ unit: 'seconds' })),
       trackedSeconds: trackedDuration.total({ unit: 'seconds' }),
       loggedValue,
       entryCount: entryRows.length
     },
     timeEntries: entryRows.map((entry) => ({
       id: entry.id,
-      date: formatProjectDate(String(entry.work_date)) ?? String(entry.work_date),
+      date: formatDate(String(entry.work_date)) ?? String(entry.work_date),
       description: entry.notes?.trim() || 'Work session',
       duration:
-        entry.status === 'running' ? 'Running' : formatProjectDuration(entry.duration_seconds ?? 0),
+        entry.status === 'running' ? 'Running' : formatDuration(entry.duration_seconds ?? 0),
       status: entry.status,
       source: entry.source === 'timer' ? 'Timer' : 'Manual'
     })),
     payments: paymentRows.map((payment) => ({
       id: payment.id,
-      date: formatProjectDate(String(payment.paid_on)) ?? String(payment.paid_on),
-      amount: formatProjectMoney(payment.amount_minor, payment.currency),
-      method: paymentMethods[String(payment.method) as keyof typeof paymentMethods],
+      date: formatDate(String(payment.paid_on)) ?? String(payment.paid_on),
+      amount: formatCurrency(payment.amount_minor, payment.currency),
+      method: formatPaymentMethodLabel(String(payment.method)),
       notes: payment.notes?.trim() || null
     }))
   };

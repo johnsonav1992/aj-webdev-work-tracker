@@ -1,7 +1,7 @@
 import type { Handle, RemixNode } from 'remix/ui';
 import { css } from 'remix/ui';
 
-import { eyebrowStyle, themeTokens } from '../theme/tokens.ts';
+import { eyebrowStyle, themeTokens } from '#app/theme/tokens.ts';
 
 export interface SectionHeadingProps {
   eyebrow?: string;

@@ -1,5 +1,5 @@
 import { Temporal as PolyfillTemporal } from '@js-temporal/polyfill';
-import type { TemporalNamespace } from './temporal-types.ts';
+import type { TemporalNamespace } from './temporal/types.ts';
 
 type TemporalGlobal = typeof globalThis & { Temporal?: TemporalNamespace };
 

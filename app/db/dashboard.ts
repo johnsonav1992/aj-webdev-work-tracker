@@ -1,44 +1,13 @@
 import { database } from './database.ts';
 import { accountSettings, clients, payments, projects, timeEntries } from './schema.ts';
-import type { AccentTone } from '../theme/tokens.ts';
-import { Temporal, durationFromSeconds, sumTimeDurations } from '../utils/temporal.ts';
-import type { TemporalDuration } from '../utils/temporal-types.ts';
-
-const formatDate = (value: string) =>
-  Temporal.PlainDate.from(value).toLocaleString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric'
-  });
-
-const formatMoney = (minor: number, currency: string) =>
-  new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(minor / 100);
-
-const formatDuration = (duration: TemporalDuration) => {
-  const totalMinutes = duration
-    .round({ smallestUnit: 'minute', roundingMode: 'halfExpand' })
-    .total({
-      unit: 'minutes'
-    });
-  const hours = Math.floor(totalMinutes / 60);
-  const minutes = totalMinutes % 60;
-
-  if (hours === 0) return `${minutes}m`;
-
-  if (minutes === 0) return `${hours}h`;
-
-  return `${hours}h ${minutes}m`;
-};
-
-const initials = (name: string) =>
-  name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() ?? '')
-    .join('');
-
-const tones: AccentTone[] = ['green', 'blue', 'amber'];
+import { accentTones } from '#app/theme/tokens.ts';
+import { Temporal, durationFromSeconds, sumTimeDurations } from '#app/utils/temporal.ts';
+import type { TemporalDuration } from '#app/utils/temporal/types.ts';
+import { formatCurrency } from '#app/utils/format-currency.ts';
+import { formatDate } from '#app/utils/format-date.ts';
+import { formatDuration } from '#app/utils/format-duration.ts';
+import { formatInitials } from '#app/utils/format-initials.ts';
+import { formatPaymentMethodLabel } from '#app/utils/payment-method-label.ts';
 
 export const getDashboardData = async (accountId: string) => {
   const [clientRows, projectRows, entryRows, paymentRows, currencySetting] = await Promise.all([
@@ -130,9 +99,9 @@ export const getDashboardData = async (accountId: string) => {
       projects: String(projectRows.length),
       projectsNote: projectNote,
       hoursThisWeek: hoursThisWeek.total({ unit: 'hours' }).toFixed(1),
-      loggedValue: formatMoney(Math.round(loggedValueMinor), currency),
-      loggedValueNote: `${formatDuration(sumTimeDurations(entryRows.map((entry) => entry.duration_seconds ?? 0)))} tracked`,
-      paymentsThisMonth: formatMoney(paymentsThisMonth, currency),
+      loggedValue: formatCurrency(Math.round(loggedValueMinor), currency),
+      loggedValueNote: `${formatDuration(sumTimeDurations(entryRows.map((entry) => entry.duration_seconds ?? 0)).total({ unit: 'seconds' }))} tracked`,
+      paymentsThisMonth: formatCurrency(paymentsThisMonth, currency),
       paymentsNote: 'Stripe sync is not connected'
     },
     projectOptions: projectRows
@@ -169,19 +138,19 @@ export const getDashboardData = async (accountId: string) => {
 
       return {
         id: project.id,
-        initials: initials(client?.name ?? 'Project'),
+        initials: formatInitials(client?.name ?? 'Project'),
         name: project.name,
         client: client?.name ?? 'Unknown client',
         status: project.status as 'planned' | 'active' | 'completed' | 'archived',
         progress,
         timeSummary: project.hour_cap_minutes
-          ? `${formatDuration(spentDuration)} of ${hourCapDuration.total({ unit: 'hours' })}h cap · ${formatMoney(projectValueMinor, currency)} of ${formatMoney(project.invoice_cap_minor ?? 0, currency)} max`
-          : `${formatDuration(spentDuration)} logged`,
+          ? `${formatDuration(spentDuration.total({ unit: 'seconds' }))} of ${hourCapDuration.total({ unit: 'hours' })}h cap · ${formatCurrency(projectValueMinor, currency)} of ${formatCurrency(project.invoice_cap_minor ?? 0, currency)} max`
+          : `${formatDuration(spentDuration.total({ unit: 'seconds' }))} logged`,
         rate:
           rate === null || rate === undefined
             ? 'Rate not set'
-            : `${formatMoney(rate, client?.currency ?? currency)} / hour`,
-        tone: tones[index % tones.length]!
+            : `${formatCurrency(rate, client?.currency ?? currency)} / hour`,
+        tone: accentTones[index % accentTones.length]!
       };
     }),
     timeEntries: entryRows.slice(0, 5).map((entry, index) => {
@@ -192,41 +161,34 @@ export const getDashboardData = async (accountId: string) => {
         id: entry.id,
         title: entry.notes?.trim() || 'Work session',
         client: [client?.name, project?.name].filter(Boolean).join(' · '),
-        date: formatDate(String(entry.work_date)),
-        duration: formatDuration(durationFromSeconds(entry.duration_seconds ?? 0)),
-        tint: tones[index % tones.length]!
+        date: formatDate(String(entry.work_date)) ?? String(entry.work_date),
+        duration: formatDuration(entry.duration_seconds ?? 0),
+        tint: accentTones[index % accentTones.length]!
       };
     }),
     payments: paymentRows.slice(0, 3).map((payment) => {
       const client = clientsById.get(payment.client_id);
       const project = payment.project_id ? projectsById.get(payment.project_id) : undefined;
-      const methods = {
-        bank_transfer: 'Bank transfer',
-        card: 'Card',
-        check: 'Check',
-        cash: 'Cash',
-        other: 'Other'
-      } as const;
 
       return {
         id: payment.id,
         client: client?.name ?? 'Unknown client',
         project: project?.name ?? 'General payment',
-        amount: formatMoney(payment.amount_minor, payment.currency),
-        date: formatDate(String(payment.paid_on)),
-        method: methods[String(payment.method) as keyof typeof methods]
+        amount: formatCurrency(payment.amount_minor, payment.currency),
+        date: formatDate(String(payment.paid_on)) ?? String(payment.paid_on),
+        method: formatPaymentMethodLabel(String(payment.method))
       };
     }),
     clients: clientRows.map((client, index) => ({
       id: client.id,
-      initials: initials(client.name),
+      initials: formatInitials(client.name),
       name: client.name,
       summary: `${clientProjectCounts.get(client.id) ?? 0} ${clientProjectCounts.get(client.id) === 1 ? 'project' : 'projects'}`,
       rate:
         client.hourly_rate_minor === null
           ? 'Rate not set'
-          : `${formatMoney(client.hourly_rate_minor, client.currency)} / hr`,
-      tint: tones[index % tones.length]!
+          : `${formatCurrency(client.hourly_rate_minor, client.currency)} / hr`,
+      tint: accentTones[index % accentTones.length]!
     }))
   };
 };

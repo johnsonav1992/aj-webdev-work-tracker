@@ -2,15 +2,14 @@ import { randomUUID } from 'node:crypto';
 
 import { database } from './database.ts';
 import { clients, projects, timeEntries } from './schema.ts';
-import { Temporal, durationFromSeconds, sumTimeDurations } from '../utils/temporal.ts';
-import {
-  formatProjectDate as formatDate,
-  formatProjectDuration as formatDuration,
-  formatProjectMoney as formatMoney
-} from '../utils/project-format.ts';
+import { accentTones } from '#app/theme/tokens.ts';
+import { Temporal, durationFromSeconds, sumTimeDurations } from '#app/utils/temporal.ts';
+import { formatCurrency } from '#app/utils/format-currency.ts';
+import { formatDate } from '#app/utils/format-date.ts';
+import { formatDuration } from '#app/utils/format-duration.ts';
+import { formatInitials } from '#app/utils/format-initials.ts';
 
-export type ProjectStatus = 'planned' | 'active' | 'completed' | 'archived';
-export type ProjectStatusFilter = ProjectStatus | 'all';
+import type { ProjectStatus, ProjectStatusFilter } from './types/project.ts';
 
 type GetProjectsOptions = {
   search?: string;
@@ -65,14 +64,6 @@ export const createActiveProject = async (
   });
 };
 
-const initials = (name: string) =>
-  name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() ?? '')
-    .join('');
-
 export const getProjectsData = async (accountId: string, options: GetProjectsOptions = {}) => {
   const [clientRows, projectRows, entryRows] = await Promise.all([
     database.findMany(clients, { where: { account_id: accountId }, orderBy: ['name', 'asc'] }),
@@ -119,17 +110,18 @@ export const getProjectsData = async (accountId: string, options: GetProjectsOpt
       id: project.id,
       name: project.name,
       client: client?.name ?? 'Unknown client',
-      initials: initials(client?.name ?? 'Project'),
+      initials: formatInitials(client?.name ?? 'Project'),
       status: project.status as ProjectStatus,
       description: project.description?.trim() || null,
-      startedOn: formatDate(project.started_on ? String(project.started_on) : null),
-      completedOn: formatDate(project.completed_on ? String(project.completed_on) : null),
+      startedOn: project.started_on ? formatDate(String(project.started_on)) : null,
+      completedOn: project.completed_on ? formatDate(String(project.completed_on)) : null,
       trackedTime: formatDuration(trackedSeconds),
       trackedSeconds,
       entryCount: entries.length,
-      loggedValue: formatMoney(Math.round(valueMinor), client?.currency ?? 'USD'),
+      loggedValue: formatCurrency(Math.round(valueMinor), client?.currency ?? 'USD'),
       currency: client?.currency ?? 'USD',
-      hourlyRate: hourlyRate === null ? null : formatMoney(hourlyRate, client?.currency ?? 'USD'),
+      hourlyRate:
+        hourlyRate === null ? null : formatCurrency(hourlyRate, client?.currency ?? 'USD'),
       hourCap: project.hour_cap_minutes,
       invoiceCapMinor: project.invoice_cap_minor,
       progress: project.hour_cap_minutes
@@ -142,7 +134,7 @@ export const getProjectsData = async (accountId: string, options: GetProjectsOpt
               100
           )
         : null,
-      accent: (['green', 'blue', 'amber'] as const)[index % 3]!,
+      accent: accentTones[index % accentTones.length]!,
       searchText
     };
   });

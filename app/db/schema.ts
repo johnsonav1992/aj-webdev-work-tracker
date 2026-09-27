@@ -1,4 +1,4 @@
-import { column as c, belongsTo, hasMany, table } from 'remix/data-table';
+import { column as c, table } from 'remix/data-table';
 
 export const accounts = table({
   name: 'accounts',
@@ -160,16 +160,3 @@ export const payments = table({
     updated_at: c.integer().notNull()
   }
 });
-
-export const accountUsers = hasMany(accounts, accountMembers);
-export const accountClients = hasMany(accounts, clients);
-export const clientProjects = hasMany(clients, projects);
-export const clientPayments = hasMany(clients, payments);
-export const projectTimeEntries = hasMany(projects, timeEntries);
-export const projectPayments = hasMany(projects, payments);
-export const userAccountMemberships = hasMany(users, accountMembers);
-export const userAuthIdentities = hasMany(users, authIdentities);
-export const projectClient = belongsTo(projects, clients);
-export const timeEntryProject = belongsTo(timeEntries, projects);
-export const paymentClient = belongsTo(payments, clients);
-export const paymentProject = belongsTo(payments, projects);

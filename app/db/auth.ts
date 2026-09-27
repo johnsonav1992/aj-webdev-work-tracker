@@ -1,6 +1,7 @@
 import { randomUUID, scrypt, timingSafeEqual } from 'node:crypto';
 
-import { Temporal } from '../utils/temporal.ts';
+import { Temporal } from '#app/utils/temporal.ts';
+import type { AuthenticatedUser } from '#app/auth/types/authenticated-user.ts';
 
 import { database } from './database.ts';
 import { accountMembers, accountSettings, accounts, authIdentities, users } from './schema.ts';
@@ -29,13 +30,6 @@ const deriveScrypt = (password: string, salt: Buffer): Promise<Buffer> =>
       }
     );
   });
-
-export interface AuthenticatedUser {
-  id: string;
-  email: string;
-  displayName: string | null;
-  accountId: string;
-}
 
 const normalizeEmail = (email: string): string => email.trim().toLowerCase();
 
